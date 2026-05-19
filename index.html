@@ -636,7 +636,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <div class="sidebar-bottom">
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.57</div>
+      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.58</div>
     </div>
   </aside>
 
@@ -5192,18 +5192,8 @@ var RESULTADOS = [];
 
 // ── Restaurar sesión guardada ──────────────────
 (function() {
-  try {
-    var saved = localStorage.getItem('psico_session');
-    if (saved) {
-      var s = JSON.parse(saved);
-      // Verificar que el token no esté expirado (exp en segundos)
-      if (s && s.access_token && s.expires_at && Date.now()/1000 < s.expires_at - 60) {
-        SESSION = s;
-      } else {
-        localStorage.removeItem('psico_session');
-      }
-    }
-  } catch(e) {}
+  // Sesión se restaura solo tras login manual — no auto-login
+  try { localStorage.removeItem('psico_session'); } catch(e) {}
 })();
 var pacienteSelModal = null;
 var sectorActual = '';
@@ -5464,17 +5454,29 @@ function cancelarFormPac() {
 function guardarPaciente() {
   var nombre = document.getElementById('fp-nombre').value.trim();
   if (!nombre) { alert('El nombre es obligatorio.'); return; }
+  if (!SESSION || !SESSION.access_token) { alert('Sesión expirada. Volvé a ingresar.'); return; }
+  var g = function(id){ var el=document.getElementById(id); return el && el.value ? el.value : null; };
   var body = {
     user_id: SESSION.user.id,
     nombre: nombre,
-    fecha_nacimiento: document.getElementById('fp-fnac').value || null,
-    sexo: document.getElementById('fp-sexo').value || null,
-    escolaridad: document.getElementById('fp-escolaridad').value || null,
-    notas: document.getElementById('fp-notas').value || null
+    fecha_nacimiento: g('fp-fnac'),
+    sexo: g('fp-sexo'),
+    escolaridad: g('fp-escolaridad'),
+    contacto: g('fp-tel'),
+    ant_clinicos: g('fp-notas')
   };
   supaFetch('/rest/v1/psico_pacientes', 'POST', body, SESSION.access_token)
     .then(function(r){ return r.json(); })
-    .then(function() { cancelarFormPac(); cargarPacientes(); toast('Paciente guardado ✓'); });
+    .then(function(data) {
+      if (data && data.code) {
+        toast('Error al guardar: ' + (data.message || data.code), 'error');
+        return;
+      }
+      cancelarFormPac();
+      cargarPacientes();
+      toast('Paciente guardado ✓', 'success');
+    })
+    .catch(function(e){ toast('Error de conexión al guardar', 'error'); });
 }
 
 function abrirModalPac(id) {
