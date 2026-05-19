@@ -33,6 +33,90 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .screen { display: none; }
 .screen.active { display: block; }
 
+/* ══ LANDING ══ */
+#screen-landing { display:none; flex-direction:column; min-height:100vh; background:#ffffff; }
+#screen-landing.active { display:flex; }
+
+.land-nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 64px; height:68px;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid #e8eef5;
+}
+.land-nav-logo { display:flex; align-items:center; gap:10px; }
+.land-nav-logo-mark {
+  width:36px; height:36px;
+  background:linear-gradient(135deg,#1a56db,#3b82f6);
+  border-radius:9px; display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem;
+}
+.land-nav-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:1.1rem; font-weight:700; color:#0f172a; letter-spacing:-0.3px; }
+.land-nav-links { display:flex; align-items:center; gap:32px; }
+.land-nav-link { font-size:0.88rem; font-weight:500; color:#64748b; cursor:pointer; transition:color 0.15s; text-decoration:none; }
+.land-nav-link:hover { color:#0f172a; }
+.land-nav-cta { display:flex; align-items:center; gap:12px; }
+.land-btn-ghost { padding:9px 20px; border-radius:7px; font-size:0.88rem; font-weight:600; color:#1a56db; background:transparent; border:1.5px solid #1a56db; cursor:pointer; font-family:"Inter",sans-serif; transition:all 0.15s; }
+.land-btn-ghost:hover { background:#eff6ff; }
+.land-btn-solid { padding:9px 20px; border-radius:7px; font-size:0.88rem; font-weight:600; color:#fff; background:#1a56db; border:none; cursor:pointer; font-family:"Inter",sans-serif; box-shadow:0 2px 10px rgba(26,86,219,0.3); transition:all 0.15s; }
+.land-btn-solid:hover { background:#1042b0; transform:translateY(-1px); }
+
+.land-body { margin-top:68px; flex:1; display:flex; flex-direction:column; }
+
+.land-hero { padding:90px 64px 70px; display:flex; align-items:center; justify-content:space-between; gap:64px; max-width:1200px; margin:0 auto; width:100%; }
+.land-hero-text { flex:1; max-width:560px; }
+.land-hero-badge { display:inline-flex; align-items:center; gap:6px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:20px; padding:5px 14px; font-size:0.78rem; font-weight:600; color:#1a56db; margin-bottom:24px; letter-spacing:0.3px; }
+.land-hero-h1 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.8rem; font-weight:800; color:#0f172a; line-height:1.15; letter-spacing:-1px; margin-bottom:20px; }
+.land-hero-h1 span { color:#1a56db; }
+.land-hero-sub { font-size:1rem; color:#64748b; line-height:1.75; margin-bottom:36px; max-width:460px; }
+.land-hero-btns { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.land-hero-btn-main { padding:14px 28px; background:#1a56db; color:#fff; border:none; border-radius:9px; font-size:0.97rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 18px rgba(26,86,219,0.35); transition:all 0.15s; }
+.land-hero-btn-main:hover { background:#1042b0; transform:translateY(-2px); }
+.land-hero-btn-sec { padding:14px 24px; background:transparent; color:#0f172a; border:none; border-radius:9px; font-size:0.97rem; font-weight:500; font-family:"Inter",sans-serif; cursor:pointer; transition:all 0.15s; }
+.land-hero-btn-sec:hover { color:#1a56db; }
+
+.land-hero-visual { flex:1; max-width:460px; background:linear-gradient(135deg,#0f1f3d 0%,#1042b0 100%); border-radius:20px; padding:28px; box-shadow:0 24px 64px rgba(15,31,61,0.25); position:relative; overflow:hidden; }
+.land-hero-visual::before { content:""; position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(59,130,246,0.12); }
+.land-visual-screen { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:18px; margin-bottom:10px; }
+.land-visual-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.72rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:12px; }
+.land-visual-row { display:flex; align-items:center; justify-content:space-between; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.land-visual-row:last-child { border-bottom:none; }
+.land-visual-test { font-size:0.8rem; color:rgba(255,255,255,0.8); font-weight:500; }
+.land-visual-z { font-family:"DM Mono",monospace; font-size:0.76rem; font-weight:500; padding:2px 10px; border-radius:20px; }
+.land-visual-z.ok { background:rgba(13,148,136,0.2); color:#5eead4; }
+.land-visual-z.warn { background:rgba(180,83,9,0.2); color:#fbbf24; }
+.land-visual-z.low { background:rgba(220,38,38,0.2); color:#fca5a5; }
+.land-visual-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.land-visual-chip { background:rgba(26,86,219,0.25); border:1px solid rgba(59,130,246,0.25); border-radius:5px; padding:3px 9px; font-size:0.7rem; color:#93c5fd; font-weight:500; }
+
+.land-stats { display:flex; justify-content:center; gap:0; background:#f8fafc; border-top:1px solid #e8eef5; border-bottom:1px solid #e8eef5; }
+.land-stat { flex:1; max-width:260px; text-align:center; padding:40px 20px; border-right:1px solid #e8eef5; }
+.land-stat:last-child { border-right:none; }
+.land-stat-n { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.4rem; font-weight:800; color:#0f1f3d; letter-spacing:-1px; }
+.land-stat-l { font-size:0.8rem; color:#64748b; margin-top:4px; font-weight:500; }
+
+.land-features { padding:80px 64px; background:#ffffff; }
+.land-features-inner { max-width:1200px; margin:0 auto; }
+.land-features-tag { font-size:0.75rem; font-weight:700; color:#1a56db; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; }
+.land-features-h2 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2rem; font-weight:800; color:#0f172a; letter-spacing:-0.5px; margin-bottom:48px; max-width:500px; line-height:1.25; }
+.land-features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.land-feat-card { background:#f8fafc; border:1px solid #e8eef5; border-radius:14px; padding:28px; transition:all 0.2s; }
+.land-feat-card:hover { background:#fff; box-shadow:0 8px 32px rgba(15,31,61,0.08); transform:translateY(-3px); border-color:#dbeafe; }
+.land-feat-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:16px; background:#eff6ff; }
+.land-feat-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#0f172a; margin-bottom:8px; }
+.land-feat-desc { font-size:0.85rem; color:#64748b; line-height:1.65; }
+
+.land-cta-section { padding:80px 64px; background:linear-gradient(135deg,#0f1f3d,#1042b0); text-align:center; }
+.land-cta-h2 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.2rem; font-weight:800; color:#fff; letter-spacing:-0.5px; margin-bottom:12px; }
+.land-cta-sub { font-size:1rem; color:rgba(255,255,255,0.65); margin-bottom:36px; }
+.land-cta-btn { padding:16px 36px; background:#fff; color:#1042b0; border:none; border-radius:10px; font-size:1rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.2); transition:all 0.15s; }
+.land-cta-btn:hover { transform:translateY(-2px); }
+
+.land-footer { padding:24px 64px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; }
+.land-footer-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.9rem; font-weight:700; color:#fff; }
+.land-footer-copy { font-size:0.78rem; color:#475569; }
+
+
 /* ══ LOGIN ══ */
 #screen-login {
   min-height: 100vh;
@@ -377,17 +461,117 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 <!-- ══ TOAST ══ -->
 <div class="toast" id="toast"></div>
 
-<!-- ══ PASSWORD GATE ══ -->
-<div id="screen-gate" class="screen active" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:48px 40px;max-width:360px;width:100%;text-align:center;box-shadow:var(--shadow);">
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.6rem;font-weight:600;color:var(--accent);margin-bottom:8px;"> PsicoEscala</div>
-    <div style="font-size:0.85rem;color:var(--muted);margin-bottom:32px;">Acceso restringido</div>
-    <div style="font-size:1.5rem;margin-bottom:24px;">🔒</div>
-    <input type="password" id="gate-input" placeholder="Contraseña de acceso"
-      style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;background:var(--bg);color:var(--text);margin-bottom:12px;"
-      onkeydown="if(event.key==='Enter')verificarGate()">
-    <div id="gate-error" style="color:var(--red);font-size:0.8rem;margin-bottom:10px;display:none;">Contraseña incorrecta</div>
-    <button onclick="verificarGate()" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:0.95rem;font-weight:600;cursor:pointer;">Ingresar</button>
+<!-- ══ LANDING ══ -->
+<div id="screen-landing" class="screen active">
+  <!-- NAV -->
+  <nav class="land-nav">
+    <div class="land-nav-logo">
+      <div class="land-nav-logo-mark">🧩</div>
+      <div class="land-nav-name">PsicoEscala</div>
+    </div>
+    <div class="land-nav-links">
+      <a class="land-nav-link" href="#features">Funcionalidades</a>
+      <a class="land-nav-link" href="#tests">Tests disponibles</a>
+      <a class="land-nav-link" href="#contacto">Contacto</a>
+    </div>
+    <div class="land-nav-cta">
+      <button class="land-btn-ghost" onclick="irLogin()">Iniciar sesión</button>
+    </div>
+  </nav>
+
+  <div class="land-body">
+    <!-- HERO -->
+    <section class="land-hero">
+      <div class="land-hero-text">
+        <div class="land-hero-badge">🧠 Plataforma neuropsicológica</div>
+        <h1 class="land-hero-h1">Evaluación psicológica <span>profesional</span>, todo en un lugar</h1>
+        <p class="land-hero-sub">PsicoEscala reúne más de 30 tests estandarizados con baremos, corrección automática, perfil Z y generación de informes clínicos para profesionales de la salud mental.</p>
+        <div class="land-hero-btns">
+          <button class="land-hero-btn-main" onclick="irLogin()">Iniciar sesión →</button>
+          <button class="land-hero-btn-sec" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Ver funcionalidades</button>
+        </div>
+      </div>
+      <div class="land-hero-visual">
+        <div class="land-visual-screen">
+          <div class="land-visual-title">Perfil neuropsicológico</div>
+          <div class="land-visual-row"><span class="land-visual-test">TMT-B</span><span class="land-visual-z low">Z = −2.1</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">SDMT</span><span class="land-visual-z warn">Z = −1.4</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">BNT-15</span><span class="land-visual-z ok">Z = +0.3</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">Rey Figura</span><span class="land-visual-z warn">Z = −1.6</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">FAB</span><span class="land-visual-z ok">Z = −0.8</span></div>
+        </div>
+        <div class="land-visual-chips">
+          <span class="land-visual-chip">WAIS-IV</span>
+          <span class="land-visual-chip">MoCA</span>
+          <span class="land-visual-chip">WCST-64</span>
+          <span class="land-visual-chip">BDI-II</span>
+          <span class="land-visual-chip">TAVEC</span>
+          <span class="land-visual-chip">Stroop</span>
+          <span class="land-visual-chip">PHQ-9</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="land-stats">
+      <div class="land-stat"><div class="land-stat-n">+30</div><div class="land-stat-l">Tests estandarizados</div></div>
+      <div class="land-stat"><div class="land-stat-n">100%</div><div class="land-stat-l">Corrección automática</div></div>
+      <div class="land-stat"><div class="land-stat-n">PDF</div><div class="land-stat-l">e informes Word</div></div>
+      <div class="land-stat"><div class="land-stat-n">RLS</div><div class="land-stat-l">Datos seguros por usuario</div></div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="land-features" id="features">
+      <div class="land-features-inner">
+        <div class="land-features-tag">Funcionalidades</div>
+        <h2 class="land-features-h2">Todo lo que necesitás para evaluar con precisión</h2>
+        <div class="land-features-grid">
+          <div class="land-feat-card">
+            <div class="land-feat-icon">📊</div>
+            <div class="land-feat-title">Corrección con baremos</div>
+            <div class="land-feat-desc">Puntajes Z, percentiles y categorías diagnósticas calculados automáticamente con baremos latinoamericanos validados.</div>
+          </div>
+          <div class="land-feat-card">
+            <div class="land-feat-icon">🧬</div>
+            <div class="land-feat-title">Perfil neuropsicológico</div>
+            <div class="land-feat-desc">Visualización gráfica del perfil Z por dominio cognitivo: memoria, atención, ejecutivas, lenguaje, visoconstructivo.</div>
+          </div>
+          <div class="land-feat-card">
+            <div class="land-feat-icon">📄</div>
+            <div class="land-feat-title">Informes en PDF y Word</div>
+            <div class="land-feat-desc">Generación de informes clínicos completos con tabla de puntajes, perfil Z y texto narrativo. Listos para firmar.</div>
+          </div>
+          <div class="land-feat-card">
+            <div class="land-feat-icon">🔒</div>
+            <div class="land-feat-title">Datos seguros y privados</div>
+            <div class="land-feat-desc">Cada profesional accede únicamente a sus propios pacientes. Seguridad a nivel de base de datos con RLS.</div>
+          </div>
+          <div class="land-feat-card">
+            <div class="land-feat-icon">🧩</div>
+            <div class="land-feat-title">+30 tests integrados</div>
+            <div class="land-feat-desc">Neuropsicológicos, clínicos, de dolor y TDAH. MoCA, WAIS-IV, BDI-II, PHQ-9, FAB, TMT, WCST y muchos más.</div>
+          </div>
+          <div class="land-feat-card">
+            <div class="land-feat-icon">☁️</div>
+            <div class="land-feat-title">100% en la nube</div>
+            <div class="land-feat-desc">Sin instalación. Accedé desde cualquier dispositivo. Tus pacientes y resultados siempre disponibles y respaldados.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="land-cta-section" id="contacto">
+      <h2 class="land-cta-h2">¿Querés acceder a PsicoEscala?</h2>
+      <p class="land-cta-sub">El acceso es por suscripción mensual para profesionales individuales. Escribinos para obtener tu cuenta.</p>
+      <button class="land-cta-btn" onclick="irLogin()">Iniciar sesión</button>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="land-footer">
+      <div class="land-footer-name">PsicoEscala</div>
+      <div class="land-footer-copy">© 2026 · Plataforma de evaluación psicológica profesional</div>
+    </footer>
   </div>
 </div>
 
@@ -452,7 +636,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <div class="sidebar-bottom">
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.56</div>
+      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.57</div>
     </div>
   </aside>
 
@@ -4990,19 +5174,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 <script>
 
-function verificarGate(){
-  var input=document.getElementById('gate-input').value;
-  if(input==='Sigrid1109'){
-    SESSION = null;
-    try { localStorage.removeItem('psico_session'); } catch(e) {}
-    document.getElementById('screen-gate').style.display='none';
-    var login = document.getElementById('screen-login');
-    login.style.display = 'flex';
-    login.classList.add('active');
-  } else {
-    document.getElementById('gate-error').style.display='block';
-    document.getElementById('gate-input').value='';
-  }
+function irLogin(){
+  var landing = document.getElementById('screen-landing');
+  landing.classList.remove('active');
+  landing.style.display = 'none';
+  var login = document.getElementById('screen-login');
+  login.style.display = 'flex';
+  login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
@@ -5061,7 +5239,7 @@ function doLogin() {
     try { localStorage.setItem('psico_session', JSON.stringify(data)); } catch(e) {}
     document.getElementById('topbar-email').textContent = email;
     // Ocultar todas las pantallas y mostrar solo app
-    ['screen-gate','screen-login'].forEach(function(id){
+    ['screen-landing','screen-login'].forEach(function(id){
       var el = document.getElementById(id);
       el.classList.remove('active');
       el.style.display = 'none';
@@ -5080,9 +5258,9 @@ function doLogout() {
   var app = document.getElementById('screen-app');
   app.classList.remove('active');
   app.style.display = 'none';
-  var login = document.getElementById('screen-login');
-  login.style.display = 'flex';
-  login.classList.add('active');
+  var landing = document.getElementById('screen-landing');
+  landing.style.display = 'flex';
+  landing.classList.add('active');
   document.getElementById('login-pass').value = '';
 }
 function doForgot() {
@@ -14580,8 +14758,23 @@ function guardarFamiliar() {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-  // Siempre empezar por el gate. La sesión se restaura solo después del login manual.
-  actualizarSaludo();
+  // Arranque: sesión válida → app; sin sesión → landing.
+  if (SESSION && SESSION.access_token) {
+    document.getElementById('screen-landing').style.display = 'none';
+    document.getElementById('screen-landing').classList.remove('active');
+    var app = document.getElementById('screen-app');
+    app.style.display = 'flex';
+    app.classList.add('active');
+    actualizarSaludo();
+    cargarPacientes();
+    cargarResultados();
+  } else {
+    // Mostrar landing
+    var landing = document.getElementById('screen-landing');
+    landing.classList.add('active');
+    landing.style.display = 'flex';
+    landing.style.flexDirection = 'column';
+  }
 });
 
 </script>
