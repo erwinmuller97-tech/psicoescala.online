@@ -636,7 +636,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <div class="sidebar-bottom">
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.59</div>
+      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.60</div>
     </div>
   </aside>
 
@@ -5274,14 +5274,20 @@ function cargarPacientes() {
     });
 }
 function cargarResultados() {
-  supaFetch('/rest/v1/psico_resultados?select=*,psico_pacientes(nombre)&order=creado.desc&limit=200', 'GET', null, SESSION.access_token)
+  supaFetch('/rest/v1/psico_resultados?select=*,psico_pacientes(nombre)&order=created_at.desc&limit=200', 'GET', null, SESSION.access_token)
     .then(function(r){ return r.json(); })
     .then(function(data) {
+      if (data && data.code) {
+        console.error('Error cargando resultados:', data);
+        toast('Error al cargar resultados: ' + (data.message || data.code), 'error');
+        return;
+      }
       RESULTADOS = Array.isArray(data) ? data : [];
       renderFiltroHistorial();
       renderHistorial();
       renderUltimas();
-    });
+    })
+    .catch(function(e){ console.error('cargarResultados fetch error:', e); });
 }
 
 // ══ PACIENTES ════════════════════════════════════════════════════════════════
@@ -8046,12 +8052,12 @@ function guardarResultadoRey() {
     });
   }
   var catRey = zSum===null ? 'Ver detalle' : (zSum>=-1.0?'Normal':zSum>=-1.5?'Leve ↓':zSum>=-2.0?'Moderado ↓':'Bajo ↓');
+  datosObj.puntaje_t = zSum!==null ? parseFloat((50+10*zSum).toFixed(1)) : null;
+  datosObj.percentil = zSum!==null ? Math.max(1,Math.min(99,Math.round(50+28.57*zSum))) : null;
   var body = {
     user_id: SESSION.user.id, paciente_id: pacId, test: 'Rey Verbal',
     fecha: fecha, puntaje_total: sum ? parseInt(sum) : null,
     categoria: catRey, puntaje_z: zSum,
-    puntaje_t: zSum!==null ? parseFloat((50+10*zSum).toFixed(1)) : null,
-    percentil: zSum!==null ? Math.max(1,Math.min(99,Math.round(50+28.57*zSum))) : null,
     datos: datosObj
   };
   supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token)
@@ -8297,11 +8303,11 @@ function guardarResultadoTMT() {
     }
   }
   var zPrincipal = datosObj.tmt_b_z !== undefined ? datosObj.tmt_b_z : (datosObj.tmt_a_z !== undefined ? datosObj.tmt_a_z : null);
+  datosObj.puntaje_t = zPrincipal!==null ? parseFloat((50+10*zPrincipal).toFixed(1)) : null;
+  datosObj.percentil = zPrincipal!==null ? Math.max(1,Math.min(99,Math.round(50+28.57*zPrincipal))) : null;
   var body = { user_id: SESSION.user.id, paciente_id: pacId, test: 'TMT A-B', fecha: fecha,
     puntaje_total: null, categoria: cat,
     puntaje_z: zPrincipal,
-    puntaje_t: zPrincipal!==null ? parseFloat((50+10*zPrincipal).toFixed(1)) : null,
-    percentil: zPrincipal!==null ? Math.max(1,Math.min(99,Math.round(50+28.57*zPrincipal))) : null,
     datos: datosObj
   };
   supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token)
@@ -8488,11 +8494,11 @@ function guardarResultadoFLV() {
   }
   var zPrincipal = zAll.length ? parseFloat((zAll.reduce(function(a,b){return a+b;},0)/zAll.length).toFixed(2)) : null;
   var cat = zAll.length ? (zPrincipal >= -1.0 ? 'Normal' : zPrincipal >= -1.5 ? 'Leve ↓' : zPrincipal >= -2.0 ? 'Moderado ↓' : 'Bajo ↓') : 'Ver detalle';
+  datosObj.puntaje_t = zPrincipal!==null ? parseFloat((50+10*zPrincipal).toFixed(1)) : null;
+  datosObj.percentil = zPrincipal!==null ? Math.max(1,Math.min(99,Math.round(50+28.57*zPrincipal))) : null;
   var body = { user_id: SESSION.user.id, paciente_id: pacId, test: 'Fluencia Verbal', fecha: fecha,
     puntaje_total: null, categoria: cat,
     puntaje_z: zPrincipal,
-    puntaje_t: zPrincipal!==null ? parseFloat((50+10*zPrincipal).toFixed(1)) : null,
-    percentil: zPrincipal!==null ? Math.max(1,Math.min(99,Math.round(50+28.57*zPrincipal))) : null,
     datos: datosObj };
   supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token)
     .then(function(){
@@ -8807,8 +8813,8 @@ function guardarResultadoMoCA(){
   supaFetch('/rest/v1/psico_resultados','POST',{
     user_id:SESSION.user.id, paciente_id:pacId, test:'MoCA', fecha:fecha,
     puntaje_total:pts, categoria:cat,
-    puntaje_z:mocaZ, puntaje_t:mocaT, percentil:mocaPerc,
-    datos:{ total:pts, m:mocaM, ds:mocaDS, ne:document.getElementById('moca-ne').value, dominios:mocaVals }
+    puntaje_z:mocaZ,
+    datos:{ total:pts, m:mocaM, ds:mocaDS, puntaje_t:mocaT, percentil:mocaPerc, ne:document.getElementById('moca-ne').value, dominios:mocaVals }
   },SESSION.access_token).then(function(){cargarResultados();
     toast('✓ Resultado guardado', 'success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
@@ -9158,10 +9164,12 @@ function guardarResultadoIFS(){
     var v=document.getElementById(s.id).value;
     if(v!=='') datosObj.subtests[s.id]=parseInt(v);
   });
+  datosObj.puntaje_t = parseFloat((50+10*z).toFixed(1));
+  datosObj.percentil = Math.max(1,Math.min(99,Math.round(50+28.57*z)));
   supaFetch('/rest/v1/psico_resultados','POST',{
     user_id:SESSION.user.id,paciente_id:pacId,test:'IFS',fecha:fecha,
     puntaje_total:total,categoria:cat,
-    puntaje_z:z, puntaje_t:parseFloat((50+10*z).toFixed(1)), percentil:Math.max(1,Math.min(99,Math.round(50+28.57*z))),
+    puntaje_z:z,
     datos:datosObj
   },SESSION.access_token).then(function(){cargarResultados();
     toast('✓ Resultado guardado', 'success');
