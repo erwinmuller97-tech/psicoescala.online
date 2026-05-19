@@ -634,15 +634,46 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       </div>
     </nav>
     <div class="sidebar-bottom">
+      <div class="sidebar-section" id="snav-config" onclick="irVista('config')" style="margin-bottom:8px;">
+        <span class="sidebar-icon">⚙</span> Configuración
+      </div>
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.60</div>
+      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.61</div>
     </div>
   </aside>
 
   <!-- MAIN -->
   <div class="app-main">
     <div class="app-content">
+
+    <!-- ── CONFIGURACIÓN ── -->
+    <div class="vista" id="vista-config">
+      <div class="vista-header"><div class="vista-titulo">Configuración del profesional</div></div>
+      <div class="card" style="max-width:560px;">
+        <div class="card-title">Datos para el encabezado del informe PDF</div>
+        <p style="font-size:0.84rem;color:var(--muted);margin-bottom:18px;">Estos datos aparecerán en el header y footer de todos los informes PDF generados.</p>
+        <div class="form-grid">
+          <div class="field" style="grid-column:1/-1"><label>Nombre completo / Título profesional</label>
+            <input type="text" id="cfg-nombre" oninput="actualizarPreviewConfig()" placeholder="Ej: Lic. María González · M.P. 12345"></div>
+          <div class="field"><label>Matrícula</label>
+            <input type="text" id="cfg-matricula" oninput="actualizarPreviewConfig()" placeholder="Ej: M.P. 12345"></div>
+          <div class="field"><label>Teléfono</label>
+            <input type="text" id="cfg-tel" oninput="actualizarPreviewConfig()" placeholder="Ej: 351 123-4567"></div>
+          <div class="field" style="grid-column:1/-1"><label>Dirección / Institución</label>
+            <input type="text" id="cfg-direccion" oninput="actualizarPreviewConfig()" placeholder="Ej: Av. Colón 1234 · Córdoba"></div>
+          <div class="field" style="grid-column:1/-1"><label>Línea extra (opcional)</label>
+            <input type="text" id="cfg-extra" oninput="actualizarPreviewConfig()" placeholder="Ej: ActivaMente · evaluacion@activamente.com.ar"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="guardarConfigProfesional()">Guardar configuración</button>
+        </div>
+        <div style="margin-top:18px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Vista previa del encabezado</div>
+          <div id="cfg-preview" style="font-size:0.88rem;color:var(--text);line-height:1.6;"></div>
+        </div>
+      </div>
+    </div>
 
     <!-- ── INICIO ── -->
     <div class="vista active" id="vista-inicio">
@@ -5174,6 +5205,65 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 <script>
 
+
+// ══ CONFIGURACIÓN DEL PROFESIONAL ════════════════════════════════════════════
+function cargarConfigProfesional() {
+  try {
+    var cfg = JSON.parse(localStorage.getItem('psico_config_prof') || '{}');
+    if (cfg.nombre)    document.getElementById('cfg-nombre').value    = cfg.nombre;
+    if (cfg.matricula) document.getElementById('cfg-matricula').value = cfg.matricula;
+    if (cfg.tel)       document.getElementById('cfg-tel').value       = cfg.tel;
+    if (cfg.direccion) document.getElementById('cfg-direccion').value = cfg.direccion;
+    if (cfg.extra)     document.getElementById('cfg-extra').value     = cfg.extra;
+    actualizarPreviewConfig();
+  } catch(e) {}
+}
+function guardarConfigProfesional() {
+  var cfg = {
+    nombre:    document.getElementById('cfg-nombre').value.trim(),
+    matricula: document.getElementById('cfg-matricula').value.trim(),
+    tel:       document.getElementById('cfg-tel').value.trim(),
+    direccion: document.getElementById('cfg-direccion').value.trim(),
+    extra:     document.getElementById('cfg-extra').value.trim()
+  };
+  try { localStorage.setItem('psico_config_prof', JSON.stringify(cfg)); } catch(e) {}
+  actualizarPreviewConfig();
+  toast('Configuración guardada ✓', 'success');
+}
+function actualizarPreviewConfig() {
+  var el = document.getElementById('cfg-preview');
+  if (!el) return;
+  var cfg = getConfigProfesional();
+  var lines = [];
+  if (cfg.nombre)    lines.push('<strong>' + cfg.nombre + '</strong>');
+  if (cfg.matricula) lines.push(cfg.matricula);
+  if (cfg.direccion) lines.push(cfg.direccion);
+  if (cfg.tel)       lines.push('Tel. ' + cfg.tel);
+  if (cfg.extra)     lines.push(cfg.extra);
+  el.innerHTML = lines.length ? lines.join('<br>') : '<em style="color:var(--muted)">Completá los campos para ver la vista previa</em>';
+}
+function getConfigProfesional() {
+  try { return JSON.parse(localStorage.getItem('psico_config_prof') || '{}'); } catch(e) { return {}; }
+}
+function getProfHeaderHTML() {
+  var cfg = getConfigProfesional();
+  var lines = [];
+  if (cfg.nombre)    lines.push('<div style="font-size:13px;font-weight:700;color:#0f172a;letter-spacing:0.3px;">' + cfg.nombre + '</div>');
+  if (cfg.matricula) lines.push('<div style="font-size:10px;color:#475569;margin-top:1px;">' + cfg.matricula + '</div>');
+  if (cfg.direccion) lines.push('<div style="font-size:10px;color:#475569;">' + cfg.direccion + '</div>');
+  if (cfg.tel)       lines.push('<div style="font-size:10px;color:#475569;">Tel. ' + cfg.tel + '</div>');
+  if (cfg.extra)     lines.push('<div style="font-size:10px;color:#475569;">' + cfg.extra + '</div>');
+  return lines.length ? lines.join('') : '<div style="font-size:11px;color:#94a3b8;font-style:italic;">Completá tu configuración en ⚙ Configuración</div>';
+}
+function getProfFooterText() {
+  var cfg = getConfigProfesional();
+  var parts = [];
+  if (cfg.nombre)    parts.push(cfg.nombre);
+  if (cfg.matricula) parts.push(cfg.matricula);
+  if (cfg.tel)       parts.push('Tel. ' + cfg.tel);
+  return parts.join(' · ') || 'PsicoEscala';
+}
+
 function irLogin(){
   var landing = document.getElementById('screen-landing');
   landing.classList.remove('active');
@@ -5667,9 +5757,9 @@ function generarPDF(tipo) {
       '.vista-header{margin-bottom:12px;}'+
       '.vista-titulo{font-size:14pt;font-weight:700;color:#1a2e16;border-bottom:2px solid #325c28;padding-bottom:6px;}'+
       '.card{background:#fff;border:0.5px solid #ddd;border-radius:6px;padding:14px;margin-bottom:12px;}'+
-      '.card-title{font-size:10pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#214b1a;border-bottom:1px solid #b8ddb0;margin-bottom:10px;padding-bottom:4px;}'+
+      '.card-title{font-size:10pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#0f1f3d;border-bottom:1px solid #bfdbfe;margin-bottom:10px;padding-bottom:4px;}'+
       '.form-grid, .form-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}'+
-      '.field label{display:block;font-size:8pt;font-weight:700;color:#325c28;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.3px;}'+
+      '.field label{display:block;font-size:8pt;font-weight:700;color:#1a56db;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.3px;}'+
       'input[type="number"],select,input[type="date"],input[type="text"]{width:100%;box-sizing:border-box;border:1px solid #ccc;border-radius:4px;padding:4px 6px;font-size:10pt;}'+
       '.scl-block,.spai-block,.asrs-block,.wurs-block,.mbi-block{margin-bottom:8px;}'+
       '.item-row,.spai-item,.scl-item{display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:0.3px solid #eee;font-size:9pt;}'+
@@ -5681,7 +5771,7 @@ function generarPDF(tipo) {
       '@media print{body{margin:10mm;}@page{size:A4;margin:15mm;}}'+
     '</style></head><body>'+
     '<div style="text-align:center;margin-bottom:14px;">'+
-      '<div style="font-size:7pt;color:#888;">Lic. Erwin Müller Gudiño · M.P. 13920 · 27 de Abril 424 7C · Tel. 351 350-0540</div>'+
+      '<div style="font-size:7pt;color:#475569;">'+getProfFooterText()+'</div>'+
       '<div style="font-size:13pt;font-weight:800;color:#1a2e16;margin-top:4px;">'+cfg.titulo+'</div>'+
       '<div style="margin-top:8px;font-size:9pt;display:flex;gap:30px;justify-content:center;">'+
         '<span>Paciente: ____________________________</span>'+
@@ -5824,7 +5914,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
         isX = (v === closest);
       }
       var enNormal = (v >= -1 && v <= 1);
-      var bg = enNormal ? '#c8e6c0' : '#ffffff';
+      var bg = enNormal ? '#dbeafe' : '#ffffff';
       var border = '1px solid #555555';
       var inner = isX
         ? '<span style="font-size:9px;font-weight:900;color:#000;line-height:1;">X</span>'
@@ -5836,11 +5926,11 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   }
 
   // ── Estilos de tabla ──
-  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#eef6ea;background:#325c28;border-bottom:1px solid #214b1a;padding:5px 7px;';
-  var tdBase = 'font-size:10.5px;border-bottom:0.5px solid #b8ddb0;padding:5px 7px;';
+  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#e8f0ff;background:#0f1f3d;border-bottom:1px solid #1a3a6b;padding:5px 7px;';
+  var tdBase = 'font-size:10.5px;border-bottom:0.5px solid #dbeafe;padding:5px 7px;';
 
   function domHeader(txt) {
-    return '<tr><td colspan="9" style="background:#325c28;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#eef6ea;border-bottom:1px solid #214b1a;">'+txt+'</td></tr>';
+    return '<tr><td colspan="9" style="background:#1a56db;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f0ff;border-bottom:1px solid #1042b0;">'+txt+'</td></tr>';
   }
 
   // ── Fila de tabla neuropsicológica ──
@@ -6818,23 +6908,22 @@ function renderCuestionariosFam(d) {
     '.pg{max-width:900px;margin:0 auto;}'+
     'table{border-collapse:collapse;width:100%;}'+
     '.narrativa{font-family:Arial,sans-serif;font-size:12pt;line-height:1.5;text-align:justify;color:#1a1a1a;margin:0 0 8px 0;}'+
-    '.sec-titulo{font-family:Arial,sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#214b1a;border-bottom:1.5px solid #599a4a;margin:16px 0 6px;padding-bottom:3px;}'+
+    '.sec-titulo{font-family:Arial,sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#0f1f3d;border-bottom:1.5px solid #1a56db;margin:16px 0 6px;padding-bottom:3px;}'+
     '.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-family:Arial,sans-serif;font-size:11pt;}'+
     '.ficha-item{display:flex;gap:6px;padding:2px 0;}'+
-    '.ficha-lbl{font-weight:700;white-space:nowrap;color:#214b1a;}'+
+    '.ficha-lbl{font-weight:700;white-space:nowrap;color:#0f1f3d;}'+
     '@media print{body{padding:0;}@page{margin:15mm 15mm 15mm 20mm;size:A4 portrait;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}}'+
     '</style></head><body><div class="pg">'+
 
     // ── Header ──
-    '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #333;padding-bottom:10px;margin-bottom:14px;">'+
-    '<div style="font-family:Arial,sans-serif;">'+
-    '<div style="font-size:15px;font-weight:700;color:#111;letter-spacing:0.5px;">Lic. Erwin Müller Gudiño</div>'+
-    '<div style="font-size:10px;color:#444;margin-top:2px;">M.P. 13920</div>'+
-    '<div style="font-size:10px;color:#444;">27 de Abril 424 7C</div>'+
-    '<div style="font-size:10px;color:#444;">Tel. 351 350-0540</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0f1f3d;padding-bottom:10px;margin-bottom:14px;">'+
+    '<div style="font-family:Arial,sans-serif;">'+getProfHeaderHTML()+
     '</div>'+
-    '<div style="text-align:right;font-family:Arial,sans-serif;font-size:9px;color:#666;">'+
-    '<div>Generado: '+new Date().toLocaleDateString('es-AR')+'</div></div></div>'+
+    '<div style="text-align:right;font-family:Arial,sans-serif;">'+
+    '<div style="font-size:18px;font-weight:800;color:#0f1f3d;letter-spacing:-0.5px;">PsicoEscala</div>'+
+    '<div style="font-size:9px;color:#64748b;margin-top:2px;">Informe Neuropsicológico</div>'+
+    '<div style="font-size:9px;color:#94a3b8;margin-top:6px;">'+new Date().toLocaleDateString('es-AR')+'</div>'+
+    '</div></div>'+
 
     // ── Ficha del paciente (con datos del informe) ──
     '<div class="sec-titulo">Datos del Paciente</div>'+
@@ -6973,8 +7062,8 @@ function renderCuestionariosFam(d) {
 
     // ── Nota y pie ──
 
-    '<div style="margin-top:8px;border-top:0.5px solid #ccc;padding-top:6px;display:flex;justify-content:space-between;font-family:Arial,sans-serif;font-size:8px;color:#888;">'+
-    '<div>Lic. Erwin Müller Gudiño · M.P. 13920 · Tel. 351 350-0540</div>'+
+    '<div style="margin-top:8px;border-top:0.5px solid #bfdbfe;padding-top:6px;display:flex;justify-content:space-between;font-family:Arial,sans-serif;font-size:8px;color:#64748b;">'+
+    '<div>'+getProfFooterText()+'</div>'+
     '<div>'+new Date().toLocaleDateString('es-AR')+'</div></div>'+
     '</div></body></html>';
 
@@ -7041,6 +7130,7 @@ function renderUltimas() {
 
 // ══ NAVEGACIÓN ═══════════════════════════════════════════════════════════════
 function irVista(v) {
+  if (v === 'config') { cargarConfigProfesional(); }
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   var el = document.getElementById('vista-' + v);
   if(el) el.classList.add('active');
