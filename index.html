@@ -8,26 +8,45 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg:        #f0f4f8;
+  --brand-950: #0a1628;
+  --brand-900: #0f1f3d;
+  --brand-800: #1a3a6b;
+  --brand-700: #1042b0;
+  --brand-600: #1a56db;
+  --brand-500: #2563eb;
+  --brand-400: #3b82f6;
+  --brand-200: #bfdbfe;
+  --brand-100: #eff6ff;
+  --brand-50:  #f8fafc;
+  --bg:        #f4f6f9;
   --surface:   #ffffff;
-  --surface2:  #e8eef5;
-  --sidebar:   #0f1f3d;
-  --border:    #d0dae6;
-  --border2:   #a0b4cc;
-  --accent:    #1a56db;
-  --accentdk:  #1042b0;
-  --accentlt:  #3b82f6;
+  --surface2:  #eef2f7;
+  --sidebar:   var(--brand-900);
+  --border:    #dde4ee;
+  --border2:   #b8c5d8;
+  --accent:    var(--brand-600);
+  --accentdk:  var(--brand-700);
+  --accentlt:  var(--brand-400);
   --text:      #0f172a;
-  --muted:     #64748b;
+  --muted:     #5c6b7f;
   --green:     #0d9488;
   --yellow:    #b45309;
   --orange:    #c2410c;
   --red:       #dc2626;
-  --radius:    8px;
-  --shadow:    0 1px 8px rgba(15,31,61,0.08);
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(15,31,61,0.05);
+  --shadow:    0 1px 3px rgba(15,31,61,0.06), 0 4px 14px rgba(15,31,61,0.06);
+  --shadow-md: 0 8px 24px rgba(15,31,61,0.1);
+  --shadow-lg: 0 16px 40px rgba(15,31,61,0.12);
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 html { scroll-behavior: smooth; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 
 /* ══ PANTALLAS ══ */
 .screen { display: none; }
@@ -45,12 +64,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   border-bottom:1px solid #e8eef5;
 }
 .land-nav-logo { display:flex; align-items:center; gap:10px; }
-.land-nav-logo-mark {
-  width:36px; height:36px;
-  background:linear-gradient(135deg,#1a56db,#3b82f6);
-  border-radius:9px; display:flex; align-items:center; justify-content:center;
-  font-size:1.1rem;
-}
+.land-nav-logo-mark { width:36px; height:36px; border-radius:10px; overflow:hidden; background:var(--brand-100); border:1px solid var(--brand-200); }
 .land-nav-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:1.1rem; font-weight:700; color:#0f172a; letter-spacing:-0.3px; }
 .land-nav-links { display:flex; align-items:center; gap:32px; }
 .land-nav-link { font-size:0.88rem; font-weight:500; color:#64748b; cursor:pointer; transition:color 0.15s; text-decoration:none; }
@@ -102,7 +116,10 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .land-features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
 .land-feat-card { background:#f8fafc; border:1px solid #e8eef5; border-radius:14px; padding:28px; transition:all 0.2s; }
 .land-feat-card:hover { background:#fff; box-shadow:0 8px 32px rgba(15,31,61,0.08); transform:translateY(-3px); border-color:#dbeafe; }
-.land-feat-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:16px; background:#eff6ff; }
+.land-feat-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; background:var(--brand-100); border:1px solid var(--brand-200); color:var(--accent); }
+.land-feat-icon svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.logo-mark { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.logo-mark svg { display:block; width:100%; height:100%; }
 .land-feat-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#0f172a; margin-bottom:8px; }
 .land-feat-desc { font-size:0.85rem; color:#64748b; line-height:1.65; }
 
@@ -180,31 +197,31 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 /* ══ SIDEBAR ══ */
 .sidebar {
-  width:220px; min-width:220px;
-  background:#0f1f3d;
-  border-right:none;
+  width:240px; min-width:240px;
+  background:linear-gradient(180deg, var(--brand-950) 0%, var(--brand-900) 100%);
+  border-right:1px solid rgba(255,255,255,0.04);
   display:flex; flex-direction:column;
-  padding:32px 0 24px;
+  padding:24px 0 20px;
   position:fixed; top:0; left:0; bottom:0; z-index:100;
   overflow-y:auto;
 }
-.sidebar-logo { display:flex; flex-direction:column; align-items:center; padding:0 24px 28px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:20px; }
-.sidebar-logo svg { width:52px; height:52px; margin-bottom:10px; }
-.sidebar-nombre { font-family:'Plus Jakarta Sans',sans-serif; font-size:0.95rem; font-weight:700; color:#ffffff; letter-spacing:1.5px; text-transform:uppercase; }
-.sidebar-nav { flex:1; padding:0 12px; overflow-y:visible; }
-.sidebar-section { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:7px; cursor:pointer; color:rgba(255,255,255,0.55); font-size:0.85rem; font-weight:400; letter-spacing:0.2px; transition:background 0.15s, color 0.15s; margin-bottom:2px; user-select:none; }
-.sidebar-section:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.9); }
-.sidebar-section.active { background:rgba(26,86,219,0.35); color:#ffffff; font-weight:500; }
-.sidebar-icon { font-size:15px; opacity:0.8; width:18px; text-align:center; }
-.sidebar-divider { height:1px; background:rgba(255,255,255,0.08); margin:12px 14px; }
-.sidebar-bottom { padding:0 12px; }
-.sidebar-user { padding:10px 14px; font-size:0.75rem; color:rgba(255,255,255,0.4); }
-.sidebar-btn-salir { width:100%; padding:9px 14px; background:none; border:1px solid rgba(255,255,255,0.15); border-radius:7px; color:rgba(255,255,255,0.5); font-family:'Inter',sans-serif; font-size:0.8rem; cursor:pointer; transition:all 0.15s; }
-.sidebar-btn-salir:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.85); }
+.sidebar-logo { display:flex; flex-direction:column; align-items:flex-start; padding:0 20px 20px; border-bottom:1px solid rgba(255,255,255,0.07); margin-bottom:16px; }
+.sidebar-logo .logo-mark { width:40px; height:40px; margin-bottom:10px; }
+.sidebar-nombre { font-family:var(--font-display); font-size:1.05rem; font-weight:700; color:#fff; letter-spacing:-0.3px; }
+.sidebar-nav { flex:1; padding:0 10px; overflow-y:visible; }
+.sidebar-section { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); cursor:pointer; color:rgba(255,255,255,0.58); font-size:0.84rem; font-weight:400; transition:background 0.15s var(--ease), color 0.15s var(--ease); margin-bottom:1px; user-select:none; }
+.sidebar-section:hover { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.95); }
+.sidebar-section.active { background:rgba(37,99,235,0.28); color:#fff; font-weight:500; box-shadow:inset 3px 0 0 var(--brand-400); }
+.sidebar-icon { width:18px; height:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; opacity:0.9; }
+.sidebar-divider { height:1px; background:rgba(255,255,255,0.07); margin:10px 12px; }
+.sidebar-bottom { padding:0 10px; margin-top:auto; }
+.sidebar-user { padding:8px 12px 10px; font-size:0.72rem; color:rgba(255,255,255,0.38); word-break:break-all; }
+.sidebar-btn-salir { width:100%; padding:9px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius-sm); color:rgba(255,255,255,0.55); font-family:var(--font-body); font-size:0.8rem; cursor:pointer; transition:all 0.15s var(--ease); }
+.sidebar-btn-salir:hover { border-color:rgba(255,255,255,0.28); color:#fff; background:rgba(255,255,255,0.08); }
 
 /* ══ MAIN CONTENT ══ */
-.app-main { margin-left:220px; flex:1; min-height:100vh; display:flex; flex-direction:column; }
-.app-content { flex:1; padding:40px 48px; max-width:980px; }
+.app-main { margin-left:240px; flex:1; min-height:100vh; display:flex; flex-direction:column; }
+.app-content { flex:1; padding:28px 32px 40px; max-width:1040px; width:100%; }
 
 
 /* ══ VISTAS ══ */
@@ -413,18 +430,65 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .tabla-perc tr:nth-child(even) td { background: var(--surface2); }
 
 /* ══ TOAST ══ */
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 20px; border-radius: 8px; font-size: 0.86rem; font-weight: 500; z-index: 1000; opacity: 0; transform: translateY(10px); transition: all 0.25s; pointer-events: none; }
-.toast.show { opacity: 1; transform: translateY(0); }
+.toast {
+  position:fixed; bottom:24px; right:24px; z-index:1000;
+  display:flex; align-items:center; gap:10px;
+  padding:12px 18px; border-radius:var(--radius);
+  font-size:0.86rem; font-weight:500;
+  background:var(--brand-900); color:#fff;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:var(--shadow-lg);
+  opacity:0; transform:translateY(12px);
+  transition:opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  pointer-events:none; max-width:min(360px, calc(100vw - 32px));
+}
+.toast.show { opacity:1; transform:translateY(0); }
+.toast.success { background:#0f3d36; border-color:rgba(94,234,212,0.2); }
+.toast.error { background:#450a0a; border-color:rgba(252,165,165,0.2); }
+.toast-icon { width:18px; height:18px; flex-shrink:0; opacity:0.9; }
+.app-topbar {
+  position:sticky; top:0; z-index:90;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:0 32px; height:56px;
+  background:rgba(255,255,255,0.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border); box-shadow:var(--shadow-sm);
+}
+.app-topbar-title { font-family:var(--font-display); font-size:0.95rem; font-weight:600; color:var(--text); letter-spacing:-0.2px; }
+.app-topbar-paciente { display:flex; align-items:center; gap:10px; flex:1; justify-content:flex-end; max-width:420px; }
+.app-topbar-paciente label { font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; }
+.app-topbar-paciente select {
+  flex:1; min-width:160px; max-width:280px; padding:8px 12px;
+  border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--surface); font-family:var(--font-body); font-size:0.88rem; color:var(--text);
+}
+.app-topbar-paciente select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(26,86,219,0.1); }
+.app-topbar-paciente.empty select { border-color:#fbbf24; background:#fffbeb; }
+.paciente-item.activo { border-color:var(--accent); background:var(--brand-100); box-shadow:0 0 0 1px rgba(26,86,219,0.15); }
+.paciente-item.activo .pac-nombre::after { content:' · Activo'; font-size:0.72rem; font-weight:600; color:var(--accent); }
+.sidebar-label { padding:8px 14px 4px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.28); }
+.sidebar-tagline { font-size:0.68rem; color:rgba(255,255,255,0.38); margin-top:2px; font-weight:500; }
+.sidebar-version { text-align:center; font-size:10px; color:rgba(255,255,255,0.22); margin-top:8px; letter-spacing:0.3px; font-family:var(--font-mono); }
+.data-table { width:100%; border-collapse:collapse; font-size:0.84rem; }
+.data-table thead th { text-align:left; padding:10px 14px; font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); background:var(--surface2); border-bottom:1px solid var(--border); }
+.data-table tbody td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.data-table tbody tr:hover td { background:var(--brand-50); }
 
 @media (max-width: 768px) {
   .sectores-grid, .tests-grid, .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  .app-main { margin-left: 0; }
   .app-content { padding: 20px 16px; }
+  .app-topbar { padding: 0 16px; flex-wrap: wrap; height: auto; min-height: 56px; padding-top: 10px; padding-bottom: 10px; }
+  .app-topbar-paciente { max-width: 100%; width: 100%; }
+  .land-nav, .land-hero, .land-features, .land-cta-section, .land-footer { padding-left: 24px; padding-right: 24px; }
+  .land-features-grid { grid-template-columns: 1fr; }
+  .land-hero { flex-direction: column; }
   .topbar { padding: 0 16px; }
   .resultado-detalle { grid-template-columns: 1fr 1fr; }
   .stai-item { flex-direction: column; align-items: flex-start; }
 }
 @media print {
-  .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir { display: none !important; }
+  .app-topbar, .sidebar, .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir { display: none !important; }
+  .app-main { margin-left: 0 !important; }
   body { background: white; }
   .card, .resultado-box { box-shadow: none; border-color: #ddd; }
 }
@@ -459,14 +523,14 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 <body>
 
 <!-- ══ TOAST ══ -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toast-icon" aria-hidden="true"></span><span id="toast-msg"></span></div>
 
 <!-- ══ LANDING ══ -->
 <div id="screen-landing" class="screen active">
   <!-- NAV -->
   <nav class="land-nav">
     <div class="land-nav-logo">
-      <div class="land-nav-logo-mark">🧩</div>
+      <div class="land-nav-logo-mark logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/></svg></div>
       <div class="land-nav-name">PsicoEscala</div>
     </div>
     <div class="land-nav-links">
@@ -483,7 +547,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
     <!-- HERO -->
     <section class="land-hero">
       <div class="land-hero-text">
-        <div class="land-hero-badge">🧠 Plataforma neuropsicológica</div>
+        <div class="land-hero-badge"><span style="width:6px;height:6px;border-radius:50%;background:#1a56db;display:inline-block;"></span> Plataforma para evaluación clínica</div>
         <h1 class="land-hero-h1">Evaluación psicológica <span>profesional</span>, todo en un lugar</h1>
         <p class="land-hero-sub">PsicoEscala reúne más de 30 tests estandarizados con baremos, corrección automática, perfil Z y generación de informes clínicos para profesionales de la salud mental.</p>
         <div class="land-hero-btns">
@@ -527,32 +591,32 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
         <h2 class="land-features-h2">Todo lo que necesitás para evaluar con precisión</h2>
         <div class="land-features-grid">
           <div class="land-feat-card">
-            <div class="land-feat-icon">📊</div>
+            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3-4 3 3 4-6"/></svg></div>
             <div class="land-feat-title">Corrección con baremos</div>
             <div class="land-feat-desc">Puntajes Z, percentiles y categorías diagnósticas calculados automáticamente con baremos latinoamericanos validados.</div>
           </div>
           <div class="land-feat-card">
-            <div class="land-feat-icon">🧬</div>
+            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
             <div class="land-feat-title">Perfil neuropsicológico</div>
             <div class="land-feat-desc">Visualización gráfica del perfil Z por dominio cognitivo: memoria, atención, ejecutivas, lenguaje, visoconstructivo.</div>
           </div>
           <div class="land-feat-card">
-            <div class="land-feat-icon">📄</div>
+            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
             <div class="land-feat-title">Informes en PDF y Word</div>
             <div class="land-feat-desc">Generación de informes clínicos completos con tabla de puntajes, perfil Z y texto narrativo. Listos para firmar.</div>
           </div>
           <div class="land-feat-card">
-            <div class="land-feat-icon">🔒</div>
+            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
             <div class="land-feat-title">Datos seguros y privados</div>
             <div class="land-feat-desc">Cada profesional accede únicamente a sus propios pacientes. Seguridad a nivel de base de datos con RLS.</div>
           </div>
           <div class="land-feat-card">
-            <div class="land-feat-icon">🧩</div>
+            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
             <div class="land-feat-title">+30 tests integrados</div>
             <div class="land-feat-desc">Neuropsicológicos, clínicos, de dolor y TDAH. MoCA, WAIS-IV, BDI-II, PHQ-9, FAB, TMT, WCST y muchos más.</div>
           </div>
           <div class="land-feat-card">
-            <div class="land-feat-icon">☁️</div>
+            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 18h9a5 5 0 0 0 0-10z"/></svg></div>
             <div class="land-feat-title">100% en la nube</div>
             <div class="land-feat-desc">Sin instalación. Accedé desde cualquier dispositivo. Tus pacientes y resultados siempre disponibles y respaldados.</div>
           </div>
@@ -579,8 +643,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 <div id="screen-login" class="screen" style="display:none;">
   <div class="login-box">
     <div class="login-logo">
-      <div class="login-logo-icon">🧩</div>
-      <div class="login-titulo"> PsicoEscala</div>
+      <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="login-titulo">PsicoEscala</div>
       <div class="login-sub">Plataforma de evaluación psicológica</div>
     </div>
     <div class="login-error" id="login-error"></div>
@@ -596,55 +660,57 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div style="width:54px;height:54px;"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100%;">
-  <circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/>
-  <circle cx="60" cy="60" r="66" fill="none" stroke="#93c5fd" stroke-width="0.6" opacity="0.3"/>
-  <line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/>
-  <line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/>
-  <path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/>
-  <circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/>
-  <circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/>
-</svg></div>
-      <div class="sidebar-nombre"> PsicoEscala</div>
+      <div class="logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/></svg></div>
+      <div class="sidebar-nombre">PsicoEscala</div>
+      <div class="sidebar-tagline">Evaluación clínica</div>
     </div>
     <nav class="sidebar-nav">
       <div class="sidebar-section active" id="snav-inicio" onclick="irVista('inicio')">
-        <span class="sidebar-icon">⬡</span> Inicio
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5z" stroke="currentColor" stroke-width="1.3"/></svg></span> Inicio
       </div>
       <div class="sidebar-section" id="snav-pacientes" onclick="irVista('pacientes')">
-        <span class="sidebar-icon">○</span> Pacientes
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-2.76 2.24-4 6-4s6 1.24 6 4" stroke="currentColor" stroke-width="1.3"/></svg></span> Pacientes
       </div>
       <div class="sidebar-divider"></div>
-      <div class="sidebar-section" id="snav-dolor" onclick="irSector('dolor')">
-        <span class="sidebar-icon">⬡</span> Dolor
+      <div class="sidebar-label">Dominios</div>
+      <div class="sidebar-section" id="snav-neuro" onclick="irSector('neuro')">
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L6 7l3 4 2-3 2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Neuropsicología
       </div>
       <div class="sidebar-section" id="snav-clinica" onclick="irSector('clinica')">
-        <span class="sidebar-icon">◈</span> Psicología Clínica
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M5 5h6M5 11h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> Clínica
+      </div>
+      <div class="sidebar-section" id="snav-dolor" onclick="irSector('dolor')">
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 4.5H14l-3.5 2.5L12 14 8 10.5 4 14l1.5-5L2 6.5h4.5L8 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span> Dolor
       </div>
       <div class="sidebar-section" id="snav-tdah" onclick="irSector('tdah')">
-        <span class="sidebar-icon">◇</span> TDAH
-      </div>
-      <div class="sidebar-section" id="snav-neuro" onclick="irSector('neuro')">
-        <span class="sidebar-icon">◉</span> Neuropsicología
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" fill="currentColor"/><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/></svg></span> TDAH
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section" id="snav-historial" onclick="irVista('historial')">
-        <span class="sidebar-icon">≡</span> Historial
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> Historial
       </div>
     </nav>
     <div class="sidebar-bottom">
       <div class="sidebar-section" id="snav-config" onclick="irVista('config')" style="margin-bottom:8px;">
-        <span class="sidebar-icon">⚙</span> Configuración
+        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> Configuración
       </div>
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div style="text-align:center;font-size:11px;color:#325c28;margin-top:6px;letter-spacing:0.5px;font-family:monospace;font-weight:700;">v1.10.61</div>
+      <div class="sidebar-version">v1.10.61</div>
     </div>
   </aside>
 
   <!-- MAIN -->
   <div class="app-main">
+    <header class="app-topbar" id="app-topbar">
+      <div class="app-topbar-title" id="app-topbar-title">Inicio</div>
+      <div class="app-topbar-paciente empty" id="app-topbar-paciente">
+        <label for="topbar-paciente-select">Paciente activo</label>
+        <select id="topbar-paciente-select" onchange="setPacienteActivo(this.value, true)">
+          <option value="">— Seleccionar paciente —</option>
+        </select>
+      </div>
+    </header>
     <div class="app-content">
 
     <!-- ── CONFIGURACIÓN ── -->
@@ -690,7 +756,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
             <circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/>
           </svg>
         </div>
-        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2.2rem;font-weight:400;color:var(--accentdk);letter-spacing:5px;text-transform:uppercase;margin-bottom:14px;"> PsicoEscala</div>
+        <div style="font-family:var(--font-display);font-size:1.85rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:14px;">PsicoEscala</div>
         <div style="font-size:0.87rem;color:var(--muted);max-width:400px;line-height:1.75;letter-spacing:0.2px;">Plataforma profesional para administración y puntuación automatizada de tests psicológicos y neuropsicológicos.</div>
         <div style="display:flex;gap:32px;margin-top:44px;" id="home-stats">
           <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-pacientes">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Pacientes</div></div>
@@ -5287,6 +5353,66 @@ var RESULTADOS = [];
 })();
 var pacienteSelModal = null;
 var sectorActual = '';
+var PACIENTE_ACTIVO_ID = null;
+
+var TOPBAR_TITLES = {
+  inicio: 'Inicio', pacientes: 'Pacientes', historial: 'Historial de evaluaciones',
+  config: 'Configuración', informe: 'Redacción de informe', sector: 'Tests'
+};
+
+function getPacienteActivoId() {
+  if (PACIENTE_ACTIVO_ID) return PACIENTE_ACTIVO_ID;
+  try { return localStorage.getItem('psico_paciente_activo') || ''; } catch(e) { return ''; }
+}
+
+function setPacienteActivo(id, notify) {
+  PACIENTE_ACTIVO_ID = id ? String(id) : '';
+  try {
+    if (PACIENTE_ACTIVO_ID) localStorage.setItem('psico_paciente_activo', PACIENTE_ACTIVO_ID);
+    else localStorage.removeItem('psico_paciente_activo');
+  } catch(e) {}
+  actualizarTopbarPaciente();
+  llenarSelectPacientes();
+  if (document.getElementById('historial-filtro-pac')) {
+    document.getElementById('historial-filtro-pac').value = PACIENTE_ACTIVO_ID;
+    if (document.getElementById('vista-historial').classList.contains('active')) filtrarHistorial();
+  }
+  var lista = document.getElementById('pacientes-lista-contenido');
+  if (lista && PACIENTES.length) renderPacientes();
+  if (notify) {
+    if (PACIENTE_ACTIVO_ID) {
+      var p = PACIENTES.find(function(x){ return String(x.id) === PACIENTE_ACTIVO_ID; });
+      toast('Paciente activo: ' + (p ? p.nombre : 'seleccionado'), 'success');
+    } else {
+      toast('Sin paciente activo', 'error');
+    }
+  }
+}
+
+function actualizarTopbarPaciente() {
+  var wrap = document.getElementById('app-topbar-paciente');
+  var sel = document.getElementById('topbar-paciente-select');
+  if (!sel) return;
+  var id = getPacienteActivoId();
+  PACIENTE_ACTIVO_ID = id;
+  var opts = '<option value="">— Seleccionar paciente —</option>' +
+    PACIENTES.map(function(p){ return '<option value="'+p.id+'">'+escHtml(p.nombre)+'</option>'; }).join('');
+  sel.innerHTML = opts;
+  sel.value = id || '';
+  if (wrap) wrap.classList.toggle('empty', !id);
+}
+
+function actualizarTituloTopbar(vista, sector) {
+  var el = document.getElementById('app-topbar-title');
+  if (!el) return;
+  if (vista === 'sector' && sector) {
+    var nombres = { neuro: 'Neuropsicología', clinica: 'Psicología clínica', dolor: 'Dolor', tdah: 'TDAH' };
+    el.textContent = nombres[sector] || 'Tests';
+  } else {
+    el.textContent = TOPBAR_TITLES[vista] || 'PsicoEscala';
+  }
+}
+
 
 // ══ SUPABASE HELPER ══════════════════════════════════════════════════════════
 function supaFetch(path, method, body, token, extraHeaders) {
@@ -5357,6 +5483,12 @@ function cargarPacientes() {
     .then(function(r){ return r.json(); })
     .then(function(data) {
       PACIENTES = Array.isArray(data) ? data : [];
+      var saved = getPacienteActivoId();
+      if (saved && !PACIENTES.find(function(p){ return String(p.id) === String(saved); })) {
+        setPacienteActivo('', false);
+      } else {
+        PACIENTE_ACTIVO_ID = saved || '';
+      }
       renderPacientes();
       renderPacientesInicio();
       llenarSelectPacientes();
@@ -5427,18 +5559,27 @@ function actualizarStatsHome() {
 function renderPacientes() {
   var el = document.getElementById('pacientes-lista-contenido');
   if (!PACIENTES.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👤</div><div class="empty-txt">No hay pacientes registrados aún.</div></div>'; return; }
+  var activo = getPacienteActivoId();
   el.innerHTML = PACIENTES.map(function(p) {
     var edad = p.fecha_nacimiento ? calcularEdad(p.fecha_nacimiento) + ' años' : '';
     var meta = [p.sexo, edad, p.escolaridad].filter(Boolean).join(' · ');
-    return '<div class="paciente-item">' +
-      '<div><div class="pac-nombre">' + p.nombre + '</div>' +
+    var isActivo = String(p.id) === String(activo);
+    return '<div class="paciente-item' + (isActivo ? ' activo' : '') + '" data-pac-id="' + p.id + '">' +
+      '<div><div class="pac-nombre">' + escHtml(p.nombre) + '</div>' +
       (meta ? '<div class="pac-meta">' + meta + '</div>' : '') + '</div>' +
       '<div class="pac-acciones">' +
-      '<button class="btn-xs btn-xs-primary" data-ver-pac="' + p.id + '">Ver</button>' +
-      '<button class="btn-xs" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);" data-editar-pac="' + p.id + '" title="Editar datos">✏</button>' +
-      '<button class="btn-xs btn-xs-danger" data-borrar-pac-id="' + p.id + '" data-borrar-pac-nombre="' + encodeURIComponent(p.nombre) + '">✕</button>' +
+      (isActivo ? '' : '<button class="btn-xs btn-xs-primary" data-activar-pac="' + p.id + '">Usar activo</button>') +
+      '<button class="btn-xs btn-xs-outline" data-ver-pac="' + p.id + '">Ver</button>' +
+      '<button class="btn-xs" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);" data-editar-pac="' + p.id + '" title="Editar datos">Editar</button>' +
+      '<button class="btn-xs btn-xs-danger" data-borrar-pac-id="' + p.id + '" data-borrar-pac-nombre="' + encodeURIComponent(p.nombre) + '">Eliminar</button>' +
       '</div></div>';
   }).join('');
+  el.querySelectorAll('[data-activar-pac]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      setPacienteActivo(this.getAttribute('data-activar-pac'), true);
+    });
+  });
   // Delegación Editar
   el.querySelectorAll('[data-editar-pac]').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
@@ -5518,21 +5659,27 @@ function borrarPaciente(id, nombre) {
       return supaFetch('/rest/v1/psico_pacientes?id=eq.' + id, 'DELETE', null, SESSION.access_token);
     })
     .then(function() {
+      if (String(getPacienteActivoId()) === String(id)) setPacienteActivo('', false);
       cargarPacientes();
       cargarResultados();
-      toast('Paciente eliminado');
+      toast('Paciente eliminado', 'success');
     });
 }
 
 function llenarSelectPacientes() {
+  var activo = getPacienteActivoId();
   var opciones = '<option value="">— Seleccionar paciente —</option>' +
     PACIENTES.map(function(p){ return '<option value="' + p.id + '">' + p.nombre + '</option>'; }).join('');
+  actualizarTopbarPaciente();
   ['bdi-paciente','stai-paciente','rey-paciente','tmt-paciente','flv-paciente',
    'phq-paciente','gad-paciente','spaib-paciente','moca-paciente','ifs-paciente',
    'bnt-paciente','token-paciente','waisiv-paciente','acer-paciente','wcst-paciente','scl90-paciente','signoret-paciente','asrs-paciente','wurs-paciente','dex-paciente','reloj-paciente','mbi-paciente',
    'pcs-paciente','csq-paciente','pbq-paciente','bpi-paciente','stroop-paciente','csi-paciente','fcr-paciente','sdmt-paciente','bta-paciente','hotel-paciente','d2-paciente','fab-paciente','llaves-paciente','juicio-paciente','zoo-paciente','tavec-paciente','familiar-paciente'].forEach(function(id){
     var el = document.getElementById(id);
-    if (el) el.innerHTML = opciones;
+    if (el) {
+      el.innerHTML = opciones;
+      if (activo) el.value = activo;
+    }
   });
 }
 
@@ -5569,8 +5716,10 @@ function guardarPaciente() {
         return;
       }
       cancelarFormPac();
+      var nuevoId = (Array.isArray(data) && data[0] && data[0].id) ? data[0].id : (data && data.id ? data.id : null);
       cargarPacientes();
-      toast('Paciente guardado ✓', 'success');
+      if (nuevoId) setPacienteActivo(nuevoId, false);
+      toast('Paciente guardado', 'success');
     })
     .catch(function(e){ toast('Error de conexión al guardar', 'error'); });
 }
@@ -5589,8 +5738,10 @@ function abrirModalPac(id) {
   document.getElementById('modal-pac').classList.add('active');
 }
 function evaluarPacienteDesdeModal() {
+  if (pacienteSelModal) setPacienteActivo(pacienteSelModal.id, false);
   cerrarModal('modal-pac');
-  irVista('inicio');
+  irSector('neuro');
+  toast('Paciente activo listo. Elegí un test en Neuropsicología.', 'success');
 }
 function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -5602,16 +5753,16 @@ function renderHistorial() {
   var el = document.getElementById('historial-contenido');
   var datos = pacSel ? RESULTADOS.filter(function(r){ return String(r.paciente_id) === String(pacSel); }) : RESULTADOS;
   if (!datos.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-txt">No hay evaluaciones registradas.</div></div>'; return; }
-  var html = '<table style="width:100%;border-collapse:collapse;">' +
+  var html = '<table class="data-table">' +
     '<thead><tr>' +
-    '<th style="text-align:left;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Paciente</th>' +
-    '<th style="text-align:left;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Test</th>' +
-    '<th style="text-align:center;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Puntaje</th>' +
-    '<th style="text-align:center;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Z</th>' +
-    '<th style="text-align:center;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">T</th>' +
-    '<th style="text-align:left;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Categoría</th>' +
-    '<th style="text-align:left;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Fecha</th>' +
-    '<th style="text-align:center;padding:8px 12px;font-size:0.72rem;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">Acciones</th>' +
+    '<th>Paciente</th>' +
+    '<th>Test</th>' +
+    '<th style="text-align:center;">Puntaje</th>' +
+    '<th style="text-align:center;">Z</th>' +
+    '<th style="text-align:center;">T</th>' +
+    '<th>Categoría</th>' +
+    '<th>Fecha</th>' +
+    '<th style="text-align:center;">Acciones</th>' +
     '</tr></thead><tbody>' +
     datos.map(function(r) {
       var nomPac = r.psico_pacientes ? r.psico_pacientes.nombre : '—';
@@ -7137,6 +7288,7 @@ function irVista(v) {
   document.querySelectorAll('.sidebar-section').forEach(function(el){ el.classList.remove('active'); });
   var map = {inicio:'snav-inicio', pacientes:'snav-pacientes', historial:'snav-historial', informe:'snav-historial'};
   if(map[v]) { var s=document.getElementById(map[v]); if(s) s.classList.add('active'); }
+  actualizarTituloTopbar(v);
   if(v === 'historial') { renderFiltroHistorial(); renderHistorial(); }
 }
 
@@ -7222,6 +7374,7 @@ function irSector(s) {
   if(map[s]) { var sid=document.getElementById(map[s]); if(sid) sid.classList.add('active'); }
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   document.getElementById('vista-sector').classList.add('active');
+  actualizarTituloTopbar('sector', s);
   if (s === 'clinica') {
     document.getElementById('sector-titulo').textContent = 'Psicología Clínica';
     document.getElementById('tests-grid').innerHTML =
@@ -9288,12 +9441,22 @@ function actualizarSaludo() {
 
 function toast(msg, tipo) {
   var el = document.getElementById('toast');
-  if(!el) return;
-  el.textContent = msg;
-  el.className = 'toast' + (tipo === 'error' ? ' error' : '');
+  var msgEl = document.getElementById('toast-msg');
+  var iconEl = document.getElementById('toast-icon');
+  if (!el || !msgEl) return;
+  var t = tipo === 'error' ? 'error' : (tipo === 'success' ? 'success' : '');
+  msgEl.textContent = msg;
+  if (iconEl) {
+    iconEl.innerHTML = t === 'success'
+      ? '<svg viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : (t === 'error'
+        ? '<svg viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+        : '<svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v5l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>');
+  }
+  el.className = 'toast' + (t ? ' ' + t : '');
   el.classList.add('show');
   clearTimeout(el._t);
-  el._t = setTimeout(function(){ el.classList.remove('show'); }, 3000);
+  el._t = setTimeout(function(){ el.classList.remove('show'); }, 3200);
 }
 
 
