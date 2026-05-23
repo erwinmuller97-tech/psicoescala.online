@@ -696,7 +696,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div class="sidebar-version">v1.10.66</div>
+      <div class="sidebar-version">v1.10.67</div>
     </div>
   </aside>
 
@@ -14507,6 +14507,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     {name:'word/_rels/document.xml.rels',    data:enc.encode(relsXml)},
     {name:'word/styles.xml',                 data:enc.encode(stylesXml)},
     {name:'word/header1.xml',                data:enc.encode(headerXml)},
+    {name:'word/_rels/header1.xml.rels',     data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rImgPS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/logo_ps.png"/></Relationships>')},
     {name:'word/media/logo_ps.png',          data:(function(){var b=atob(LOGO_B64);var u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;})()},
     {name:'word/footer1.xml',                data:enc.encode(footerXml)},
     {name:'word/media/image1_unused.png',           data:b64ToBytes(GP_B64)},
