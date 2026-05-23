@@ -4,6 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PsicoEscala</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        forest: '#2d4a3e',
+        mint: '#3d7a5f',
+        forestdk: '#1e3830',
+        panel: '#f5f7f5',
+        subtle: '#c8d8d0'
+      },
+      fontFamily: {
+        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+        body: ['Inter', 'sans-serif']
+      }
+    }
+  }
+};
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,17 +34,17 @@
   --brand-800: #2d4a3e;
   --brand-700: #1e3830;
   --brand-600: #3d7a5f;
-  --brand-500: #2563eb;
+  --brand-500: #3d7a5f;
   --brand-400: #5a9e7a;
   --brand-200: #c8d8d0;
   --brand-100: #f0f7f4;
-  --brand-50:  #f5f8f6;
-  --bg:        #f4f6f9;
+  --brand-50:  #f5f7f5;
+  --bg:        #f5f7f5;
   --surface:   #ffffff;
   --surface2:  #eef2f7;
   --sidebar:   var(--brand-900);
-  --border:    #dde4ee;
-  --border2:   #b8c5d8;
+  --border:    #c8d8d0;
+  --border2:   #a8bdb2;
   --accent:    var(--brand-600);
   --accentdk:  var(--brand-700);
   --accentlt:  var(--brand-400);
@@ -53,7 +74,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .screen.active { display: block; }
 
 /* ══ LANDING ══ */
-#screen-landing { display:none; flex-direction:column; min-height:100vh; background:#ffffff; }
+#screen-landing { display:none; flex-direction:column; min-height:100vh; background:#f5f7f5; }
 #screen-landing.active { display:flex; }
 
 .land-nav {
@@ -118,6 +139,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .land-feat-card:hover { background:#fff; box-shadow:0 8px 32px rgba(45,74,62,0.08); transform:translateY(-3px); border-color:#d4eadf; }
 .land-feat-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; background:var(--brand-100); border:1px solid var(--brand-200); color:var(--accent); }
 .land-feat-icon svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.land-feat-icon i { font-size:1.15rem; color:var(--accent); }
 .logo-mark { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .logo-mark svg { display:block; width:100%; height:100%; }
 .land-feat-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#1a2420; margin-bottom:8px; }
@@ -129,9 +151,64 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .land-cta-btn { padding:16px 36px; background:#fff; color:#1e3d30; border:none; border-radius:10px; font-size:1rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.2); transition:all 0.15s; }
 .land-cta-btn:hover { transform:translateY(-2px); }
 
-.land-footer { padding:24px 64px; background:#1e3830; display:flex; align-items:center; justify-content:space-between; }
-.land-footer-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.9rem; font-weight:700; color:#fff; }
-.land-footer-copy { font-size:0.78rem; color:#4a5e55; }
+.land-footer { padding:48px 64px 32px; background:#1e3830; }
+.land-footer-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:40px; }
+.land-footer-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#fff; margin-bottom:10px; }
+.land-footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.45); line-height:1.6; }
+.land-footer h4 { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:rgba(255,255,255,0.5); margin-bottom:12px; }
+.land-footer a { color:#8ec4a8; text-decoration:none; font-size:0.88rem; transition:color 0.15s; }
+.land-footer a:hover { color:#fff; }
+.land-ig-btn { display:inline-flex; align-items:center; gap:10px; padding:10px 18px; border-radius:8px; background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); color:#fff; font-size:0.86rem; font-weight:600; margin-top:8px; transition:transform 0.15s, box-shadow 0.15s; }
+.land-ig-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(131,58,180,0.35); color:#fff; }
+.land-footer-bottom { max-width:1200px; margin:28px auto 0; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.75rem; color:rgba(255,255,255,0.35); }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translateY(28px); transition:opacity 0.75s cubic-bezier(0.4,0,0.2,1), transform 0.75s cubic-bezier(0.4,0,0.2,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+
+/* Landing — secciones nuevas */
+.land-about { padding:88px 64px; background:#f5f7f5; }
+.land-about-inner { max-width:900px; margin:0 auto; text-align:center; }
+.land-section-tag { font-size:0.75rem; font-weight:700; color:#3d7a5f; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+.land-section-h2 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2rem; font-weight:800; color:#1a2420; letter-spacing:-0.5px; margin-bottom:20px; line-height:1.25; }
+.land-about-text { font-size:1.02rem; color:#4a5e55; line-height:1.85; max-width:720px; margin:0 auto; }
+
+.land-compare { padding:88px 64px; background:#fff; }
+.land-compare-inner { max-width:1200px; margin:0 auto; }
+.land-compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-top:40px; }
+.land-mock-pdf { background:#fff; border:1px solid #c8d8d0; border-radius:12px; overflow:hidden; box-shadow:0 12px 40px rgba(45,74,62,0.1); }
+.land-mock-pdf-head { background:#2d4a3e; color:#fff; padding:16px 20px; font-family:"Plus Jakarta Sans",sans-serif; font-size:0.82rem; font-weight:600; }
+.land-mock-pdf-body { padding:18px 20px; font-size:0.78rem; }
+.land-mock-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.72rem; }
+.land-mock-table th { background:#f5f7f5; padding:6px 8px; text-align:left; font-weight:600; color:#2d4a3e; border-bottom:1px solid #c8d8d0; }
+.land-mock-table td { padding:6px 8px; border-bottom:1px solid #e8eeea; color:#3a4a42; }
+.land-mock-bars { display:flex; align-items:flex-end; gap:6px; height:56px; margin:14px 0; padding:0 4px; }
+.land-mock-bar { flex:1; background:linear-gradient(180deg,#3d7a5f,#2d4a3e); border-radius:3px 3px 0 0; min-height:8px; }
+.land-mock-word { background:#fff; border:1px solid #c8d8d0; border-radius:12px; padding:20px 22px; box-shadow:0 12px 40px rgba(45,74,62,0.08); font-size:0.78rem; line-height:1.65; color:#3a4a42; }
+.land-mock-word h3 { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.9rem; color:#2d4a3e; margin-bottom:10px; border-bottom:2px solid #3d7a5f; padding-bottom:6px; }
+.land-mock-word p { margin-bottom:10px; }
+.land-mock-word .hl { background:#f0f7f4; border-left:3px solid #3d7a5f; padding:8px 12px; margin:10px 0; font-style:italic; color:#4a5e55; }
+
+.land-steps { padding:88px 64px; background:#f5f7f5; }
+.land-steps-inner { max-width:1200px; margin:0 auto; }
+.land-steps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:44px; }
+.land-step-card { background:#fff; border:1px solid #c8d8d0; border-radius:14px; padding:28px 22px; position:relative; transition:transform 0.2s, box-shadow 0.2s; }
+.land-step-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(45,74,62,0.1); }
+.land-step-num { width:36px; height:36px; border-radius:50%; background:#3d7a5f; color:#fff; font-family:"Plus Jakarta Sans",sans-serif; font-weight:700; font-size:0.95rem; display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+.land-step-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.95rem; font-weight:700; color:#1a2420; margin-bottom:8px; line-height:1.35; }
+.land-step-desc { font-size:0.82rem; color:#5a6b63; line-height:1.6; }
+
+.land-creator { padding:88px 64px; background:#fff; }
+.land-creator-inner { max-width:960px; margin:0 auto; display:flex; align-items:center; gap:48px; }
+.land-creator-avatar { width:140px; height:140px; min-width:140px; border-radius:50%; background:linear-gradient(135deg,#2d4a3e,#3d7a5f); display:flex; align-items:center; justify-content:center; color:#fff; font-family:"Plus Jakarta Sans",sans-serif; font-size:2.4rem; font-weight:700; box-shadow:0 12px 36px rgba(45,74,62,0.2); }
+.land-creator-text { font-size:0.95rem; color:#4a5e55; line-height:1.8; }
+.land-creator-text strong { color:#2d4a3e; font-family:"Plus Jakarta Sans",sans-serif; font-size:1.15rem; display:block; margin-bottom:12px; }
+
+.land-hero-logo { width:88px; height:88px; margin-bottom:20px; animation:phi-pulse 4s ease-in-out infinite; }
+@keyframes phi-pulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.04); } }
 
 
 /* ══ LOGIN ══ */
@@ -195,33 +272,73 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 #screen-app { display: none; flex-direction: column; min-height: 100vh; }
 #screen-app.active { display: flex; }
 
-/* ══ SIDEBAR ══ */
-.sidebar {
-  width:240px; min-width:240px;
-  background:linear-gradient(180deg, var(--brand-950) 0%, var(--brand-900) 100%);
-  border-right:1px solid rgba(255,255,255,0.04);
-  display:flex; flex-direction:column;
-  padding:24px 0 20px;
-  position:fixed; top:0; left:0; bottom:0; z-index:100;
-  overflow-y:auto;
+/* ══ TOP NAVBAR (APP) ══ */
+.app-navbar {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  background:#2d4a3e;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 2px 16px rgba(30,56,48,0.2);
 }
-.sidebar-logo { display:flex; flex-direction:column; align-items:flex-start; padding:0 20px 20px; border-bottom:1px solid rgba(255,255,255,0.07); margin-bottom:16px; }
-.sidebar-logo .logo-mark { width:40px; height:40px; margin-bottom:10px; }
-.sidebar-nombre { font-family:var(--font-display); font-size:1.05rem; font-weight:700; color:#fff; letter-spacing:-0.3px; }
-.sidebar-nav { flex:1; padding:0 10px; overflow-y:visible; }
-.sidebar-section { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); cursor:pointer; color:rgba(255,255,255,0.58); font-size:0.84rem; font-weight:400; transition:background 0.15s var(--ease), color 0.15s var(--ease); margin-bottom:1px; user-select:none; }
-.sidebar-section:hover { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.95); }
-.sidebar-section.active { background:rgba(37,99,235,0.28); color:#fff; font-weight:500; box-shadow:inset 3px 0 0 var(--brand-400); }
-.sidebar-icon { width:18px; height:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; opacity:0.9; }
-.sidebar-divider { height:1px; background:rgba(255,255,255,0.07); margin:10px 12px; }
-.sidebar-bottom { padding:0 10px; margin-top:auto; }
-.sidebar-user { padding:8px 12px 10px; font-size:0.72rem; color:rgba(255,255,255,0.38); word-break:break-all; }
-.sidebar-btn-salir { width:100%; padding:9px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius-sm); color:rgba(255,255,255,0.55); font-family:var(--font-body); font-size:0.8rem; cursor:pointer; transition:all 0.15s var(--ease); }
-.sidebar-btn-salir:hover { border-color:rgba(255,255,255,0.28); color:#fff; background:rgba(255,255,255,0.08); }
+.app-navbar-inner {
+  display:flex; align-items:center; gap:12px;
+  padding:0 20px; height:60px; max-width:100%;
+}
+.app-navbar-brand { display:flex; align-items:center; gap:10px; flex-shrink:0; cursor:pointer; }
+.app-navbar-brand .logo-mark { width:34px; height:34px; }
+.app-navbar-name { font-family:var(--font-display); font-size:1rem; font-weight:700; color:#fff; letter-spacing:-0.3px; white-space:nowrap; }
+.app-navbar-nav {
+  display:flex; align-items:center; gap:2px; flex:1; overflow-x:auto;
+  scrollbar-width:none; padding:0 8px;
+}
+.app-navbar-nav::-webkit-scrollbar { display:none; }
+.topnav-link {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 12px; border-radius:6px; border:none; background:transparent;
+  color:rgba(255,255,255,0.65); font-family:var(--font-body); font-size:0.8rem; font-weight:500;
+  cursor:pointer; white-space:nowrap; transition:background 0.15s, color 0.15s;
+}
+.topnav-link:hover { background:rgba(255,255,255,0.08); color:#fff; }
+.topnav-link.active { background:rgba(61,122,95,0.45); color:#fff; font-weight:600; }
+.topnav-link:focus-visible { outline:2px solid #3d7a5f; outline-offset:2px; }
+.nav-badge-alert {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:8px; height:8px; border-radius:50%; background:#ef4444;
+  box-shadow:0 0 0 2px #2d4a3e;
+  animation:nav-badge-pulse 1.4s ease-in-out infinite;
+}
+.topnav-link.nav-needs-config {
+  box-shadow:inset 0 0 0 1px #3d7a5f, 0 0 0 2px rgba(61,122,95,0.35);
+  animation:nav-badge-pulse 1.4s ease-in-out infinite;
+}
+@keyframes nav-badge-pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.65; transform:scale(1.15); } }
+.app-navbar-actions { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.app-navbar-email { font-size:0.7rem; color:rgba(255,255,255,0.45); max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; }
+@media (min-width:1100px) { .app-navbar-email { display:block; } }
+.app-navbar-paciente select {
+  min-width:140px; max-width:200px; padding:6px 10px;
+  border:1px solid rgba(255,255,255,0.2); border-radius:6px;
+  background:rgba(255,255,255,0.08); color:#fff; font-size:0.78rem; font-family:var(--font-body);
+}
+.app-navbar-paciente select option { background:#2d4a3e; color:#fff; }
+.app-navbar-paciente.empty select { border-color:#fbbf24; background:rgba(251,191,36,0.15); }
+.app-navbar-salir {
+  padding:6px 14px; border-radius:6px; border:1px solid rgba(255,255,255,0.2);
+  background:transparent; color:rgba(255,255,255,0.75); font-size:0.78rem; font-weight:500;
+  font-family:var(--font-body); cursor:pointer; transition:all 0.15s; white-space:nowrap;
+}
+.app-navbar-salir:hover { background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.35); }
+
+.welcome-banner {
+  background:linear-gradient(135deg, rgba(61,122,95,0.12), rgba(45,74,62,0.06));
+  border:1px solid #c8d8d0; border-left:4px solid #3d7a5f;
+  border-radius:var(--radius); padding:18px 24px; margin-bottom:28px;
+  font-family:var(--font-display); font-size:1.05rem; font-weight:600; color:#2d4a3e; line-height:1.5;
+}
+.welcome-banner span { color:#3d7a5f; }
 
 /* ══ MAIN CONTENT ══ */
-.app-main { margin-left:240px; flex:1; min-height:100vh; display:flex; flex-direction:column; }
-.app-content { flex:1; padding:28px 32px 40px; max-width:1040px; width:100%; }
+.app-main { flex:1; min-height:100vh; display:flex; flex-direction:column; padding-top:60px; width:100%; }
+.app-content { flex:1; padding:28px 32px 40px; max-width:1100px; width:100%; margin:0 auto; }
 
 
 /* ══ VISTAS ══ */
@@ -446,28 +563,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .toast.success { background:#0f3d36; border-color:rgba(94,234,212,0.2); }
 .toast.error { background:#450a0a; border-color:rgba(252,165,165,0.2); }
 .toast-icon { width:18px; height:18px; flex-shrink:0; opacity:0.9; }
-.app-topbar {
-  position:sticky; top:0; z-index:90;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  padding:0 32px; height:56px;
-  background:rgba(255,255,255,0.92); backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border); box-shadow:var(--shadow-sm);
+.app-page-title {
+  font-family:var(--font-display); font-size:0.88rem; font-weight:600; color:var(--muted);
+  margin-bottom:20px; letter-spacing:-0.2px;
 }
-.app-topbar-title { font-family:var(--font-display); font-size:0.95rem; font-weight:600; color:var(--text); letter-spacing:-0.2px; }
-.app-topbar-paciente { display:flex; align-items:center; gap:10px; flex:1; justify-content:flex-end; max-width:420px; }
-.app-topbar-paciente label { font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; }
-.app-topbar-paciente select {
-  flex:1; min-width:160px; max-width:280px; padding:8px 12px;
-  border:1.5px solid var(--border); border-radius:var(--radius-sm);
-  background:var(--surface); font-family:var(--font-body); font-size:0.88rem; color:var(--text);
-}
-.app-topbar-paciente select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(61,122,95,0.1); }
-.app-topbar-paciente.empty select { border-color:#fbbf24; background:#fffbeb; }
+.app-page-title:empty { display:none; }
 .paciente-item.activo { border-color:var(--accent); background:var(--brand-100); box-shadow:0 0 0 1px rgba(61,122,95,0.15); }
 .paciente-item.activo .pac-nombre::after { content:' · Activo'; font-size:0.72rem; font-weight:600; color:var(--accent); }
-.sidebar-label { padding:8px 14px 4px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.28); }
-.sidebar-tagline { font-size:0.68rem; color:rgba(255,255,255,0.38); margin-top:2px; font-weight:500; }
-.sidebar-version { text-align:center; font-size:10px; color:rgba(255,255,255,0.22); margin-top:8px; letter-spacing:0.3px; font-family:var(--font-mono); }
 .data-table { width:100%; border-collapse:collapse; font-size:0.84rem; }
 .data-table thead th { text-align:left; padding:10px 14px; font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--muted); background:var(--surface2); border-bottom:1px solid var(--border); }
 .data-table tbody td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
@@ -475,19 +577,19 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 @media (max-width: 768px) {
   .sectores-grid, .tests-grid, .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
-  .app-main { margin-left: 0; }
   .app-content { padding: 20px 16px; }
-  .app-topbar { padding: 0 16px; flex-wrap: wrap; height: auto; min-height: 56px; padding-top: 10px; padding-bottom: 10px; }
-  .app-topbar-paciente { max-width: 100%; width: 100%; }
-  .land-nav, .land-hero, .land-features, .land-cta-section, .land-footer { padding-left: 24px; padding-right: 24px; }
-  .land-features-grid { grid-template-columns: 1fr; }
-  .land-hero { flex-direction: column; }
+  .app-navbar-inner { padding: 0 12px; height: auto; min-height: 56px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
+  .app-navbar-nav { order: 3; width: 100%; padding: 4px 0 2px; }
+  .land-nav, .land-hero, .land-features, .land-cta-section, .land-footer, .land-about, .land-compare, .land-steps, .land-creator { padding-left: 24px; padding-right: 24px; }
+  .land-features-grid, .land-compare-grid, .land-steps-grid { grid-template-columns: 1fr; }
+  .land-hero, .land-creator-inner { flex-direction: column; }
+  .land-footer-grid { grid-template-columns: 1fr; }
   .topbar { padding: 0 16px; }
   .resultado-detalle { grid-template-columns: 1fr 1fr; }
   .stai-item { flex-direction: column; align-items: flex-start; }
 }
 @media print {
-  .app-topbar, .sidebar, .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir { display: none !important; }
+  .app-navbar, .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir, .welcome-banner { display: none !important; }
   .app-main { margin-left: 0 !important; }
   body { background: white; }
   .card, .resultado-box { box-shadow: none; border-color: #ddd; }
@@ -530,111 +632,177 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <!-- NAV -->
   <nav class="land-nav">
     <div class="land-nav-logo">
-      <div class="land-nav-logo-mark logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/></svg></div>
+      <div class="land-nav-logo-mark logo-mark"></div>
       <div class="land-nav-name">PsicoEscala</div>
     </div>
     <div class="land-nav-links">
-      <a class="land-nav-link" href="#features">Funcionalidades</a>
-      <a class="land-nav-link" href="#tests">Tests disponibles</a>
+      <a class="land-nav-link" href="#que-es">¿Qué es?</a>
+      <a class="land-nav-link" href="#comparacion">Informes</a>
+      <a class="land-nav-link" href="#como-funciona">Cómo funciona</a>
+      <a class="land-nav-link" href="#creador">Creador</a>
       <a class="land-nav-link" href="#contacto">Contacto</a>
     </div>
     <div class="land-nav-cta">
       <button class="land-btn-ghost" onclick="irLogin()">Iniciar sesión</button>
+      <button class="land-btn-solid" onclick="irLogin()">Acceder</button>
     </div>
   </nav>
 
   <div class="land-body">
-    <!-- HERO -->
-    <section class="land-hero">
+    <!-- A. HERO -->
+    <section class="land-hero reveal">
       <div class="land-hero-text">
-        <div class="land-hero-badge"><span style="width:6px;height:6px;border-radius:50%;background:#3d7a5f;display:inline-block;"></span> Plataforma para evaluación clínica</div>
-        <h1 class="land-hero-h1">Evaluación psicológica <span>profesional</span>, todo en un lugar</h1>
-        <p class="land-hero-sub">PsicoEscala reúne más de 30 tests estandarizados con baremos, corrección automática, perfil Z y generación de informes clínicos para profesionales de la salud mental.</p>
+        <div class="land-hero-logo logo-mark" aria-hidden="true"></div>
+        <div class="land-hero-badge"><span style="width:6px;height:6px;border-radius:50%;background:#3d7a5f;display:inline-block;"></span> Neuropsicología clínica · Baremos automatizados</div>
+        <h1 class="land-hero-h1">Menos Excel.<br>Más <span>análisis clínico</span>.</h1>
+        <p class="land-hero-sub">PsicoEscala agiliza la corrección baremada, el cálculo del perfil Z y la redacción de informes neuropsicológicos — para que dediques tu tiempo al paciente, no a las planillas.</p>
         <div class="land-hero-btns">
-          <button class="land-hero-btn-main" onclick="irLogin()">Iniciar sesión →</button>
-          <button class="land-hero-btn-sec" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Ver funcionalidades</button>
+          <button class="land-hero-btn-main" onclick="irLogin()">Comenzar ahora →</button>
+          <button class="land-hero-btn-sec" onclick="document.getElementById('que-es').scrollIntoView({behavior:'smooth'})">Conocer la plataforma</button>
         </div>
       </div>
-      <div class="land-hero-visual">
+      <div class="land-hero-visual reveal reveal-delay-2">
         <div class="land-visual-screen">
-          <div class="land-visual-title">Perfil neuropsicológico</div>
-          <div class="land-visual-row"><span class="land-visual-test">TMT-B</span><span class="land-visual-z low">Z = −2.1</span></div>
-          <div class="land-visual-row"><span class="land-visual-test">SDMT</span><span class="land-visual-z warn">Z = −1.4</span></div>
-          <div class="land-visual-row"><span class="land-visual-test">BNT-15</span><span class="land-visual-z ok">Z = +0.3</span></div>
-          <div class="land-visual-row"><span class="land-visual-test">Rey Figura</span><span class="land-visual-z warn">Z = −1.6</span></div>
-          <div class="land-visual-row"><span class="land-visual-test">FAB</span><span class="land-visual-z ok">Z = −0.8</span></div>
+          <div class="land-visual-title">Panel · Perfil Z en tiempo real</div>
+          <div class="land-visual-row"><span class="land-visual-test">Mem. Trabajo · Dígitos Directos</span><span class="land-visual-z ok">Z = +0.67</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">TMT-B</span><span class="land-visual-z low">Z = −2.10</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">SDMT · Escrita</span><span class="land-visual-z warn">Z = −1.42</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">BNT-15</span><span class="land-visual-z ok">Z = +0.31</span></div>
+          <div class="land-visual-row"><span class="land-visual-test">Rey · Copia</span><span class="land-visual-z warn">Z = −1.58</span></div>
         </div>
         <div class="land-visual-chips">
-          <span class="land-visual-chip">WAIS-IV</span>
-          <span class="land-visual-chip">MoCA</span>
-          <span class="land-visual-chip">WCST-64</span>
-          <span class="land-visual-chip">BDI-II</span>
-          <span class="land-visual-chip">TAVEC</span>
-          <span class="land-visual-chip">Stroop</span>
-          <span class="land-visual-chip">PHQ-9</span>
+          <span class="land-visual-chip">Baremo automático</span>
+          <span class="land-visual-chip">Curva Z</span>
+          <span class="land-visual-chip">PDF clínico</span>
+          <span class="land-visual-chip">Word editable</span>
         </div>
       </div>
     </section>
 
-    <!-- STATS -->
-    <div class="land-stats">
+    <div class="land-stats reveal">
       <div class="land-stat"><div class="land-stat-n">+30</div><div class="land-stat-l">Tests estandarizados</div></div>
-      <div class="land-stat"><div class="land-stat-n">100%</div><div class="land-stat-l">Corrección automática</div></div>
-      <div class="land-stat"><div class="land-stat-n">PDF</div><div class="land-stat-l">e informes Word</div></div>
-      <div class="land-stat"><div class="land-stat-n">RLS</div><div class="land-stat-l">Datos seguros por usuario</div></div>
+      <div class="land-stat"><div class="land-stat-n">Z</div><div class="land-stat-l">Perfil baremado al instante</div></div>
+      <div class="land-stat"><div class="land-stat-n">PDF</div><div class="land-stat-l">y Word en un clic</div></div>
+      <div class="land-stat"><div class="land-stat-n">RLS</div><div class="land-stat-l">Datos seguros por profesional</div></div>
     </div>
+
+    <!-- B. ¿QUÉ ES? -->
+    <section class="land-about" id="que-es">
+      <div class="land-about-inner reveal">
+        <div class="land-section-tag">¿Qué es PsicoEscala?</div>
+        <h2 class="land-section-h2">Precisión psicométrica para la práctica clínica</h2>
+        <p class="land-about-text">PsicoEscala es una herramienta diseñada para <strong>agilizar el proceso de corrección baremada</strong>, cálculo de perfil Z y redacción de informes neuropsicológicos clínicos. Menos tiempo de cálculo manual en Excel, más tiempo para el análisis cualitativo del paciente. Integra baremos validados, visualización del perfil de desvíos y exportación profesional en PDF y Word.</p>
+      </div>
+    </section>
+
+    <!-- C. PDF vs WORD -->
+    <section class="land-compare" id="comparacion">
+      <div class="land-compare-inner">
+        <div class="reveal" style="text-align:center;max-width:640px;margin:0 auto;">
+          <div class="land-section-tag">Exportación de informes</div>
+          <h2 class="land-section-h2">PDF clínico formal · Word listo para editar</h2>
+        </div>
+        <div class="land-compare-grid">
+          <div class="land-mock-pdf reveal">
+            <div class="land-mock-pdf-head">INFORME NEUROPSICOLÓGICO · PDF · Instituto de Neurociencias</div>
+            <div class="land-mock-pdf-body">
+              <div style="font-weight:600;color:#2d4a3e;margin-bottom:8px;">Paciente: M.R.G. · 58 años · Escolaridad: 12 años</div>
+              <table class="land-mock-table">
+                <thead><tr><th>Subtest / Dominio</th><th>Bruto</th><th>%</th><th>Z</th></tr></thead>
+                <tbody>
+                  <tr><td>Memoria de Trabajo · Dígitos Directos</td><td>12</td><td>75</td><td style="color:#3d7a5f;font-weight:600;">+0.67</td></tr>
+                  <tr><td>Atención · TMT-B (seg)</td><td>142</td><td>5</td><td style="color:#dc2626;font-weight:600;">−2.10</td></tr>
+                  <tr><td>Velocidad · SDMT</td><td>38</td><td>12</td><td style="color:#b45309;font-weight:600;">−1.42</td></tr>
+                  <tr><td>Lenguaje · BNT-15</td><td>13</td><td>55</td><td style="color:#3d7a5f;">+0.31</td></tr>
+                  <tr><td>Visoconstructivo · Rey Copia</td><td>28</td><td>8</td><td style="color:#b45309;">−1.58</td></tr>
+                </tbody>
+              </table>
+              <div style="font-size:0.68rem;font-weight:600;color:#2d4a3e;margin-bottom:6px;">PERFIL DE RENDIMIENTO COGNITIVO</div>
+              <div class="land-mock-bars"><div class="land-mock-bar" style="height:72%"></div><div class="land-mock-bar" style="height:28%"></div><div class="land-mock-bar" style="height:35%"></div><div class="land-mock-bar" style="height:68%"></div><div class="land-mock-bar" style="height:32%"></div></div>
+              <div style="margin-top:14px;padding-top:10px;border-top:1px dashed #c8d8d0;font-size:0.7rem;color:#5a6b63;">Lic. Erwin Müller Gudiño · M.P. XXXXX · <em>Firma digital</em></div>
+            </div>
+          </div>
+          <div class="land-mock-word reveal reveal-delay-1">
+            <h3>Documento Word · Borrador editable</h3>
+            <p><strong>Síntesis diagnóstica pre-redactada:</strong> El perfil cognitivo actual evidencia un patrón de rendimiento heterogéneo, con preservación relativa en memoria de trabajo (Z = +0.67) y lenguaje (Z = +0.31), y déficits significativos en velocidad de procesamiento y flexibilidad cognitiva (TMT-B: Z = −2.10; SDMT: Z = −1.42).</p>
+            <div class="hl">Recomendación clínica: Se sugiere abordaje rehabilitador focalizado en funciones ejecutivas y atención sostenida, con reevaluación neuropsicológica a los 6 meses según protocolo institucional.</div>
+            <p style="font-size:0.72rem;color:#5a6b63;margin-top:12px;">✎ Texto científico estructurado · Editable por el profesional · Conforme a normativa de informes clínicos</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- D. PASOS -->
+    <section class="land-steps" id="como-funciona">
+      <div class="land-steps-inner">
+        <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto;">
+          <div class="land-section-tag">Cómo funciona</div>
+          <h2 class="land-section-h2">Cuatro pasos. Un flujo clínico optimizado.</h2>
+        </div>
+        <div class="land-steps-grid">
+          <div class="land-step-card reveal"><div class="land-step-num">1</div><div class="land-step-title">Registrá al paciente</div><div class="land-step-desc">Cargá datos sociodemográficos, escolaridad y contexto clínico en un perfil seguro y privado.</div></div>
+          <div class="land-step-card reveal reveal-delay-1"><div class="land-step-num">2</div><div class="land-step-title">Ingresá puntajes brutos</div><div class="land-step-desc">Volcá los resultados de los tests tradicionales. La plataforma aplica el baremo correspondiente.</div></div>
+          <div class="land-step-card reveal reveal-delay-2"><div class="land-step-num">3</div><div class="land-step-title">Visualizá el perfil Z</div><div class="land-step-desc">Obtené la curva de desvíos baremada de forma automática, por dominio cognitivo.</div></div>
+          <div class="land-step-card reveal reveal-delay-3"><div class="land-step-num">4</div><div class="land-step-title">Exportá el informe</div><div class="land-step-desc">Generá la síntesis diagnóstica en Word o PDF formal en un solo clic, listo para firmar.</div></div>
+        </div>
+      </div>
+    </section>
 
     <!-- FEATURES -->
     <section class="land-features" id="features">
       <div class="land-features-inner">
-        <div class="land-features-tag">Funcionalidades</div>
-        <h2 class="land-features-h2">Todo lo que necesitás para evaluar con precisión</h2>
+        <div class="land-features-tag reveal">Funcionalidades</div>
+        <h2 class="land-features-h2 reveal">Todo lo que necesitás para evaluar con rigor científico</h2>
         <div class="land-features-grid">
-          <div class="land-feat-card">
-            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3-4 3 3 4-6"/></svg></div>
-            <div class="land-feat-title">Corrección con baremos</div>
-            <div class="land-feat-desc">Puntajes Z, percentiles y categorías diagnósticas calculados automáticamente con baremos latinoamericanos validados.</div>
-          </div>
-          <div class="land-feat-card">
-            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
-            <div class="land-feat-title">Perfil neuropsicológico</div>
-            <div class="land-feat-desc">Visualización gráfica del perfil Z por dominio cognitivo: memoria, atención, ejecutivas, lenguaje, visoconstructivo.</div>
-          </div>
-          <div class="land-feat-card">
-            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
-            <div class="land-feat-title">Informes en PDF y Word</div>
-            <div class="land-feat-desc">Generación de informes clínicos completos con tabla de puntajes, perfil Z y texto narrativo. Listos para firmar.</div>
-          </div>
-          <div class="land-feat-card">
-            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-            <div class="land-feat-title">Datos seguros y privados</div>
-            <div class="land-feat-desc">Cada profesional accede únicamente a sus propios pacientes. Seguridad a nivel de base de datos con RLS.</div>
-          </div>
-          <div class="land-feat-card">
-            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-            <div class="land-feat-title">+30 tests integrados</div>
-            <div class="land-feat-desc">Neuropsicológicos, clínicos, de dolor y TDAH. MoCA, WAIS-IV, BDI-II, PHQ-9, FAB, TMT, WCST y muchos más.</div>
-          </div>
-          <div class="land-feat-card">
-            <div class="land-feat-icon"><svg viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 18h9a5 5 0 0 0 0-10z"/></svg></div>
-            <div class="land-feat-title">100% en la nube</div>
-            <div class="land-feat-desc">Sin instalación. Accedé desde cualquier dispositivo. Tus pacientes y resultados siempre disponibles y respaldados.</div>
-          </div>
+          <div class="land-feat-card reveal"><div class="land-feat-icon"><i class="fa-solid fa-chart-line"></i></div><div class="land-feat-title">Corrección con baremos</div><div class="land-feat-desc">Puntajes Z, percentiles y categorías calculados con baremos latinoamericanos validados.</div></div>
+          <div class="land-feat-card reveal reveal-delay-1"><div class="land-feat-icon"><i class="fa-solid fa-brain"></i></div><div class="land-feat-title">Perfil neuropsicológico</div><div class="land-feat-desc">Curva Z por dominio: memoria, atención, ejecutivas, lenguaje y visoconstructivo.</div></div>
+          <div class="land-feat-card reveal reveal-delay-2"><div class="land-feat-icon"><i class="fa-solid fa-file-medical"></i></div><div class="land-feat-title">Informes PDF y Word</div><div class="land-feat-desc">Tabla de puntajes, gráficos y texto narrativo clínico. Listos para revisión y firma.</div></div>
+          <div class="land-feat-card reveal"><div class="land-feat-icon"><i class="fa-solid fa-shield-halved"></i></div><div class="land-feat-title">Datos seguros</div><div class="land-feat-desc">Aislamiento por profesional con RLS. Encriptación y cumplimiento ético de datos clínicos.</div></div>
+          <div class="land-feat-card reveal reveal-delay-1"><div class="land-feat-icon"><i class="fa-solid fa-flask"></i></div><div class="land-feat-title">+30 tests integrados</div><div class="land-feat-desc">MoCA, WAIS-IV, TMT, WCST, BDI-II, PHQ-9, TAVEC, FAB y más.</div></div>
+          <div class="land-feat-card reveal reveal-delay-2"><div class="land-feat-icon"><i class="fa-solid fa-cloud"></i></div><div class="land-feat-title">100% en la nube</div><div class="land-feat-desc">Sin instalación. Accedé desde cualquier dispositivo con respaldo automático.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- E. CREADOR -->
+    <section class="land-creator" id="creador">
+      <div class="land-creator-inner reveal">
+        <div class="land-creator-avatar" aria-hidden="true">EM</div>
+        <div class="land-creator-text">
+          <strong>Sobre el creador · Erwin Müller Gudiño</strong>
+          Hola, soy Erwin Müller Gudiño, psicólogo egresado de la Universidad Nacional de Córdoba (UNC). Me dedico apasionadamente a la neuropsicología clínica. Creé PsicoEscala tras experimentar en carne propia las horas de trabajo manual que requiere tabular baremos en papel y redactar informes repetitivos. Desarrollé esta plataforma para agilizar nuestro flujo de trabajo clínico, optimizar nuestro tiempo y asegurar la precisión psicométrica que nuestros pacientes merecen.
         </div>
       </div>
     </section>
 
     <!-- CTA -->
-    <section class="land-cta-section" id="contacto">
-      <h2 class="land-cta-h2">¿Querés acceder a PsicoEscala?</h2>
-      <p class="land-cta-sub">El acceso es por suscripción mensual para profesionales individuales. Escribinos para obtener tu cuenta.</p>
-      <button class="land-cta-btn" onclick="irLogin()">Iniciar sesión</button>
+    <section class="land-cta-section reveal" id="contacto">
+      <h2 class="land-cta-h2">¿Listo para transformar tu práctica clínica?</h2>
+      <p class="land-cta-sub">Acceso profesional por suscripción. Escribinos o seguinos en redes.</p>
+      <button class="land-cta-btn" onclick="irLogin()">Iniciar sesión en PsicoEscala</button>
     </section>
 
-    <!-- FOOTER -->
+    <!-- F. FOOTER -->
     <footer class="land-footer">
-      <div class="land-footer-name">PsicoEscala</div>
-      <div class="land-footer-copy">© 2026 · Plataforma de evaluación psicológica profesional</div>
+      <div class="land-footer-grid">
+        <div>
+          <div class="land-footer-name">PsicoEscala</div>
+          <p class="land-footer-copy">Plataforma de evaluación neuropsicológica. Datos clínicos protegidos con encriptación y aislamiento por profesional. Cumplimiento ético en el manejo de información sensible.</p>
+        </div>
+        <div>
+          <h4>Contacto</h4>
+          <a href="mailto:psicoescala.online@gmail.com"><i class="fa-regular fa-envelope"></i> psicoescala.online@gmail.com</a>
+          <p class="land-footer-copy" style="margin-top:10px;">Consultas, soporte técnico y acceso profesional.</p>
+        </div>
+        <div>
+          <h4>Redes</h4>
+          <a href="https://instagram.com/psicoescala" target="_blank" rel="noopener" class="land-ig-btn"><i class="fa-brands fa-instagram"></i> @psicoescala</a>
+        </div>
+      </div>
+      <div class="land-footer-bottom">
+        <span>© 2026 PsicoEscala · Todos los derechos reservados</span>
+        <span>Datos médicos · Encriptación · Uso ético exclusivo profesional</span>
+      </div>
     </footer>
   </div>
 </div>
@@ -643,7 +811,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div id="screen-login" class="screen" style="display:none;">
   <div class="login-box">
     <div class="login-logo">
-      <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
       <div class="login-sub">Plataforma de evaluación psicológica</div>
     </div>
@@ -657,65 +825,40 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 <!-- ══ APP ══ -->
 <div id="screen-app" class="screen">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/></svg></div>
-      <div class="sidebar-nombre">PsicoEscala</div>
-      <div class="sidebar-tagline">Evaluación clínica</div>
+<div id="page-app">
+  <header class="app-navbar" id="app-navbar">
+    <div class="app-navbar-inner">
+      <div class="app-navbar-brand" onclick="irVista('inicio')" title="Inicio">
+        <div class="logo-mark" aria-hidden="true"></div>
+        <span class="app-navbar-name">PsicoEscala</span>
+      </div>
+      <nav class="app-navbar-nav" aria-label="Navegación principal">
+        <button type="button" class="topnav-link active" id="tnav-inicio" onclick="irVista('inicio')">Inicio / General</button>
+        <button type="button" class="topnav-link" id="tnav-config" onclick="irVista('config')">Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span></button>
+        <button type="button" class="topnav-link" id="tnav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
+        <button type="button" class="topnav-link" id="tnav-neuro" onclick="irSector('neuro')">Tests Neuropsicológicos</button>
+        <button type="button" class="topnav-link" id="tnav-historial" onclick="irVista('historial')">Historial</button>
+        <button type="button" class="topnav-link" id="tnav-informe" onclick="irRedaccionInformes()">Redacción de Informes</button>
+      </nav>
+      <div class="app-navbar-actions">
+        <span class="app-navbar-email" id="topbar-email"></span>
+        <div class="app-navbar-paciente empty" id="app-topbar-paciente">
+          <select id="topbar-paciente-select" onchange="setPacienteActivo(this.value, true)" aria-label="Paciente activo">
+            <option value="">— Paciente —</option>
+          </select>
+        </div>
+        <button type="button" class="app-navbar-salir" onclick="doLogout()">Salir</button>
+      </div>
     </div>
-    <nav class="sidebar-nav">
-      <div class="sidebar-section active" id="snav-inicio" onclick="irVista('inicio')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5z" stroke="currentColor" stroke-width="1.3"/></svg></span> Inicio
-      </div>
-      <div class="sidebar-section" id="snav-pacientes" onclick="irVista('pacientes')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-2.76 2.24-4 6-4s6 1.24 6 4" stroke="currentColor" stroke-width="1.3"/></svg></span> Pacientes
-      </div>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-label">Dominios</div>
-      <div class="sidebar-section" id="snav-neuro" onclick="irSector('neuro')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L6 7l3 4 2-3 2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Neuropsicología
-      </div>
-      <div class="sidebar-section" id="snav-clinica" onclick="irSector('clinica')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M5 5h6M5 11h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> Clínica
-      </div>
-      <div class="sidebar-section" id="snav-dolor" onclick="irSector('dolor')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 4.5H14l-3.5 2.5L12 14 8 10.5 4 14l1.5-5L2 6.5h4.5L8 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></span> Dolor
-      </div>
-      <div class="sidebar-section" id="snav-tdah" onclick="irSector('tdah')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" fill="currentColor"/><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/></svg></span> TDAH
-      </div>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section" id="snav-historial" onclick="irVista('historial')">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> Historial
-      </div>
-    </nav>
-    <div class="sidebar-bottom">
-      <div class="sidebar-section" id="snav-config" onclick="irVista('config')" style="margin-bottom:8px;">
-        <span class="sidebar-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span> Configuración
-      </div>
-      <div class="sidebar-user" id="topbar-email"></div>
-      <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div class="sidebar-version">v1.10.72</div>
-    </div>
-  </aside>
+  </header>
 
-  <!-- MAIN -->
   <div class="app-main">
-    <header class="app-topbar" id="app-topbar">
-      <div class="app-topbar-title" id="app-topbar-title">Inicio</div>
-      <div class="app-topbar-paciente empty" id="app-topbar-paciente">
-        <label for="topbar-paciente-select">Paciente activo</label>
-        <select id="topbar-paciente-select" onchange="setPacienteActivo(this.value, true)">
-          <option value="">— Seleccionar paciente —</option>
-        </select>
-      </div>
-    </header>
     <div class="app-content">
+    <div class="app-page-title" id="app-page-title"></div>
 
-    <!-- ── CONFIGURACIÓN ── -->
+    <!-- ── DATOS DEL PROFESIONAL ── -->
     <div class="vista" id="vista-config">
-      <div class="vista-header"><div class="vista-titulo">Configuración del profesional</div></div>
+      <div class="vista-header"><div class="vista-titulo">Datos del Profesional</div></div>
       <div class="card" style="max-width:560px;">
         <div class="card-title">Datos para el encabezado del informe PDF</div>
         <p style="font-size:0.84rem;color:var(--muted);margin-bottom:18px;">Estos datos aparecerán en el header y footer de todos los informes PDF generados.</p>
@@ -743,22 +886,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
     <!-- ── INICIO ── -->
     <div class="vista active" id="vista-inicio">
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:72vh;text-align:center;">
-        <div style="width:96px;height:96px;margin-bottom:28px;">
-          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100%;">
-            <circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/>
-            <circle cx="60" cy="60" r="66" fill="none" stroke="#93c5fd" stroke-width="0.6" opacity="0.3"/>
-            <line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/>
-            <line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/>
-            <path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/>
-            <circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/>
-            <circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/>
-          </svg>
-        </div>
-        <div style="font-family:var(--font-display);font-size:1.85rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:14px;">PsicoEscala</div>
-        <div style="font-size:0.87rem;color:var(--muted);max-width:400px;line-height:1.75;letter-spacing:0.2px;">Plataforma profesional para administración y puntuación automatizada de tests psicológicos y neuropsicológicos.</div>
-        <div style="display:flex;gap:32px;margin-top:44px;" id="home-stats">
+      <div class="welcome-banner" id="welcome-banner">
+        ¡Hola, <span id="welcome-nombre">Profesional</span>! Te damos la bienvenida a PsicoEscala.
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;text-align:center;padding-bottom:24px;">
+        <div class="logo-mark" style="width:80px;height:80px;margin-bottom:24px;" aria-hidden="true"></div>
+        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:10px;">Panel general</div>
+        <div style="font-size:0.87rem;color:var(--muted);max-width:440px;line-height:1.75;">Administración y puntuación automatizada de tests neuropsicológicos con baremos, perfil Z e informes clínicos.</div>
+        <div style="display:flex;gap:32px;margin-top:36px;flex-wrap:wrap;justify-content:center;" id="home-stats">
           <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-pacientes">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Pacientes</div></div>
           <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-evaluaciones">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Evaluaciones</div></div>
           <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-saludo">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;" id="stat-fecha-lbl">Hoy</div></div>
@@ -5255,6 +5390,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
     </div><!-- /app-content -->
   </div><!-- /app-main -->
+</div><!-- /page-app -->
 </div><!-- /screen-app -->
 
 <!-- ══ MODAL PACIENTE DETALLE ══ -->
@@ -5271,6 +5407,92 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 <script>
 
+// ══ ISOLOGO PHI (Φ) + SCROLL REVEAL ═══════════════════════════════════════════
+var PHI_LOGO_SVG = '<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<line x1="24" y1="4" x2="24" y2="44" stroke="#2d4a3e" stroke-width="1.4" stroke-linecap="round"/>' +
+  '<ellipse cx="24" cy="26" rx="11" ry="14" fill="none" stroke="#2d4a3e" stroke-width="2"/>' +
+  '<path d="M24 9 L27.5 13.5 L24 18 L20.5 13.5 Z" fill="none" stroke="#3d7a5f" stroke-width="1.2" stroke-linejoin="round"/>' +
+  '<path d="M24 33 L20.5 37.5 L24 42 L27.5 37.5 Z" fill="#3d7a5f" opacity="0.9"/>' +
+  '<path d="M13 19 Q7 13 5 9" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<path d="M35 19 Q41 13 43 9" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<path d="M13 33 Q6 37 4 41" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<path d="M35 33 Q42 37 44 41" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<circle cx="5" cy="9" r="2.2" fill="#3d7a5f"/><circle cx="43" cy="9" r="2.2" fill="#3d7a5f"/>' +
+  '<circle cx="4" cy="41" r="1.8" fill="#3d7a5f"/><circle cx="44" cy="41" r="1.8" fill="#3d7a5f"/>' +
+  '<line x1="13" y1="19" x2="17" y2="22" stroke="#3d7a5f" stroke-width="0.55" opacity="0.55"/>' +
+  '<line x1="35" y1="19" x2="31" y2="22" stroke="#3d7a5f" stroke-width="0.55" opacity="0.55"/>' +
+  '</svg>';
+
+function initPhiLogos() {
+  document.querySelectorAll('.logo-mark').forEach(function(el) {
+    if (!el.querySelector('svg')) el.innerHTML = PHI_LOGO_SVG;
+  });
+}
+
+/** Intersection Observer: animaciones de opacidad y translate-y al hacer scroll en la landing */
+function initScrollReveal() {
+  var nodes = document.querySelectorAll('#screen-landing .reveal');
+  if (!nodes.length) return;
+  if (!('IntersectionObserver' in window)) {
+    nodes.forEach(function(el) { el.classList.add('visible'); });
+    return;
+  }
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  nodes.forEach(function(el) { obs.observe(el); });
+}
+
+function profesionalDatosCompletos() {
+  var cfg = getConfigProfesional();
+  return !!(cfg.nombre && cfg.matricula);
+}
+
+function actualizarBadgeConfig() {
+  var badge = document.getElementById('nav-badge-config');
+  var btn = document.getElementById('tnav-config');
+  if (!badge || !btn) return;
+  var ok = profesionalDatosCompletos();
+  badge.style.display = ok ? 'none' : 'inline-flex';
+  btn.classList.toggle('nav-needs-config', !ok);
+}
+
+function actualizarWelcomeBanner(mostrar) {
+  var banner = document.getElementById('welcome-banner');
+  if (!banner) return;
+  var el = document.getElementById('welcome-nombre');
+  var cfg = getConfigProfesional();
+  var name = cfg.nombre;
+  if (!name && typeof SESSION !== 'undefined' && SESSION && SESSION.user && SESSION.user.email) {
+    name = SESSION.user.email.split('@')[0];
+  }
+  if (!name) name = 'Profesional';
+  if (el) el.textContent = name;
+  banner.style.display = mostrar ? 'block' : 'none';
+}
+
+function irRedaccionInformes() {
+  var pacId = getPacienteActivoId();
+  if (!pacId) {
+    toast('Seleccioná un paciente activo para redactar el informe.', 'error');
+    irVista('pacientes');
+    return;
+  }
+  abrirInforme();
+}
+
+function setTopnavActive(id) {
+  document.querySelectorAll('.topnav-link').forEach(function(el) { el.classList.remove('active'); });
+  if (id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+}
 
 // ══ CONFIGURACIÓN DEL PROFESIONAL ════════════════════════════════════════════
 function cargarConfigProfesional() {
@@ -5282,6 +5504,7 @@ function cargarConfigProfesional() {
     if (cfg.direccion) document.getElementById('cfg-direccion').value = cfg.direccion;
     if (cfg.extra)     document.getElementById('cfg-extra').value     = cfg.extra;
     actualizarPreviewConfig();
+    actualizarBadgeConfig();
   } catch(e) {}
 }
 function guardarConfigProfesional() {
@@ -5294,6 +5517,8 @@ function guardarConfigProfesional() {
   };
   try { localStorage.setItem('psico_config_prof', JSON.stringify(cfg)); } catch(e) {}
   actualizarPreviewConfig();
+  actualizarBadgeConfig();
+  actualizarWelcomeBanner(document.getElementById('vista-inicio') && document.getElementById('vista-inicio').classList.contains('active'));
   toast('Configuración guardada ✓', 'success');
 }
 function actualizarPreviewConfig() {
@@ -5356,8 +5581,8 @@ var sectorActual = '';
 var PACIENTE_ACTIVO_ID = null;
 
 var TOPBAR_TITLES = {
-  inicio: 'Inicio', pacientes: 'Pacientes', historial: 'Historial de evaluaciones',
-  config: 'Configuración', informe: 'Redacción de informe', sector: 'Tests'
+  inicio: 'Inicio / General', pacientes: 'Pacientes', historial: 'Historial',
+  config: 'Datos del Profesional', informe: 'Redacción de Informes', sector: 'Tests'
 };
 
 function getPacienteActivoId() {
@@ -5403,13 +5628,13 @@ function actualizarTopbarPaciente() {
 }
 
 function actualizarTituloTopbar(vista, sector) {
-  var el = document.getElementById('app-topbar-title');
+  var el = document.getElementById('app-page-title');
   if (!el) return;
   if (vista === 'sector' && sector) {
-    var nombres = { neuro: 'Neuropsicología', clinica: 'Psicología clínica', dolor: 'Dolor', tdah: 'TDAH' };
+    var nombres = { neuro: 'Tests Neuropsicológicos', clinica: 'Psicología clínica', dolor: 'Dolor', tdah: 'TDAH' };
     el.textContent = nombres[sector] || 'Tests';
   } else {
-    el.textContent = TOPBAR_TITLES[vista] || 'PsicoEscala';
+    el.textContent = TOPBAR_TITLES[vista] || '';
   }
 }
 
@@ -5454,6 +5679,8 @@ function doLogin() {
     app.style.display = 'flex';
     app.classList.add('active');
     actualizarSaludo();
+    actualizarBadgeConfig();
+    actualizarWelcomeBanner(true);
     cargarPacientes();
     cargarResultados();
   });
@@ -7281,14 +7508,14 @@ function renderUltimas() {
 
 // ══ NAVEGACIÓN ═══════════════════════════════════════════════════════════════
 function irVista(v) {
-  if (v === 'config') { cargarConfigProfesional(); }
+  if (v === 'config') { cargarConfigProfesional(); actualizarBadgeConfig(); }
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   var el = document.getElementById('vista-' + v);
   if(el) el.classList.add('active');
-  document.querySelectorAll('.sidebar-section').forEach(function(el){ el.classList.remove('active'); });
-  var map = {inicio:'snav-inicio', pacientes:'snav-pacientes', historial:'snav-historial', informe:'snav-historial'};
-  if(map[v]) { var s=document.getElementById(map[v]); if(s) s.classList.add('active'); }
+  var map = {inicio:'tnav-inicio', pacientes:'tnav-pacientes', historial:'tnav-historial', informe:'tnav-informe', config:'tnav-config'};
+  setTopnavActive(map[v] || null);
   actualizarTituloTopbar(v);
+  actualizarWelcomeBanner(v === 'inicio');
   if(v === 'historial') { renderFiltroHistorial(); renderHistorial(); }
 }
 
@@ -7369,9 +7596,7 @@ function npRender() {
 
 function irSector(s) {
   sectorActual = s;
-  document.querySelectorAll('.sidebar-section').forEach(function(el){ el.classList.remove('active'); });
-  var map = {clinica:'snav-clinica', tdah:'snav-tdah', neuro:'snav-neuro', dolor:'snav-dolor'};
-  if(map[s]) { var sid=document.getElementById(map[s]); if(sid) sid.classList.add('active'); }
+  setTopnavActive(s === 'neuro' ? 'tnav-neuro' : null);
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   document.getElementById('vista-sector').classList.add('active');
   actualizarTituloTopbar('sector', s);
@@ -15154,6 +15379,8 @@ function guardarFamiliar() {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+  initPhiLogos();
+  initScrollReveal();
   // Arranque: sesión válida → app; sin sesión → landing.
   if (SESSION && SESSION.access_token) {
     document.getElementById('screen-landing').style.display = 'none';
@@ -15162,6 +15389,8 @@ window.addEventListener('DOMContentLoaded', function() {
     app.style.display = 'flex';
     app.classList.add('active');
     actualizarSaludo();
+    actualizarBadgeConfig();
+    actualizarWelcomeBanner(true);
     cargarPacientes();
     cargarResultados();
   } else {
