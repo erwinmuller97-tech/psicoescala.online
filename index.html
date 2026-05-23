@@ -5483,7 +5483,7 @@ function irRedaccionInformes() {
     irVista('pacientes');
     return;
   }
-  abrirInforme();
+  abrirInforme(pacId);
 }
 
 function setTopnavActive(id) {
@@ -6169,27 +6169,18 @@ function generarPDF(tipo) {
 }
 
 function generarPDFHistorial() {
-  var filtro = document.getElementById('historial-filtro-pac');
-  var pacId = filtro ? filtro.value : '';
-  var datos = pacId ? RESULTADOS.filter(function(r){ return String(r.paciente_id) === String(pacId); }) : RESULTADOS;
-  if (!datos.length && pacId) {
-    datos = RESULTADOS.filter(function(r){ return String(r.paciente_id) === String(pacId); });
-  }
-  if (!datos.length) { toast('No hay evaluaciones para este paciente. Verificá que tenga resultados cargados.','error'); return; }
+  var pacId = resolverPacienteInformeId();
+  var datos = pacId ? RESULTADOS.filter(function(r) { return String(r.paciente_id) === String(pacId); }) : RESULTADOS;
+  if (!datos.length) { toast('No hay evaluaciones para este paciente. Verificá que tenga resultados cargados.', 'error'); return; }
 
-  var pacInfo = pacId ? PACIENTES.find(function(p){ return p.id === pacId; }) : null;
+  var pacInfo = pacId ? PACIENTES.find(function(p) { return String(p.id) === String(pacId); }) : null;
   var pacNombre = pacInfo ? pacInfo.nombre : 'Todos los pacientes';
   var pacEdad   = pacInfo && pacInfo.fecha_nacimiento ? calcularEdad(pacInfo.fecha_nacimiento) + ' años' : '';
   var pacFnac   = pacInfo && pacInfo.fecha_nacimiento ? pacInfo.fecha_nacimiento : '';
   var pacSexo   = pacInfo ? (pacInfo.sexo || '') : '';
   var pacEscol  = pacInfo ? (pacInfo.escolaridad || '') : '';
 
-  // Cargar informe narrativo si hay paciente seleccionado
-  var infPromise = (pacId && SESSION) ?
-    supaFetch('/rest/v1/psico_informes?paciente_id=eq.'+pacId+'&user_id=eq.'+SESSION.user.id+'&select=*','GET',null,SESSION.access_token)
-      .then(function(r){return r.json();}).then(function(d){return (d&&d.length)?d[0]:null;}) :
-    Promise.resolve(null);
-
+  var infPromise = pacId ? obtenerInformePaciente(pacId) : Promise.resolve(null);
   infPromise.then(function(inf) {
     _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacSexo, pacEscol, inf);
   });
@@ -12093,105 +12084,164 @@ function guardarBNT() {
 // ══ INFORME NEUROPSICOLÓGICO ══════════════════════════════════════════════════
 var INFORME_PAC_ID = null;
 
-function abrirInforme() {
+function informeCacheKey(pacId) {
+  if (!SESSION || !pacId) return '';
+  return 'psico_informe_' + SESSION.user.id + '_' + pacId;
+}
+
+function resolverPacienteInformeId() {
+  if (INFORME_PAC_ID) return String(INFORME_PAC_ID);
+  var activo = getPacienteActivoId();
+  if (activo) return String(activo);
   var filtro = document.getElementById('historial-filtro-pac');
-  var pacId = filtro ? filtro.value : '';
-  if (!pacId) { toast('Seleccioná un paciente primero.', 'error'); return; }
-  INFORME_PAC_ID = pacId;
-  window._informePacId = pacId; // para el panel de perfil Z
-  // Cerrar el panel Z si estaba abierto (se re-renderizará al abrir)
-  var panel = document.getElementById('perfil-z-panel');
-  if (panel) { panel.style.display = 'none'; }
-  var icon = document.getElementById('perfil-z-toggle-icon');
-  if (icon) { icon.style.transform = 'rotate(0deg)'; }
-  var pac = PACIENTES.find(function(p){ return p.id === pacId; });
-  var nombre = pac ? pac.nombre : '—';
-  document.getElementById('informe-pac-nombre').textContent = nombre;
-  // Limpiar campos
-  var campos = ['inf-fecha-eval','inf-evaluado-por','inf-derivado-por','inf-dni','inf-ocupacion',
-    'inf-procedencia','inf-dominancia','inf-contacto','inf-ant-clinicos','inf-ant-psiq',
-    'inf-ant-fam','inf-habitos','inf-motivo','inf-conducta','inf-perfil-cog','inf-conclusiones','inf-recomendaciones'];
-  campos.forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  return (filtro && filtro.value) ? String(filtro.value) : '';
+}
+
+function leerInformeDesdeFormulario() {
+  function val(id) {
+    var el = document.getElementById(id);
+    if (!el) return null;
+    var v = (el.value || '').trim();
+    return v || null;
+  }
+  return {
+    fecha_evaluacion: val('inf-fecha-eval'),
+    evaluado_por: val('inf-evaluado-por'),
+    derivado_por: val('inf-derivado-por'),
+    dni: val('inf-dni'),
+    ocupacion: val('inf-ocupacion'),
+    procedencia: val('inf-procedencia'),
+    dominancia: val('inf-dominancia'),
+    contacto: val('inf-contacto'),
+    ant_clinicos: val('inf-ant-clinicos'),
+    ant_psiquiatricos: val('inf-ant-psiq'),
+    ant_familiares: val('inf-ant-fam'),
+    habitos_toxicos: val('inf-habitos'),
+    motivo_consulta: val('inf-motivo'),
+    descripcion_conducta: val('inf-conducta'),
+    perfil_cognitivo: val('inf-perfil-cog'),
+    conclusiones: val('inf-conclusiones'),
+    recomendaciones: val('inf-recomendaciones')
+  };
+}
+
+function aplicarInformeAlFormulario(inf) {
+  inf = inf || {};
+  var map = {
+    'inf-fecha-eval': inf.fecha_evaluacion || '',
+    'inf-evaluado-por': inf.evaluado_por || '',
+    'inf-derivado-por': inf.derivado_por || '',
+    'inf-dni': inf.dni || '',
+    'inf-ocupacion': inf.ocupacion || '',
+    'inf-procedencia': inf.procedencia || '',
+    'inf-dominancia': inf.dominancia || '',
+    'inf-contacto': inf.contacto || '',
+    'inf-ant-clinicos': inf.ant_clinicos || '',
+    'inf-ant-psiq': inf.ant_psiquiatricos || '',
+    'inf-ant-fam': inf.ant_familiares || '',
+    'inf-habitos': inf.habitos_toxicos || '',
+    'inf-motivo': inf.motivo_consulta || '',
+    'inf-conducta': inf.descripcion_conducta || '',
+    'inf-perfil-cog': inf.perfil_cognitivo || '',
+    'inf-conclusiones': inf.conclusiones || '',
+    'inf-recomendaciones': inf.recomendaciones || ''
+  };
+  Object.keys(map).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = map[id];
+  });
   window._firmaBase64 = null;
   var prev = document.getElementById('inf-firma-preview-wrap');
-  if(prev) prev.style.display='none';
+  if (prev) prev.style.display = 'none';
   var exist = document.getElementById('inf-firma-existente');
-  if(exist) exist.style.display='none';
-  // Cargar datos existentes
+  if (inf.firma_imagen) {
+    if (exist) {
+      var img = document.getElementById('inf-firma-existente-img');
+      if (img) img.src = inf.firma_imagen;
+      exist.style.display = 'block';
+    }
+  } else if (exist) {
+    exist.style.display = 'none';
+  }
+}
+
+function obtenerInformePaciente(pacId) {
+  if (!SESSION || !pacId) return Promise.resolve({});
+  return supaFetch('/rest/v1/psico_informes?paciente_id=eq.' + pacId + '&user_id=eq.' + SESSION.user.id + '&select=*', 'GET', null, SESSION.access_token)
+    .then(function(r) { return r.json().then(function(data) { return { ok: r.ok, data: data }; }); })
+    .then(function(res) {
+      var inf = (res.data && res.data.length) ? res.data[0] : {};
+      try {
+        var cached = localStorage.getItem(informeCacheKey(pacId));
+        if (cached) inf = Object.assign({}, inf, JSON.parse(cached));
+      } catch (e) {}
+      var vistaInf = document.getElementById('vista-informe');
+      if (String(pacId) === String(INFORME_PAC_ID) && vistaInf && vistaInf.classList.contains('active')) {
+        inf = Object.assign({}, inf, leerInformeDesdeFormulario());
+      }
+      return inf;
+    })
+    .catch(function() {
+      try {
+        var cached = localStorage.getItem(informeCacheKey(pacId));
+        if (cached) return JSON.parse(cached);
+      } catch (e) {}
+      if (String(pacId) === String(INFORME_PAC_ID)) return leerInformeDesdeFormulario();
+      return {};
+    });
+}
+
+function abrirInforme(pacIdOverride) {
+  var pacId = pacIdOverride || getPacienteActivoId() || '';
+  var filtro = document.getElementById('historial-filtro-pac');
+  if (!pacId && filtro) pacId = filtro.value;
+  if (!pacId) { toast('Seleccioná un paciente primero.', 'error'); return; }
+  pacId = String(pacId);
+  if (filtro) filtro.value = pacId;
+  INFORME_PAC_ID = pacId;
+  window._informePacId = pacId;
+  var panel = document.getElementById('perfil-z-panel');
+  if (panel) panel.style.display = 'none';
+  var icon = document.getElementById('perfil-z-toggle-icon');
+  if (icon) icon.style.transform = 'rotate(0deg)';
+  var pac = PACIENTES.find(function(p) { return String(p.id) === pacId; });
+  document.getElementById('informe-pac-nombre').textContent = pac ? pac.nombre : '—';
+  aplicarInformeAlFormulario({});
   cargarInforme(pacId);
   irVista('informe');
 }
 
 function cargarInforme(pacId) {
   if (!SESSION) return;
-  supaFetch('/rest/v1/psico_informes?paciente_id=eq.'+pacId+'&user_id=eq.'+SESSION.user.id+'&select=*', 'GET', null, SESSION.access_token)
-    .then(function(r){ return r.json(); })
-    .then(function(data) {
-      if (!data || !data.length) return;
-      var inf = data[0];
-      var map = {
-        'inf-fecha-eval':   inf.fecha_evaluacion||'',
-        'inf-evaluado-por': inf.evaluado_por||'',
-        'inf-derivado-por': inf.derivado_por||'',
-        'inf-dni':          inf.dni||'',
-        'inf-ocupacion':    inf.ocupacion||'',
-        'inf-procedencia':  inf.procedencia||'',
-        'inf-dominancia':   inf.dominancia||'',
-        'inf-contacto':     inf.contacto||'',
-        'inf-ant-clinicos': inf.ant_clinicos||'',
-        'inf-ant-psiq':     inf.ant_psiquiatricos||'',
-        'inf-ant-fam':      inf.ant_familiares||'',
-        'inf-habitos':      inf.habitos_toxicos||'',
-        'inf-motivo':       inf.motivo_consulta||'',
-        'inf-conducta':     inf.descripcion_conducta||'',
-        'inf-perfil-cog':   inf.perfil_cognitivo||'',
-        'inf-conclusiones': inf.conclusiones||'',
-        'inf-recomendaciones': inf.recomendaciones||''
-      };
-      Object.keys(map).forEach(function(id){
-        var el = document.getElementById(id);
-        if(el) el.value = map[id];
-      });
-      // Mostrar firma existente si hay
-      if (inf.firma_imagen) {
-        var wrap = document.getElementById('inf-firma-existente');
-        var img = document.getElementById('inf-firma-existente-img');
-        if (wrap && img) { img.src = inf.firma_imagen; wrap.style.display='block'; }
-      }
-    });
+  obtenerInformePaciente(pacId).then(function(inf) {
+    aplicarInformeAlFormulario(inf);
+  });
 }
 
 function guardarInforme() {
   if (!SESSION || !INFORME_PAC_ID) return;
-  var body = {
-    user_id:          SESSION.user.id,
-    paciente_id:      INFORME_PAC_ID,
-    fecha_evaluacion: document.getElementById('inf-fecha-eval').value || null,
-    evaluado_por:     document.getElementById('inf-evaluado-por').value || null,
-    derivado_por:     document.getElementById('inf-derivado-por').value || null,
-    dni:              document.getElementById('inf-dni').value || null,
-    ocupacion:        document.getElementById('inf-ocupacion').value || null,
-    procedencia:      document.getElementById('inf-procedencia').value || null,
-    dominancia:       document.getElementById('inf-dominancia').value || null,
-    contacto:         document.getElementById('inf-contacto').value || null,
-    ant_clinicos:     document.getElementById('inf-ant-clinicos').value || null,
-    ant_psiquiatricos:document.getElementById('inf-ant-psiq').value || null,
-    ant_familiares:   document.getElementById('inf-ant-fam').value || null,
-    habitos_toxicos:  document.getElementById('inf-habitos').value || null,
-    motivo_consulta:  document.getElementById('inf-motivo').value || null,
-    descripcion_conducta: document.getElementById('inf-conducta').value || null,
-    perfil_cognitivo: document.getElementById('inf-perfil-cog').value || null,
-    conclusiones:     document.getElementById('inf-conclusiones').value || null,
-    recomendaciones:  document.getElementById('inf-recomendaciones').value || null,
-    firma_imagen:     window._firmaBase64 || null,
-    actualizado:      new Date().toISOString()
-  };
-  // UPSERT — si ya existe lo actualiza, si no lo crea
-  supaFetch('/rest/v1/psico_informes?on_conflict=user_id,paciente_id', 'POST', body, SESSION.access_token, {'Prefer':'resolution=merge-duplicates'})
-    .then(function(){
-      toast('✓ Informe guardado', 'success');
+  var body = Object.assign({
+    user_id: SESSION.user.id,
+    paciente_id: INFORME_PAC_ID,
+    actualizado: new Date().toISOString()
+  }, leerInformeDesdeFormulario());
+  if (window._firmaBase64) body.firma_imagen = window._firmaBase64;
+
+  supaFetch('/rest/v1/psico_informes?on_conflict=user_id,paciente_id', 'POST', body, SESSION.access_token, {
+    'Prefer': 'resolution=merge-duplicates,return=representation'
+  })
+    .then(function(r) {
+      return r.json().then(function(data) {
+        if (!r.ok) {
+          var msg = (data && data.message) ? data.message : 'Error al guardar';
+          toast(msg, 'error');
+          return;
+        }
+        try { localStorage.setItem(informeCacheKey(INFORME_PAC_ID), JSON.stringify(body)); } catch (e) {}
+        toast('✓ Informe guardado', 'success');
+      });
     })
-    .catch(function(){ toast('Error al guardar informe', 'error'); });
+    .catch(function() { toast('Error al guardar informe', 'error'); });
 }
 
 
@@ -13864,14 +13914,13 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   var bg = isEven ? 'F0F7F4' : 'FFFFFF';
 
   if (isSubhdr) {
-    // Fila de subencabezado de dominio (texto centrado, fondo verde claro)
     var totalCols = COL_WIDTHS_HDR.length;
     var totalW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0);
     return _wRow([
       _wCell(
-        _wPar(_wRun(label,{bold:true,sz:20,color:'FFFFFF',font:'Arial'}),
-              {align:'center',before:30,after:30,shading:'2d4a3e'}),
-        {w:totalW, fill:'2d4a3e', span:totalCols}
+        _wPar(_wRun(label,{bold:true,sz:20,color:'000000',font:'Arial'}),
+              {align:'center',before:30,after:30,shading:'C8D8D0'}),
+        {w:totalW, fill:'C8D8D0', span:totalCols}
       )
     ]);
   }
@@ -13894,8 +13943,7 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   // Zona normativa: índices donde ZCOLS[i] >= -1 && ZCOLS[i] <= 1
   var normZone = ZCOLS.map(function(v){return v>=-1&&v<=1;});
 
-  // Color Z
-  var zColor = (z !== null && z !== undefined && parseFloat(z) < 0) ? 'C0392B' : '2d4a3e';
+  var zColor = '000000';
 
   // Interpretación
   function zInterp(z) {
@@ -13944,7 +13992,7 @@ function _zHdrRow() {
   var cells = [];
   var hdrFill = 'C8D8D0';
   function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'1e3830',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
+    return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
   }
   cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
@@ -13968,32 +14016,27 @@ function _zHdrRow() {
 
 // ── Generador principal ───────────────────────────────────────────────
 function generarWordHistorial() {
-  var filtro = document.getElementById('historial-filtro-pac');
-  var pacId  = filtro ? filtro.value : '';
-  var datos  = pacId ? RESULTADOS.filter(function(r){return String(r.paciente_id)===String(pacId);}) : RESULTADOS;
-  if (!datos.length) { toast('No hay evaluaciones para este paciente.','error'); return; }
+  var pacId = resolverPacienteInformeId();
+  if (!pacId) { toast('Seleccioná un paciente para generar el informe Word.', 'error'); return; }
+  var datos = RESULTADOS.filter(function(r) { return String(r.paciente_id) === String(pacId); });
+  if (!datos.length) { toast('No hay evaluaciones para este paciente.', 'error'); return; }
 
-  var pacInfo  = pacId ? PACIENTES.find(function(p){return p.id===pacId;}) : null;
+  var pacInfo  = PACIENTES.find(function(p) { return String(p.id) === String(pacId); });
   var pacNombre= pacInfo ? pacInfo.nombre : 'Paciente';
-  var pacEdad  = pacInfo && pacInfo.fecha_nacimiento ? calcularEdad(pacInfo.fecha_nacimiento)+' años' : '';
-  var pacFnac  = pacInfo ? (pacInfo.fecha_nacimiento||'') : '';
-  var pacSexo  = pacInfo ? (pacInfo.sexo||'') : '';
-  var pacEscol = pacInfo ? (pacInfo.escolaridad||'') : '';
-  var pacOcup  = pacInfo ? (pacInfo.ocupacion||'') : '';
-  var pacDNI   = pacInfo ? (pacInfo.dni||'') : '';
+  var pacEdad  = pacInfo && pacInfo.fecha_nacimiento ? calcularEdad(pacInfo.fecha_nacimiento) + ' años' : '';
+  var pacFnac  = pacInfo ? (pacInfo.fecha_nacimiento || '') : '';
+  var pacSexo  = pacInfo ? (pacInfo.sexo || '') : '';
+  var pacEscol = pacInfo ? (pacInfo.escolaridad || '') : '';
+  var pacOcup  = pacInfo ? (pacInfo.ocupacion || '') : '';
+  var pacDNI   = pacInfo ? (pacInfo.dni || '') : '';
 
-  var fechas   = datos.map(function(r){return r.fecha;}).filter(Boolean).sort();
-  var fechaEval= fechas.length ? fechas[fechas.length-1] : '';
+  var fechas   = datos.map(function(r) { return r.fecha; }).filter(Boolean).sort();
+  var fechaEval= fechas.length ? fechas[fechas.length - 1] : '';
 
-  var infPromise = (pacId&&SESSION) ?
-    supaFetch('/rest/v1/psico_informes?paciente_id=eq.'+pacId+'&user_id=eq.'+SESSION.user.id+'&select=*','GET',null,SESSION.access_token)
-      .then(function(r){return r.json();}).then(function(d){return(d&&d.length)?d[0]:null;}) :
-    Promise.resolve(null);
-
-  infPromise.then(function(inf){
-    _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf||{})
-      .catch(function(e){ console.error(e); toast('Error al generar Word: '+(e.message||e),'error'); });
-  }).catch(function(e){ console.error(e); toast('Error al obtener informe','error'); });
+  obtenerInformePaciente(pacId).then(function(inf) {
+    _buildWord(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacSexo, pacEscol, pacOcup, pacDNI, fechaEval, inf || {})
+      .catch(function(e) { console.error(e); toast('Error al generar Word: ' + (e.message || e), 'error'); });
+  }).catch(function(e) { console.error(e); toast('Error al obtener informe', 'error'); });
 }
 
 /** Quita fondo claro del logo y devuelve PNG con transparencia para el docx */
@@ -14212,9 +14255,9 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
 
   // ── Tabla simple para CL/TD/DO (Instrumento | Puntaje | Resultado) ──
   var COL_CL=[3200,1200,4960];
-  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'1e3830',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'C8D8D0',hdrBorder:true});}
+  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'C8D8D0',hdrBorder:true});}
   function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
-  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:'FFFFFF',font:'Arial'}),{before:25,after:25,shading:'2d4a3e'}),{w:9360,fill:'2d4a3e',span:3})]);}
+  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:'000000',font:'Arial'}),{before:25,after:25,shading:'C8D8D0'}),{w:9360,fill:'C8D8D0',span:3})]);}
   function buildSimpleRows(list){
     if(!list.length)return[];
     var rows=[],rc=0;
@@ -14295,28 +14338,39 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     });
   }
 
-  // ── Tabla datos personales ──
-  function dpRow(lbl,val){
+  // ── Tabla datos personales (fondo claro como grilla Z, texto negro) ──
+  var _dpRowIdx = 0;
+  function dpRow(lbl, val) {
+    var bg = _dpRowIdx % 2 === 0 ? 'F0F7F4' : 'FFFFFF';
+    _dpRowIdx++;
     return _wRow([
-      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:'FFFFFF'}),{before:40,after:40}),{w:2600,fill:'2d4a3e'}),
-      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'1a2420'}),{before:40,after:40}),{w:6760,fill:'FFFFFF'}),
+      _wCell(_wPar(_wRun(lbl, {bold:true, sz:20, font:'Arial', color:'000000'}), {before:40, after:40}), {w:2600, fill:bg}),
+      _wCell(_wPar(_wRun(val || '—', {sz:20, font:'Arial', color:'000000'}), {before:40, after:40}), {w:6760, fill:bg})
     ]);
   }
+  function dpHdrRow() {
+    return _wRow([
+      _wCell(_wPar(_wRun('Campo', {bold:true, sz:20, font:'Arial', color:'000000'}), {align:'center', before:30, after:30}), {w:2600, fill:'C8D8D0', hdrBorder:true}),
+      _wCell(_wPar(_wRun('Dato', {bold:true, sz:20, font:'Arial', color:'000000'}), {align:'center', before:30, after:30}), {w:6760, fill:'C8D8D0', hdrBorder:true})
+    ], {hdr:true});
+  }
 
-  // ── Sección título (línea verde bajo) ──
+  // ── Sección título ──
   function secTit(txt){
-    return _wPar(_wRun(txt,{bold:true,sz:22,color:'1e3830',font:'Arial'}),{before:240,after:60,border_b:'2d4a3e'});
+    return _wPar(_wRun(txt,{bold:true,sz:22,color:'000000',font:'Arial'}),{before:240,after:60,border_b:'C8D8D0'});
   }
 
   // ── Construir cuerpo ──
   var body='';
 
   // 1. TÍTULO
-  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'2d4a3e',font:'Arial'}),{align:'center',before:0,after:120});
+  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'000000',font:'Arial'}),{align:'center',before:0,after:120});
 
   // 2. DATOS DEL PACIENTE
+  _dpRowIdx = 0;
   body+=secTit('1. Datos del Paciente');
   body+=_wTable([
+    dpHdrRow(),
     dpRow('Apellido y Nombre', pacNombre),
     dpRow('Edad',              pacEdad),
     dpRow('Fecha de Nacimiento', pacFnac),
@@ -14361,7 +14415,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
       body+=_wPar(_wRun(dom.label,{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:20});
       // Lista de tests
       var listaTexto=presentes.map(function(t){return NOMBRES_TEST[t]||t;}).join(' · ');
-      body+=_wPar(_wRun(listaTexto,{sz:19,font:'Arial',color:'333333'}),{align:'both',before:0,after:60});
+      body+=_wPar(_wRun(listaTexto,{sz:19,font:'Arial',color:'000000'}),{align:'both',before:0,after:60});
     });
   }
 
@@ -14379,10 +14433,16 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     body+=_wPar('',{before:0,after:80});
   }
 
-  // 8. SUGERENCIAS (fijas siempre)
-  body+=secTit('8. Sugerencias');
-  body+='<w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">1.  Sostener consulta con profesional derivante a fines de correlacionar los resultados obtenidos con estudios complementarios (neuroimágenes, laboratorio, entre otros).</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">2.  Mantener chequeo médico general a fin de controlar factores de salud que puedan influir sobre el estado cognitivo (cardiovasculares, niveles de colesterol y triglicéridos, etc.), ya que son factores de riesgo para fluctuaciones cognitivas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">3.  Repetir estudio de valoración neuropsicológica en un plazo de 12 a 18 meses, a los fines de tener un estudio confirmatorio y de seguimiento sobre las variaciones de su estado cognitivo actual.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">4.  Se sugiere iniciar un programa de estimulación cognitiva a fin de evitar consolidación de déficits cognitivos y lograr mayores estrategias de aprendizaje y memoria con alcance ecológico, y de mejoramiento de la funcionalidad instrumental y expansiva.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">5.  Sostener proceso psicoterapéutico y/o psiquiátrico para el abordaje de la sintomatología emocional y el reforzamiento de estrategias de gestión de estrés.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">6.  Realizar y/o sostener consulta con psiquiatría a fin de prevenir y controlar afectividad negativa y labilidad emocional, como el manejo de cambios conductuales incipientes.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">7.  El profesional derivante podrá valorar la pertinencia de sugerir un programa de orientación y acompañamiento a familiares.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">8.  Sostener hábitos preventivos del funcionamiento cognitivo según se detallan en el Apéndice A del presente informe.</w:t></w:r></w:p>';
-  body+=_wPar('',{before:0,after:80});
+  // 8. RECOMENDACIONES (texto redactado por el profesional)
+  if ((inf.recomendaciones || '').trim()) {
+    body += secTit('8. Recomendaciones');
+    parrafos(inf.recomendaciones).forEach(function(p) { body += p; });
+    body += _wPar('', {before:0, after:80});
+  } else {
+    body += secTit('8. Sugerencias');
+    body += '<w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">1.  Sostener consulta con profesional derivante a fines de correlacionar los resultados obtenidos con estudios complementarios (neuroimágenes, laboratorio, entre otros).</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">2.  Mantener chequeo médico general a fin de controlar factores de salud que puedan influir sobre el estado cognitivo (cardiovasculares, niveles de colesterol y triglicéridos, etc.), ya que son factores de riesgo para fluctuaciones cognitivas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">3.  Repetir estudio de valoración neuropsicológica en un plazo de 12 a 18 meses, a los fines de tener un estudio confirmatorio y de seguimiento sobre las variaciones de su estado cognitivo actual.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">4.  Se sugiere iniciar un programa de estimulación cognitiva a fin de evitar consolidación de déficits cognitivos y lograr mayores estrategias de aprendizaje y memoria con alcance ecológico, y de mejoramiento de la funcionalidad instrumental y expansiva.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">5.  Sostener proceso psicoterapéutico y/o psiquiátrico para el abordaje de la sintomatología emocional y el reforzamiento de estrategias de gestión de estrés.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">6.  Realizar y/o sostener consulta con psiquiatría a fin de prevenir y controlar afectividad negativa y labilidad emocional, como el manejo de cambios conductuales incipientes.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">7.  El profesional derivante podrá valorar la pertinencia de sugerir un programa de orientación y acompañamiento a familiares.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">8.  Sostener hábitos preventivos del funcionamiento cognitivo según se detallan en el Apéndice A del presente informe.</w:t></w:r></w:p>';
+    body += _wPar('', {before:0, after:80});
+  }
 
   // 9. APÉNDICE A
   body+=secTit('Apéndice A: Sugerencias para Mantener su Mente Activa');
@@ -14437,7 +14497,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     var fam=famResults[famResults.length-1].datos||{};
     // Tabla: Tests | Significativo/No significativo | Síntomas
     var COL_FAM=[3200,1800,4360];
-    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'1e3830',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'C8D8D0',hdrBorder:true});}
+    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'C8D8D0',hdrBorder:true});}
     function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
     
     var famRows=[];
@@ -14519,8 +14579,8 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // 14. FIRMA
   body+=_wPar('',{before:400,after:0});
   body+=_wPar(_wRun('___________________________',{sz:20,color:'888888',font:'Arial'}),{before:0,after:40});
-  body+=_wPar(_wRun(inf.evaluado_por||'',{sz:18,font:'Arial',color:'333333'}),{before:0,after:40});
-  body+=_wPar(_wRun(new Date().toLocaleDateString('es-AR'),{sz:17,color:'888888',font:'Arial'}),{before:0,after:80});
+  body+=_wPar(_wRun(inf.evaluado_por||'',{sz:18,font:'Arial',color:'000000'}),{before:0,after:40});
+  body+=_wPar(_wRun(new Date().toLocaleDateString('es-AR'),{sz:17,color:'000000',font:'Arial'}),{before:0,after:80});
 
   // ── Armar XML docx ──
   var enc=new TextEncoder();
