@@ -14331,7 +14331,11 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   }
 
   var headerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
+    '<w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'+
+    ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'+
+    ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'+
+    ' xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'+
+    ' xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
     '<w:tbl>'+
       '<w:tblPr>'+
         '<w:tblW w:w="9360" w:type="dxa"/>'+
@@ -14353,18 +14357,17 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         '<w:tc><w:tcPr><w:tcW w:w="3000" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr>'+
         '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="40" w:after="40"/></w:pPr>'+
           '<w:r><w:rPr/><w:drawing>'+
-            '<wp:inline xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'+
-              ' distT="0" distB="0" distL="0" distR="0">'+
+            '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
               '<wp:extent cx="1097280" cy="411480"/>'+
               '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
               '<wp:docPr id="10" name="LogoPS" descr="Logo PsicoEscala"/>'+
-              '<wp:cNvGraphicFramePr><a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/></wp:cNvGraphicFramePr>'+
-              '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
+              '<wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr>'+
+              '<a:graphic>'+
                 '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                  '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
+                  '<pic:pic>'+
                     '<pic:nvPicPr><pic:cNvPr id="10" name="LogoPS"/><pic:cNvPicPr><a:picLocks noChangeAspect="1"/></pic:cNvPicPr></pic:nvPicPr>'+
                     '<pic:blipFill>'+
-                      '<a:blip r:embed="rImgPS" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>'+
+                      '<a:blip r:embed="rId1"/>'+
                       '<a:stretch><a:fillRect/></a:stretch>'+
                     '</pic:blipFill>'+
                     '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1097280" cy="411480"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'+
@@ -14457,7 +14460,11 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'+
     '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>'+
     '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>'+
-    '<Relationship Id="rImgPS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo_ps.png"/>'+
+    '</Relationships>';
+
+  var headerRelsXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo_ps.png"/>'+
     '</Relationships>';
 
   var stylesXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
@@ -14507,8 +14514,8 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     {name:'word/_rels/document.xml.rels',    data:enc.encode(relsXml)},
     {name:'word/styles.xml',                 data:enc.encode(stylesXml)},
     {name:'word/header1.xml',                data:enc.encode(headerXml)},
-    {name:'word/_rels/header1.xml.rels',     data:enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rImgPS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/logo_ps.png"/></Relationships>')},
-    {name:'word/media/logo_ps.png',          data:(function(){var b=atob(LOGO_B64);var u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;})()},
+    {name:'word/_rels/header1.xml.rels',     data:enc.encode(headerRelsXml)},
+    {name:'word/media/logo_ps.png',          data:b64ToBytes(LOGO_B64)},
     {name:'word/footer1.xml',                data:enc.encode(footerXml)},
     {name:'word/media/image1_unused.png',           data:b64ToBytes(GP_B64)},
     {name:'word/media/image2_unused.png',           data:b64ToBytes(CT_B64)},
