@@ -337,8 +337,40 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .welcome-banner span { color:#3d7a5f; }
 
 /* ══ MAIN CONTENT ══ */
-.app-main { flex:1; min-height:100vh; display:flex; flex-direction:column; padding-top:60px; width:100%; }
-.app-content { flex:1; padding:28px 32px 40px; max-width:1100px; width:100%; margin:0 auto; }
+.app-main { display:flex; flex-direction:row; min-height:100vh; padding-top:60px; width:100%; }
+
+/* ── SIDEBAR IZQUIERDO ── */
+.app-sidebar {
+  width:220px; min-width:220px; flex-shrink:0;
+  background:var(--sidebar);
+  position:fixed; top:60px; left:0; bottom:0; z-index:90;
+  overflow-y:auto; overflow-x:hidden;
+  display:flex; flex-direction:column;
+  padding:16px 0 24px;
+  border-right:1px solid rgba(255,255,255,0.08);
+}
+.app-sidebar::-webkit-scrollbar { width:4px; }
+.app-sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:4px; }
+.sidebar-nav-group { padding:0 10px; margin-bottom:4px; }
+.sidebar-nav-label { font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:1.5px; padding:12px 10px 4px; }
+.sidebar-nav-item {
+  display:flex; align-items:center; gap:9px;
+  padding:9px 12px; border-radius:7px; cursor:pointer;
+  color:rgba(255,255,255,0.65); font-size:0.83rem; font-weight:400;
+  transition:background 0.15s, color 0.15s; margin-bottom:2px;
+  border:none; background:none; width:100%; text-align:left;
+  font-family:var(--font-body);
+}
+.sidebar-nav-item:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.95); }
+.sidebar-nav-item.active { background:rgba(255,255,255,0.12); color:#fff; font-weight:500; }
+.sidebar-nav-item .nav-icon { font-size:14px; opacity:0.7; width:18px; text-align:center; flex-shrink:0; }
+.sidebar-divider { height:1px; background:rgba(255,255,255,0.08); margin:10px 14px; }
+.sidebar-bottom { padding:0 10px; margin-top:auto; }
+.sidebar-user-email { font-size:0.72rem; color:rgba(255,255,255,0.35); padding:8px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sidebar-salir { width:100%; padding:9px 12px; background:none; border:1px solid rgba(255,255,255,0.15); border-radius:7px; color:rgba(255,255,255,0.5); font-family:var(--font-body); font-size:0.8rem; cursor:pointer; transition:all 0.15s; }
+.sidebar-salir:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.85); }
+
+.app-content { flex:1; padding:28px 32px 40px; margin-left:220px; min-width:0; }
 
 
 /* ══ VISTAS ══ */
@@ -853,6 +885,52 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   </header>
 
   <div class="app-main">
+    <!-- SIDEBAR IZQUIERDO -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-nav-group">
+        <div class="sidebar-nav-label">General</div>
+        <button class="sidebar-nav-item active" id="snav-inicio" onclick="irVista('inicio')">
+          <span class="nav-icon">🏠</span> Inicio
+        </button>
+        <button class="sidebar-nav-item" id="snav-pacientes" onclick="irVista('pacientes')">
+          <span class="nav-icon">👤</span> Pacientes
+        </button>
+        <button class="sidebar-nav-item" id="snav-historial" onclick="irVista('historial')">
+          <span class="nav-icon">📊</span> Historial
+        </button>
+        <button class="sidebar-nav-item" id="snav-informe" onclick="irRedaccionInformes()">
+          <span class="nav-icon">📝</span> Redacción
+        </button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-nav-group">
+        <div class="sidebar-nav-label">Tests NP</div>
+        <button class="sidebar-nav-item" id="snav-neuro" onclick="irSector('neuro')">
+          <span class="nav-icon">🧠</span> Neuropsicológicos
+        </button>
+        <button class="sidebar-nav-item" id="snav-clinica" onclick="irSector('clinica')">
+          <span class="nav-icon">🩺</span> Clínica
+        </button>
+        <button class="sidebar-nav-item" id="snav-dolor" onclick="irSector('dolor')">
+          <span class="nav-icon">💊</span> Dolor
+        </button>
+        <button class="sidebar-nav-item" id="snav-tdah" onclick="irSector('tdah')">
+          <span class="nav-icon">⚡</span> TDAH
+        </button>
+        <button class="sidebar-nav-item" id="snav-familiar" onclick="irSector('familiar')">
+          <span class="nav-icon">👨‍👩‍👧</span> Familiar
+        </button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-bottom">
+        <button class="sidebar-nav-item" id="snav-config" onclick="irVista('config')">
+          <span class="nav-icon">⚙️</span> Configuración
+        </button>
+        <div class="sidebar-user-email" id="topbar-email"></div>
+        <button class="sidebar-salir" onclick="doLogout()">Cerrar sesión</button>
+      </div>
+    </aside>
+
     <div class="app-content">
     <div class="app-page-title" id="app-page-title"></div>
 
@@ -5455,7 +5533,7 @@ function profesionalDatosCompletos() {
 
 function actualizarBadgeConfig() {
   var badge = document.getElementById('nav-badge-config');
-  var btn = document.getElementById('tnav-config');
+  var btn = document.getElementById('snav-config');
   if (!badge || !btn) return;
   var ok = profesionalDatosCompletos();
   badge.style.display = ok ? 'none' : 'inline-flex';
@@ -5487,7 +5565,7 @@ function irRedaccionInformes() {
 }
 
 function setTopnavActive(id) {
-  document.querySelectorAll('.topnav-link').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-nav-item').forEach(function(el) { el.classList.remove('active'); });
   if (id) {
     var el = document.getElementById(id);
     if (el) el.classList.add('active');
@@ -6295,11 +6373,11 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   }
 
   // ── Estilos de tabla ──
-  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#000000;background:#C8D8D0;border-bottom:1px solid #c8d8d0;padding:5px 7px;';
+  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#e8f5f0;background:#3d7a5f;border-bottom:1px solid #2d4a3e;padding:5px 7px;';
   var tdBase = 'font-size:10.5px;color:#000000;border-bottom:0.5px solid #d4eadf;padding:5px 7px;';
 
   function domHeader(txt) {
-    return '<tr><td colspan="19" style="background:#C8D8D0;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#000000;border-bottom:1px solid #c8d8d0;text-align:center;">'+txt+'</td></tr>';
+    return '<tr><td colspan="19" style="background:#3d7a5f;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;border-bottom:1px solid #2d4a3e;text-align:center;">'+txt+'</td></tr>';
   }
 
   // ── Fila de tabla neuropsicológica ──
@@ -7513,7 +7591,7 @@ function irVista(v) {
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   var el = document.getElementById('vista-' + v);
   if(el) el.classList.add('active');
-  var map = {inicio:'tnav-inicio', pacientes:'tnav-pacientes', historial:'tnav-historial', informe:'tnav-informe', config:'tnav-config'};
+  var map = {inicio:'snav-inicio', pacientes:'snav-pacientes', historial:'snav-historial', informe:'snav-informe', config:'snav-config'};
   setTopnavActive(map[v] || null);
   actualizarTituloTopbar(v);
   actualizarWelcomeBanner(v === 'inicio');
@@ -7597,7 +7675,7 @@ function npRender() {
 
 function irSector(s) {
   sectorActual = s;
-  setTopnavActive(s === 'neuro' ? 'tnav-neuro' : null);
+  var sectorMap = {neuro:'snav-neuro',clinica:'snav-clinica',dolor:'snav-dolor',tdah:'snav-tdah',familiar:'snav-familiar'}; setTopnavActive(sectorMap[s]||null);
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   document.getElementById('vista-sector').classList.add('active');
   actualizarTituloTopbar('sector', s);
@@ -13833,12 +13911,13 @@ function _xe(s) {
 var WC = { VERDE_OSC:'1e3830', VERDE_MED:'2d4a3e', VERDE_CLR:'C8D8D0', GRIS_CLR:'EEEEEE', BLANCO:'FFFFFF' };
 var WT = {
   TBL_FULL: 13398,
-  HDR: 'C8D8D0',
-  DOM: 'C8D8D0',
+  HDR: '3d7a5f',
+  DOM: '3d7a5f',
   STRIPE: 'F0F7F4',
   WHITE: 'FFFFFF',
   NORM: 'D4EAE0',
-  TXT: '000000'
+  TXT: '1a2420',
+  HDR_TXT: 'FFFFFF'
 };
 
 // ── Helpers XML docx ──────────────────────────────────────────────────
@@ -14002,7 +14081,7 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 function _zHdrRow() {
   var cells = [];
   function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt, {sz: 16, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true, noWrap: true});
+    return _wCell(_wPar(_wRun(txt, {sz: 16, bold: true, color: WT.HDR_TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true, noWrap: true});
   }
   cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
@@ -14258,13 +14337,13 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // ── Tabla simple CL/TD/DO (Instrumento | Puntaje | Resultado) ──
   var COL_CL_SUM = COL_CL.reduce(function(a, b) { return a + b; }, 0);
   function clHdr(txt, w) {
-    return _wCell(_wPar(_wRun(txt, {sz: 18, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true});
+    return _wCell(_wPar(_wRun(txt, {sz: 18, bold: true, color: WT.HDR_TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true});
   }
   function clCell(txt, w, bg, center) {
     return _wCell(_wPar(_wRun(txt || '—', {sz: 20, font: 'Arial', color: WT.TXT}), {align: center ? 'center' : 'left', before: 20, after: 20}), {w: w, fill: bg || WT.WHITE});
   }
   function clDomHdr(txt) {
-    return _wRow([_wCell(_wPar(_wRun(txt, {bold: true, sz: 20, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 25, after: 25}), {w: COL_CL_SUM, fill: WT.DOM, span: 3})]);
+    return _wRow([_wCell(_wPar(_wRun(txt, {bold: true, sz: 20, color: WT.HDR_TXT, font: 'Arial'}), {align: 'center', before: 25, after: 25}), {w: COL_CL_SUM, fill: WT.DOM, span: 3})]);
   }
   function buildSimpleRows(list){
     if(!list.length)return[];
@@ -14353,8 +14432,8 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // ── Tabla datos personales (2 columnas, como informe de referencia) ──
   function dpRow(lbl, val) {
     return _wRow([
-      _wCell(_wPar(_wRun(lbl, {bold: true, sz: 20, font: 'Arial', color: WT.TXT}), {before: 20, after: 20}), {w: COL_DP[0], fill: WT.STRIPE}),
-      _wCell(_wPar(_wRun(val || '—', {sz: 20, font: 'Arial', color: WT.TXT}), {before: 20, after: 20}), {w: COL_DP[1], fill: WT.WHITE})
+      _wCell(_wPar(_wRun(lbl, {bold: true, sz: 20, font: 'Arial', color: 'FFFFFF'}), {before: 20, after: 20}), {w: COL_DP[0], fill: '3d7a5f'}),
+      _wCell(_wPar(_wRun(val || '—', {sz: 20, font: 'Arial', color: '1a2420'}), {before: 20, after: 20}), {w: COL_DP[1], fill: WT.WHITE})
     ]);
   }
 
@@ -14441,150 +14520,11 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     body += _wPar('', {before:0, after:80});
   } else {
     body += secTit('8. Sugerencias');
-    body += '<w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">1.  Sostener consulta con profesional derivante a fines de correlacionar los resultados obtenidos con estudios complementarios (neuroimágenes, laboratorio, entre otros).</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">2.  Mantener chequeo médico general a fin de controlar factores de salud que puedan influir sobre el estado cognitivo (cardiovasculares, niveles de colesterol y triglicéridos, etc.), ya que son factores de riesgo para fluctuaciones cognitivas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">3.  Repetir estudio de valoración neuropsicológica en un plazo de 12 a 18 meses, a los fines de tener un estudio confirmatorio y de seguimiento sobre las variaciones de su estado cognitivo actual.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">4.  Se sugiere iniciar un programa de estimulación cognitiva a fin de evitar consolidación de déficits cognitivos y lograr mayores estrategias de aprendizaje y memoria con alcance ecológico, y de mejoramiento de la funcionalidad instrumental y expansiva.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">5.  Sostener proceso psicoterapéutico y/o psiquiátrico para el abordaje de la sintomatología emocional y el reforzamiento de estrategias de gestión de estrés.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">6.  Realizar y/o sostener consulta con psiquiatría a fin de prevenir y controlar afectividad negativa y labilidad emocional, como el manejo de cambios conductuales incipientes.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">7.  El profesional derivante podrá valorar la pertinencia de sugerir un programa de orientación y acompañamiento a familiares.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">8.  Sostener hábitos preventivos del funcionamiento cognitivo según se detallan en el Apéndice A del presente informe.</w:t></w:r></w:p>';
     body += _wPar('', {before:0, after:80});
   }
 
   // 9. APÉNDICE A
-  body+=secTit('Apéndice A: Sugerencias para Mantener su Mente Activa');
-  body+=_wPar(_wRun('Ciertos hábitos han demostrado eficacia en la protección del funcionamiento cognitivo (prevención) y en la disminución del posible impacto de estresores diarios. Siguiendo las evidencias científicas en torno a la protección de la memoria y de las restantes funciones cerebrales, se le sugiere que:',{sz:20,font:'Arial',color:'000000'}),{align:'both',before:0,after:80});
-  body+='<w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Realice ejercicio físico periódicamente. El mismo debe implicar una frecuencia de al menos 3 veces por semana, y una duración de 45 minutos. Puede realizar caminatas, o alguna otra actividad física aeróbica de su agrado. Se sugiere, en caso posible, complementar la actividad aeróbica con actividades de flexibilidad, como yoga, y de resistencia (que impliquen fuerza). Para el inicio del programa de ejercicio debe contar con previa autorización y asesoramiento médico.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Lleve un estilo de vida saludable, intentado no abusar del alcohol y ni del tabaco.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Mantenga una dieta variada, que incluya al menos 5 porciones de frutas y vegetales cada día. Evite el consumo de grasas saturadas o snacks. Beba al menos 1,5 a 2 litros de agua a diario (al menos 6 vasos), fundamental fuente protectora del cerebro.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Evite situaciones de estrés emocional y mantenga actividades ocio recreativas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Mantenga una amplia gama de intereses y actividades de entretenimiento (ver películas, escuchar música). Retome sus intereses previos que le brindaban satisfacción.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Busque generar momentos de encuentro con sus amistades significativas o familiares, intercambie con ellos temas de su interés.</w:t></w:r></w:p>';
-  body+=_wPar('',{before:0,after:120});
-
-  // 10. APÉNDICE B - RESULTADOS ESTADÍSTICOS
-  body+=secTit('Apéndice B: Resultados Estadísticos');
-
-  // Tabla NP con grilla Z
-  var npRows=buildNPRows(testsNP);
-  if(npRows.length){
-    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
-    body+=_wTable([_zHdrRow()].concat(npRows),COL_WIDTHS_HDR);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // TABLA TDAH
-  var tdRows=buildSimpleRows(testsTD);
-  if(tdRows.length){
-    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(tdRows),COL_CL);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // TABLA DOLOR
-  var doRows=buildSimpleRows(testsDO);
-  if(doRows.length){
-    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(doRows),COL_CL);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // TABLA PSICOLOGÍA CLÍNICA
-  var clRows=buildSimpleRows(testsCL);
-  if(clRows.length){
-    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(clRows),COL_CL);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // 10. CUESTIONARIOS FAMILIARES (sección separada con tabla de síntomas)
-  if(famResults.length){
-    body+=secTit('Reporte del Acompañante');
-    var fam=famResults[famResults.length-1].datos||{};
-    // Tabla: Tests | Significativo/No significativo | Síntomas
-    function famHdrCell(txt, w) {
-      return _wCell(_wPar(_wRun(txt, {sz: 18, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true});
-    }
-    function famCell(txt, w, bg, center) {
-      return _wCell(_wPar(_wRun(txt || '—', {sz: 20, font: 'Arial', color: WT.TXT}), {align: center ? 'center' : 'left', before: 20, after: 20}), {w: w, fill: bg || WT.WHITE});
-    }
-    
-    var famRows=[];
-    famRows.push(_wRow([famHdrCell('Tests',COL_FAM[0]),famHdrCell('Significativo / No significativo',COL_FAM[1]),famHdrCell('Síntomas',COL_FAM[2])],{hdr:true}));
-    
-    // NPI-Q
-    var npiqTotal = fam.npiqTotal!=null ? fam.npiqTotal : (fam.npiq_total!=null?fam.npiq_total:0);
-    var npiqSig = npiqTotal>0 ? 'Significativo' : 'No significativo';
-    var npiqSint = '—';
-    var NPIQ_LABELS = {delirios:'Delirios',alucin:'Alucinaciones',agitacion:'Agitación',depresion:'Depresión/Disforia',ansiedad:'Ansiedad',euforia:'Euforia',apatia:'Apatía',desinhib:'Desinhibición',irritab:'Irritabilidad',motora:'Conducta Motora',sueno:'Alt. Sueño',apetito:'Alt. Apetito'};
-    var GRAV_LBL = ['','Leve','Moderado','Severo'];
-    if(fam.npiq&&typeof fam.npiq==='object'){
-      var sintomas=[];
-      Object.keys(fam.npiq).forEach(function(k){
-        var v=fam.npiq[k];
-        if(v&&v>0){
-          var lbl=NPIQ_LABELS[k]||k;
-          var grav=GRAV_LBL[v]||'';
-          sintomas.push(lbl+(grav?' ('+grav+')':''));
-        }
-      });
-      npiqSint = sintomas.length ? sintomas.join(' · ') : '—';
-    }
-    var famRc = 0;
-    function famDataRow(c0, c1, c2) {
-      var bg = famRc % 2 === 0 ? WT.STRIPE : WT.WHITE;
-      famRc++;
-      famRows.push(_wRow([famCell(c0, COL_FAM[0], bg), famCell(c1, COL_FAM[1], bg, true), famCell(c2, COL_FAM[2], bg)]));
-    }
-    famDataRow('Inventario neuropsiquiátrico NPI-Q', npiqSig, npiqSint);
-    
-    // AVD helper
-    function avdSintomas(obj, labels){
-      if(!obj||typeof obj!=='object') return '—';
-      var afect=[];
-      labels.forEach(function(it){
-        var v=obj[it.id];
-        if(v!=null&&v!=='independiente'&&v!=='0'&&v!==0&&v!==''){
-          afect.push(it.label+(typeof v==='string'&&v!=='dependiente'?' ('+v+')':''));
-        }
-      });
-      return afect.length?afect.join(' · '):'—';
-    }
-    var AVDB_LABELS=[{id:'identif',label:'Alimentación'},{id:'aseo',label:'Higiene'},{id:'vestirse',label:'Vestimenta'},{id:'continen',label:'Continencia'}];
-    var AVDI_LABELS=[{id:'telefono',label:'Teléfono'},{id:'compras',label:'Compras'},{id:'comida',label:'Comida'},{id:'transp',label:'Transporte'},{id:'medic',label:'Medicación'},{id:'dinero',label:'Dinero'}];
-    var AVDE_LABELS=[{id:'inform',label:'Información'},{id:'social',label:'Social'},{id:'recreat',label:'Recreación'},{id:'autono',label:'Autonomía'},{id:'planes',label:'Planes'},{id:'responsab',label:'Responsab.'},{id:'opinion',label:'Opinión'},{id:'aprende',label:'Aprendizaje'}];
-    
-    // AVD Básicas
-    var avdbVal = fam.avdbTotal!=null?fam.avdbTotal:(fam.avdb_total!=null?fam.avdb_total:null);
-    var avdbSig = avdbVal!=null ? (avdbVal<4?'No significativo':'Significativo') : '—';
-    var avdbSint = avdSintomas(fam.avdb, AVDB_LABELS);
-    famDataRow('Escala de AVD Básicas', avdbSig, avdbSint);
-    
-    // AVD Instrumentales
-    var avdiVal = fam.avdiTotal!=null?fam.avdiTotal:(fam.avdi_total!=null?fam.avdi_total:null);
-    var avdiSig = avdiVal!=null ? (avdiVal<6?'No significativo':'Significativo') : '—';
-    var avdiSint = avdSintomas(fam.avdi, AVDI_LABELS);
-    famDataRow('Escala de AVD Instrumentales', avdiSig, avdiSint);
-    
-    // AVD Expansivas
-    var avdeVal = fam.avdeTotal!=null?fam.avdeTotal:(fam.avde_total!=null?fam.avde_total:null);
-    var avdeSig = avdeVal!=null ? (avdeVal<8?'No significativo':'Significativo') : '—';
-    var avdeSint = avdSintomas(fam.avde, AVDE_LABELS);
-    famDataRow('Escala de AVD Expansivas', avdeSig, avdeSint);
-    
-    // AD8-ARG
-    var AD8_LABELS=[{id:'ad8_1',label:'Cambios en juicio'},{id:'ad8_2',label:'Menor interés en hobbies'},{id:'ad8_3',label:'Repite preguntas'},{id:'ad8_4',label:'Dificultad con dispositivos'},{id:'ad8_5',label:'Olvida mes o año'},{id:'ad8_6',label:'Dificultad con finanzas'},{id:'ad8_7',label:'Olvida citas'},{id:'ad8_8',label:'Problemas de memoria'}];
-    var ad8Val = fam.ad8Total!=null?fam.ad8Total:(fam.ad8_total!=null?fam.ad8_total:null);
-    var ad8Sig = ad8Val!=null ? (ad8Val>=2?'Significativo ('+ad8Val+'/8)':'No significativo ('+ad8Val+'/8)') : '—';
-    var ad8Sint = '—';
-    if(fam.ad8&&typeof fam.ad8==='object'){
-      var ad8Afect=[];
-      AD8_LABELS.forEach(function(it){if(fam.ad8[it.id]==='si')ad8Afect.push(it.label);});
-      ad8Sint = ad8Afect.length?ad8Afect.join(' · '):'—';
-    }
-    famDataRow('Cuestionario del Informante AD8-ARG', ad8Sig, ad8Sint);
-    
-    body+=_wTable(famRows,COL_FAM);
-    body+=_wPar('N/V = no valorado; N/C = paciente no está en condiciones para responder o ser valorado.',{before:40,after:80});
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // (Perfil, conclusiones y sugerencias ya están arriba en el orden correcto)
+// (Perfil, conclusiones y sugerencias ya están arriba en el orden correcto)
 
   // 14. FIRMA
   body+=_wPar('',{before:400,after:0});
