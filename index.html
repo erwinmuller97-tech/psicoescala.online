@@ -6186,6 +6186,16 @@ function generarPDFHistorial() {
   });
 }
 
+/** Etiqueta de columna en la grilla Z (−3 … +3) — PDF y Word */
+function zColLabel(v) {
+  if (v % 1 === 0) return v > 0 ? '+' + v : String(v);
+  if (v === -0.5) return '−½';
+  if (v === 0.5) return '+½';
+  var whole = Math.trunc(v);
+  var sign = v < 0 ? '−' : '+';
+  return sign + Math.abs(whole) + '½';
+}
+
 function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacSexo, pacEscol, inf) {
   inf = inf || {};
 
@@ -6271,35 +6281,32 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   function zGrilla(z) {
     var dynCols = COLS.slice();
     var zClamped = z;
-    var hds = dynCols.map(function(v){
-      var lbl = (v % 0.5 === 0) ? (v>0?'+'+v:String(v)) : '';
-      return '<td style="width:14px;font-size:7px;text-align:center;color:#000;padding:0 0 1px 0;border:none;font-family:monospace;font-weight:900;white-space:nowrap;">'+lbl+'</td>';
+    var cellStyle = 'width:12px;min-width:12px;max-width:12px;height:13px;text-align:center;vertical-align:middle;padding:0;border:1px solid #555555;';
+    var hds = dynCols.map(function(v) {
+      return '<td style="'+cellStyle+'font-size:6.5px;color:#000;font-family:Arial,sans-serif;font-weight:700;background:#C8D8D0;border-bottom:none;">'+
+        zColLabel(v) + '</td>';
     }).join('');
-    var cells = dynCols.map(function(v){
+    var cells = dynCols.map(function(v) {
       var isX = false;
       if (zClamped !== null && zClamped !== undefined) {
         var zForX = Math.max(-3, Math.min(3, zClamped));
-        var closest = dynCols.reduce(function(a,b){ return Math.abs(b-zForX)<Math.abs(a-zForX)?b:a; });
+        var closest = dynCols.reduce(function(a, b) { return Math.abs(b - zForX) < Math.abs(a - zForX) ? b : a; });
         isX = (v === closest);
       }
       var enNormal = (v >= -1 && v <= 1);
       var bg = enNormal ? '#d4eadf' : '#ffffff';
-      var border = '1px solid #555555';
-      var inner = isX
-        ? '<span style="font-size:9px;font-weight:900;color:#000;line-height:1;">X</span>'
-        : '';
-      return '<td style="width:14px;height:13px;text-align:center;vertical-align:middle;'+
-        'background:'+bg+';border:'+border+';padding:0;">'+inner+'</td>';
+      var inner = isX ? '<span style="font-size:8px;font-weight:900;color:#000;line-height:1;">X</span>' : '';
+      return '<td style="'+cellStyle+'background:'+bg+';">'+inner+'</td>';
     }).join('');
-    return '<table style="border-collapse:collapse;table-layout:fixed;margin:0 auto;"><tr>'+hds+'</tr><tr>'+cells+'</tr></table>';
+    return '<table style="border-collapse:collapse;table-layout:fixed;margin:0 auto;width:auto;"><tr>'+hds+'</tr><tr>'+cells+'</tr></table>';
   }
 
   // ── Estilos de tabla ──
-  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#e8f5f0;background:#2d4a3e;border-bottom:1px solid #1e3830;padding:5px 7px;';
-  var tdBase = 'font-size:10.5px;border-bottom:0.5px solid #d4eadf;padding:5px 7px;';
+  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#000000;background:#C8D8D0;border-bottom:1px solid #c8d8d0;padding:5px 7px;';
+  var tdBase = 'font-size:10.5px;color:#000000;border-bottom:0.5px solid #d4eadf;padding:5px 7px;';
 
   function domHeader(txt) {
-    return '<tr><td colspan="9" style="background:#3d7a5f;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;border-bottom:1px solid #1e3d30;">'+txt+'</td></tr>';
+    return '<tr><td colspan="8" style="background:#C8D8D0;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#000000;border-bottom:1px solid #c8d8d0;text-align:center;">'+txt+'</td></tr>';
   }
 
   // ── Fila de tabla neuropsicológica ──
@@ -6331,7 +6338,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
       '<td style="'+tdBase+'text-align:center;font-family:monospace;">'+tStr+'</td>'+
       '<td style="'+tdBase+'text-align:center;font-family:monospace;font-size:9px;">'+mStr+'</td>'+
       '<td style="'+tdBase+'text-align:center;font-family:monospace;font-size:9px;">'+dsStr+'</td>'+
-      '<td style="'+tdBase+'padding:3px 5px;">'+zGrilla(z)+'</td>'+
+      '<td style="'+tdBase+'padding:2px 4px;text-align:center;vertical-align:middle;">'+zGrilla(z)+'</td>'+
       '<td style="'+tdBase+'font-size:9px;color:#111;font-weight:700;">'+
         (z!=null&&z!=undefined ? lbl : (nota!=null&&nota!=undefined ? '<em style="color:#3d6b55;font-weight:400;">'+nota+'</em>' : '—'))+
         (nota!=null&&nota!=undefined&&z!=null&&z!=undefined ? '<br><em style="color:#3d6b55;font-weight:400;font-size:8px;">'+nota+'</em>' : '')+
@@ -6347,7 +6354,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
       '<th style="'+thBase+'text-align:center;">T</th>'+
       '<th style="'+thBase+'text-align:center;">M</th>'+
       '<th style="'+thBase+'text-align:center;">DS</th>'+
-      '<th style="'+thBase+'text-align:center;min-width:220px;">Perfil</th>'+
+      '<th style="'+thBase+'text-align:center;">Perfil</th>'+
       '<th style="'+thBase+'">Interpretación</th>'+
       '</tr></thead>';
   }
@@ -6685,13 +6692,13 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'WAIS-IV') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WAIS-IV · Retención de Dígitos, Claves, Sec. Número-Letra</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WAIS-IV · Retención de Dígitos, Claves, Sec. Número-Letra</td></tr>';
           if (d.rd_pb != null) rows += filaTabla('Retención de Dígitos', d.rd_pb, 10, 3, d.rd_z, r.fecha);
           if (d.cla_pb != null) rows += filaTabla('Claves', d.cla_pb, 10, 3, d.cla_z, r.fecha);
           if (d.sln_pb != null) rows += filaTabla('Sec. Número-Letra', d.sln_pb, 10, 3, d.sln_z, r.fecha);
 
         } else if (testNombre === 'Test del Hotel') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Test del Hotel (Pinasco et al., 2023)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Test del Hotel (Pinasco et al., 2023)</td></tr>';
           var hSexo = d.sexo||'f'; var hGi = d.gi!=null?d.gi:0;
           var hBar = (typeof HOTEL_BAR !== 'undefined') ? HOTEL_BAR[hSexo] : null;
           var hMT=d.mTareas||(hBar?hBar.tareas[hGi][0]:null), hDST=d.dsTareas||(hBar?hBar.tareas[hGi][1]:null);
@@ -6702,15 +6709,15 @@ function renderCuestionariosFam(d) {
           if (d.zBotones != null) rows += filaTabla('Hotel — Desvío botones', d.desvBotones!=null?d.desvBotones+' seg':null, hMB, hDSB, d.zBotones, r.fecha, 'Mem. prospectiva');
 
         } else if (testNombre === 'BADS-Llaves') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)</td></tr>';
           rows += filaTabla('Búsqueda de Llaves', d.pb!=null?d.pb:null, d.m||null, d.ds||null, d.z, r.fecha, 'Pje conv. '+(d.conv!=null?d.conv:'—'));
 
         } else if (testNombre === 'BADS-Juicio') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Juicio Temporal (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Juicio Temporal (Farías Sarquís et al., 2021)</td></tr>';
           rows += filaTabla('Juicio Temporal', d.conv!=null?d.conv:null, d.m||null, d.ds||null, d.z, r.fecha, null);
 
         } else if (testNombre === 'BADS-Zoo') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Mapa del Zoo (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Mapa del Zoo (Farías Sarquís et al., 2021)</td></tr>';
           var ver = d.ver||'ambas';
           if (ver==='v1'||ver==='ambas') {
             rows += filaTabla('Zoo V1 — Secuencia', d.v1s!=null?d.v1s:null, d.m_v1sec?d.m_v1sec[0]:null, d.m_v1sec?d.m_v1sec[1]:null, d.z_v1sec!=null?d.z_v1sec:null, r.fecha, null);
@@ -6730,7 +6737,7 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'BTA') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BTA · Brief Test of Attention (Arango-Lasprilla et al., 2015)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BTA · Brief Test of Attention (Arango-Lasprilla et al., 2015)</td></tr>';
           var btaEi = d.ei != null ? d.ei : null;
           var btaGi = d.gi != null ? d.gi : null;
           var btaEdadLabels = ['18–22','23–27','28–32','33–37','38–42','43–47','48–52','53–57','58–62','63–67','68–72','73–77','>77'];
@@ -6740,13 +6747,13 @@ function renderCuestionariosFam(d) {
 
         } else if (testNombre === 'DEX') {
           var dexVer = d.version === 'hetero' ? 'Heteroadministrado' : 'Autoadministrado';
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">DEX · Cuestionario Disejecutivo · '+dexVer+' · Querejeta et al. (2015) · Adaptación argentina</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">DEX · Cuestionario Disejecutivo · '+dexVer+' · Querejeta et al. (2015) · Adaptación argentina</td></tr>';
           rows += filaTabla('DEX — Desorg./Apatía', d.desorg, 8.60, 5.79, d.zDesorg, r.fecha, 'Ítems 1,4,6,7,8,10,11,17,18,19');
           rows += filaTabla('DEX — Desinhi./Impuls.', d.desinhi, 9.69, 5.19, d.zDesinhi, r.fecha, 'Ítems 2,3,5,9,12,13,14,15,16,20');
           rows += filaTabla('DEX Total', d.total, d.version==='hetero'?20.68:22.25, d.version==='hetero'?14.77:10.10, d.zTotal, r.fecha, 'Puntaje /80');
 
         } else if (testNombre === 'WCST-64') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
           if (d.categorias != null)
             rows += filaTabla('Categorías completadas', d.categorias+'/6', d.cat_m||null, d.cat_ds||null, d.cat_z!=null?d.cat_z:null, r.fecha);
           if (d.perse_pct != null)
@@ -6799,7 +6806,7 @@ function renderCuestionariosFam(d) {
           rows += filaTabla('BTA', d.pb, null, null, d.z, r.fecha, 'Pc '+(d.pc||'—')+' · '+btaEd+' · '+btaEs);
 
         } else if (testNombre === 'SDMT-escrita' || testNombre === 'SDMT-oral') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">SDMT · Symbol Digit Modalities Test ('+(sdmtVer==='escrita'?'Versión Escrita — Arango-Lasprilla et al., 2015':'Versión Oral — Vanotti et al., 2015')+')</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">SDMT · Symbol Digit Modalities Test ('+(sdmtVer==='escrita'?'Versión Escrita — Arango-Lasprilla et al., 2015':'Versión Oral — Vanotti et al., 2015')+')</td></tr>';
           var sdmtVer = testNombre === 'SDMT-oral' ? 'oral' : 'escrita';
           var sdmtEdadLabels = sdmtVer==='escrita'
             ? ['18–22','23–27','28–32','33–37','38–42','43–47','48–52','53–57','58–62','63–67','68–72','73–77','>77']
@@ -6813,7 +6820,7 @@ function renderCuestionariosFam(d) {
         } else if (testNombre === 'FAB') {
           var fabBarLabels = {escol:'Nivel educativo',edad:'Edad',sexo:'Sexo',total:'Total muestra'};
           var fabEscolL = ['Primario','Secundario','Terciario/Universitario'];
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">FAB · Frontal Assessment Battery (Dubois et al. 2000) · Baremos Aceiro et al. (2018) · Argentina · Baremo: '+(fabBarLabels[d.baremo]||'—')+(d.barLabel?' — '+d.barLabel:'')+'</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">FAB · Frontal Assessment Battery (Dubois et al. 2000) · Baremos Aceiro et al. (2018) · Argentina · Baremo: '+(fabBarLabels[d.baremo]||'—')+(d.barLabel?' — '+d.barLabel:'')+'</td></tr>';
           rows += filaTabla('FAB Total', d.total, d.M||null, d.DS||null, d.z, r.fecha, 'Puntaje /18');
           if (d.scores && d.scores.length) {
             var fabNombres = ['Semejanzas','Fluidez verbal','Secuencias motoras','Instr. conflictivas','Go-No Go','Prensión'];
@@ -6823,7 +6830,7 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'D2') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">d2 · Test de Atención (Brickenkamp) · Baremos TEA Ediciones · ' + (D2_GRUPOS[d.gi]||'') + '</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">d2 · Test de Atención (Brickenkamp) · Baremos TEA Ediciones · ' + (D2_GRUPOS[d.gi]||'') + '</td></tr>';
           var d2Indices = [
             { key:'TR',  label:'TR · Total respuestas'  },
             { key:'TA',  label:'TA · Total aciertos'    },
@@ -6882,7 +6889,9 @@ function renderCuestionariosFam(d) {
       }
     });
 
-    return '<table style="width:100%;border-collapse:collapse;">' + tablaHeader() + '<tbody>' + rows + '</tbody></table>';
+    return '<div style="width:100%;display:flex;justify-content:center;margin:12px auto 16px;overflow-x:auto;">'+
+      '<table style="width:auto;max-width:100%;border-collapse:collapse;margin:0 auto;table-layout:auto;font-size:9px;">'+
+      tablaHeader() + '<tbody>' + rows + '</tbody></table></div>';
   }
 
   // ── Render sección Dolor ──
@@ -7003,7 +7012,8 @@ function renderCuestionariosFam(d) {
         html += '</tbody></table>';
       }
     });
-    return html;
+    return '<div style="width:100%;display:flex;justify-content:center;margin:6px 0 14px;">'+
+      '<div style="max-width:100%;">'+html+'</div></div>';
   }
 
   // ── Render sección Clínica / TDAH (puntos de corte) ──
@@ -7240,7 +7250,8 @@ function renderCuestionariosFam(d) {
         '</tbody></table>';
     });
 
-    return html;
+    return '<div style="width:100%;display:flex;justify-content:center;margin:6px 0 14px;">'+
+      '<div style="max-width:100%;">'+html+'</div></div>';
   }
 
   // ── Logo SVG ──
@@ -7273,15 +7284,15 @@ function renderCuestionariosFam(d) {
   var html = '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">'+
     '<title>Historial — '+pacNombre+'</title>'+
     '<style>'+
-    'body{font-family:Georgia,serif;background:#fff;color:#2c1a0e;margin:0;padding:20px;}'+
-    '.pg{max-width:900px;margin:0 auto;}'+
-    'table{border-collapse:collapse;width:100%;}'+
+    'body{font-family:Georgia,serif;background:#fff;color:#2c1a0e;margin:0;padding:12px;}'+
+    '.pg{max-width:100%;width:100%;margin:0 auto;}'+
+    'table{border-collapse:collapse;}'+
     '.narrativa{font-family:Arial,sans-serif;font-size:12pt;line-height:1.5;text-align:justify;color:#1a1a1a;margin:0 0 8px 0;}'+
     '.sec-titulo{font-family:Arial,sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#2d4a3e;border-bottom:1.5px solid #3d7a5f;margin:16px 0 6px;padding-bottom:3px;}'+
     '.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-family:Arial,sans-serif;font-size:11pt;}'+
     '.ficha-item{display:flex;gap:6px;padding:2px 0;}'+
     '.ficha-lbl{font-weight:700;white-space:nowrap;color:#2d4a3e;}'+
-    '@media print{body{padding:0;}@page{margin:15mm 15mm 15mm 20mm;size:A4 portrait;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}}'+
+    '@media print{body{padding:0;}@page{margin:10mm 8mm;size:A4 landscape;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}}'+
     '</style></head><body><div class="pg">'+
 
     // ── Header ──
@@ -7436,7 +7447,7 @@ function renderCuestionariosFam(d) {
     '<div>'+new Date().toLocaleDateString('es-AR')+'</div></div>'+
     '</div></body></html>';
 
-  var win = window.open('','_blank','width=1000,height=750');
+  var win = window.open('','_blank','width=1200,height=800');
   if (!win) { toast('Bloqueador de popups activo. Permitir ventanas emergentes.','error'); return; }
   win.document.write(html);
   win.document.close();
@@ -13878,9 +13889,11 @@ function _wRow(cells, opts) {
 }
 
 function _wTable(rows, colWidths) {
+  var totalW = colWidths.reduce(function(a, b) { return a + b; }, 0);
   var tblGrid = '<w:tblGrid>'+colWidths.map(function(w){return '<w:gridCol w:w="'+w+'"/>';}).join('')+'</w:tblGrid>';
   var tblPr = '<w:tblPr>'+
-    '<w:tblW w:w="13398" w:type="dxa"/>'+
+    '<w:tblW w:w="'+totalW+'" w:type="dxa"/>'+
+    '<w:jc w:val="center"/>'+
     '<w:tblLayout w:type="fixed"/>'+
     '<w:tblBorders>'+
       '<w:top    w:val="single" w:sz="12" w:color="595959"/>'+
@@ -13899,16 +13912,12 @@ function _wTable(rows, colWidths) {
 // La grilla tiene 13 columnas: -3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3
 // Zona normativa: -1 a +1 (posiciones 4..8 inclusive) → sombreado verde
 var ZCOLS = [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3];
-var ZCOL_W = 290; // 290 DXA ≈ 5.1mm por columna × 13 = 3770 DXA
+var ZCOL_W = 290;
 
-// anchos de columnas fijas: Variable(2600) | PB(620) | M(620) | DS(620) | Z(620) | 13×grilla(290×13=3770) | Interp(1510) = total 10360
-// Ajustamos a A4: ~9360 DXA (A4 con márgenes 1134 each → content = 11906-2268 = 9638, usamos 9360)
-// Variable(2200) | PB(560) | M(560) | DS(560) | Z(560) | 13×grilla(240×13=3120) | Interp(1800) = 9360
-// Anchos landscape A4 márgenes 720 (15398 DXA):
-// Variable(2200) PB(460) M(460) DS(460) Z(540) 13×grilla(540×13=7020) Interp(1258) = 13398 ~ ok
-var _ZGRILLA_W2 = 540;
-var COL_WIDTHS_HDR = [2200, 460, 460, 460, 540].concat(ZCOLS.map(function(){return _ZGRILLA_W2;})).concat([1258]);
-var _TOTAL_HDR = 13398;
+// Anchos ajustados al ancho útil A4 apaisado (~15400 dxa): grilla completa −3…+3 centrada
+var _ZGRILLA_W2 = 410;
+var COL_WIDTHS_HDR = [2000, 400, 400, 400, 420].concat(ZCOLS.map(function() { return _ZGRILLA_W2; })).concat([1100]);
+var _TOTAL_HDR = COL_WIDTHS_HDR.reduce(function(a, b) { return a + b; }, 0);
 
 function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   var bg = isEven ? 'F0F7F4' : 'FFFFFF';
@@ -13988,27 +13997,18 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 }
 
 function _zHdrRow() {
-  // Etiquetas de encabezado de la grilla: enteros con signo, vacío para .5
   var cells = [];
   var hdrFill = 'C8D8D0';
   function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
+    return _wCell(_wPar(_wRun(txt,{sz:16,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
   }
   cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
   cells.push(hc('M',        COL_WIDTHS_HDR[2]));
   cells.push(hc('DS',       COL_WIDTHS_HDR[3]));
   cells.push(hc('Z',        COL_WIDTHS_HDR[4]));
-  ZCOLS.forEach(function(v,i){
-    var lbl;
-    if (v % 1 === 0) {
-      lbl = v > 0 ? '+'+v : String(v);
-    } else {
-      // Usar ½ para evitar wrap en PDF
-      var base = Math.trunc(v);
-      lbl = (base > 0 ? '+' : '') + base + '½';
-    }
-    cells.push(hc(lbl, COL_WIDTHS_HDR[5+i]));
+  ZCOLS.forEach(function(v, i) {
+    cells.push(hc(zColLabel(v), COL_WIDTHS_HDR[5 + i]));
   });
   cells.push(hc('Interpretación', COL_WIDTHS_HDR[18]));
   return _wRow(cells, {hdr:true});
@@ -14456,7 +14456,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // Tabla NP con grilla Z
   var npRows=buildNPRows(testsNP);
   if(npRows.length){
-    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
     body+=_wTable([_zHdrRow()].concat(npRows),COL_WIDTHS_HDR);
     body+=_wPar('',{before:0,after:80});
   }
@@ -14464,7 +14464,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // TABLA TDAH
   var tdRows=buildSimpleRows(testsTD);
   if(tdRows.length){
-    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(tdRows),COL_CL);
@@ -14474,7 +14474,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // TABLA DOLOR
   var doRows=buildSimpleRows(testsDO);
   if(doRows.length){
-    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(doRows),COL_CL);
@@ -14484,7 +14484,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   // TABLA PSICOLOGÍA CLÍNICA
   var clRows=buildSimpleRows(testsCL);
   if(clRows.length){
-    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:'000000'}),{align:'center',before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(clRows),COL_CL);
@@ -14605,7 +14605,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     '<w:sectPr>'+
       '<w:headerReference w:type="default" r:id="rId2"/>'+
       '<w:footerReference w:type="default" r:id="rId3"/>'+
-      '<w:pgSz w:w="11906" w:h="16838"/>'+
+      '<w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>'+
       '<w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="900" w:footer="709" w:gutter="0"/>'+
     '</w:sectPr>'+
     '</w:body></w:document>';
