@@ -888,44 +888,25 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <!-- SIDEBAR IZQUIERDO -->
     <aside class="app-sidebar" id="app-sidebar">
       <div class="sidebar-nav-group">
-        <div class="sidebar-nav-label">General</div>
-        <button class="sidebar-nav-item active" id="snav-inicio" onclick="irVista('inicio')">
-          <span class="nav-icon">🏠</span> Inicio
-        </button>
-        <button class="sidebar-nav-item" id="snav-pacientes" onclick="irVista('pacientes')">
-          <span class="nav-icon">👤</span> Pacientes
-        </button>
-        <button class="sidebar-nav-item" id="snav-historial" onclick="irVista('historial')">
-          <span class="nav-icon">📊</span> Historial
-        </button>
-        <button class="sidebar-nav-item" id="snav-informe" onclick="irRedaccionInformes()">
-          <span class="nav-icon">📝</span> Redacción
-        </button>
+        <button class="sidebar-nav-item active" id="snav-inicio" onclick="irVista('inicio')">Inicio</button>
+        <button class="sidebar-nav-item" id="snav-config" onclick="irVista('config')">Datos del Profesional</button>
+        <button class="sidebar-nav-item" id="snav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-nav-group">
-        <div class="sidebar-nav-label">Tests NP</div>
-        <button class="sidebar-nav-item" id="snav-neuro" onclick="irSector('neuro')">
-          <span class="nav-icon">🧠</span> Neuropsicológicos
-        </button>
-        <button class="sidebar-nav-item" id="snav-clinica" onclick="irSector('clinica')">
-          <span class="nav-icon">🩺</span> Clínica
-        </button>
-        <button class="sidebar-nav-item" id="snav-dolor" onclick="irSector('dolor')">
-          <span class="nav-icon">💊</span> Dolor
-        </button>
-        <button class="sidebar-nav-item" id="snav-tdah" onclick="irSector('tdah')">
-          <span class="nav-icon">⚡</span> TDAH
-        </button>
-        <button class="sidebar-nav-item" id="snav-familiar" onclick="irSector('familiar')">
-          <span class="nav-icon">👨‍👩‍👧</span> Familiar
-        </button>
+        <div class="sidebar-nav-label">Tests</div>
+        <button class="sidebar-nav-item" id="snav-neuro" onclick="irSector('neuro')">Tests Neuropsicológicos</button>
+        <button class="sidebar-nav-item" id="snav-clinica" onclick="irSector('clinica')">Psicología Clínica</button>
+        <button class="sidebar-nav-item" id="snav-dolor" onclick="irSector('dolor')">Dolor</button>
+        <button class="sidebar-nav-item" id="snav-tdah" onclick="irSector('tdah')">TDAH</button>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-nav-group">
+        <button class="sidebar-nav-item" id="snav-historial" onclick="irVista('historial')">Historial</button>
+        <button class="sidebar-nav-item" id="snav-informe" onclick="irRedaccionInformes()">Redactar Informe</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-bottom">
-        <button class="sidebar-nav-item" id="snav-config" onclick="irVista('config')">
-          <span class="nav-icon">⚙️</span> Configuración
-        </button>
         <div class="sidebar-user-email" id="topbar-email"></div>
         <button class="sidebar-salir" onclick="doLogout()">Cerrar sesión</button>
       </div>
@@ -14523,8 +14504,39 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     body += _wPar('', {before:0, after:80});
   }
 
-  // 9. APÉNDICE A
-// (Perfil, conclusiones y sugerencias ya están arriba en el orden correcto)
+  // 9. APÉNDICE B — Resultados Estadísticos (grilla Z)
+  var npList = datos.filter(function(r){ return NP_LIST.indexOf(r.test)!==-1; });
+  var clList = datos.filter(function(r){ return CL_LIST.indexOf(r.test)!==-1; });
+  var tdList = datos.filter(function(r){ return TD_LIST.indexOf(r.test)!==-1; });
+  var doList = datos.filter(function(r){ return DO_LIST.indexOf(r.test)!==-1; });
+  var hayApB = npList.length || clList.length || tdList.length || doList.length;
+  if(hayApB){
+    body+='<w:p><w:pPr><w:pageBreakBefore/></w:pPr></w:p>';
+    body+=secTit('Apéndice B: Resultados Estadísticos');
+    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:80,after:60});
+    // Header de columnas
+    var hdrCols=['Variable','PB','M','DS','Z','-3','-2½','-2','-1½','-1','0½','0','0½','+1','+1½','+2','+2½','+3','Interpretación'];
+    var hdrRow=_wRow(hdrCols.map(function(h,i){return hdrCell(h,COL_WIDTHS_HDR[i]);}));
+    var npRows = buildNPRows(npList);
+    if(npRows.length){
+      body+=_wTable([hdrRow].concat(npRows),COL_WIDTHS_HDR,{landscape:true});
+    }
+    if(clList.length){
+      body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:120,after:60});
+      var clHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
+      body+=_wTable([clHdr].concat(buildSimpleRows(clList)),COL_CL);
+    }
+    if(tdList.length){
+      body+=_wPar(_wRun('TDAH',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:120,after:60});
+      var tdHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
+      body+=_wTable([tdHdr].concat(buildSimpleRows(tdList)),COL_CL);
+    }
+    if(doList.length){
+      body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:120,after:60});
+      var doHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
+      body+=_wTable([doHdr].concat(buildSimpleRows(doList)),COL_CL);
+    }
+  }
 
   // 14. FIRMA
   body+=_wPar('',{before:400,after:0});
