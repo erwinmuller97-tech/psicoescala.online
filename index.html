@@ -4,26 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PsicoEscala</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        forest: '#2d4a3e',
-        mint: '#3d7a5f',
-        forestdk: '#1e3830',
-        panel: '#f5f7f5',
-        subtle: '#c8d8d0'
-      },
-      fontFamily: {
-        display: ['"Plus Jakarta Sans"', 'sans-serif'],
-        body: ['Inter', 'sans-serif']
-      }
-    }
-  }
-};
-</script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -42,7 +22,7 @@ tailwind.config = {
   --bg:        #f5f7f5;
   --surface:   #ffffff;
   --surface2:  #eef2f7;
-  --sidebar:   var(--brand-900);
+  --sidebar:   #2d4a3e;
   --border:    #c8d8d0;
   --border2:   #a8bdb2;
   --accent:    var(--brand-600);
@@ -280,7 +260,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   box-shadow:0 2px 16px rgba(30,56,48,0.2);
 }
 .app-navbar-inner {
-  display:flex; align-items:center; gap:12px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
   padding:0 20px; height:60px; max-width:100%;
 }
 .app-navbar-brand { display:flex; align-items:center; gap:10px; flex-shrink:0; cursor:pointer; }
@@ -845,7 +825,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica</div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.76</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -864,22 +844,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div class="logo-mark" aria-hidden="true"></div>
         <span class="app-navbar-name">PsicoEscala</span>
       </div>
-      <nav class="app-navbar-nav" aria-label="Navegación principal">
-        <button type="button" class="topnav-link active" id="tnav-inicio" onclick="irVista('inicio')">Inicio / General</button>
-        <button type="button" class="topnav-link" id="tnav-config" onclick="irVista('config')">Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span></button>
-        <button type="button" class="topnav-link" id="tnav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
-        <button type="button" class="topnav-link" id="tnav-neuro" onclick="irSector('neuro')">Tests Neuropsicológicos</button>
-        <button type="button" class="topnav-link" id="tnav-historial" onclick="irVista('historial')">Historial</button>
-        <button type="button" class="topnav-link" id="tnav-informe" onclick="irRedaccionInformes()">Redacción de Informes</button>
-      </nav>
       <div class="app-navbar-actions">
-        <span class="app-navbar-email" id="topbar-email"></span>
         <div class="app-navbar-paciente empty" id="app-topbar-paciente">
           <select id="topbar-paciente-select" onchange="setPacienteActivo(this.value, true)" aria-label="Paciente activo">
             <option value="">— Paciente —</option>
           </select>
         </div>
-        <button type="button" class="app-navbar-salir" onclick="doLogout()">Salir</button>
       </div>
     </div>
   </header>
@@ -889,12 +859,11 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <aside class="app-sidebar" id="app-sidebar">
       <div class="sidebar-nav-group">
         <button class="sidebar-nav-item active" id="snav-inicio" onclick="irVista('inicio')">Inicio</button>
-        <button class="sidebar-nav-item" id="snav-config" onclick="irVista('config')">Datos del Profesional</button>
+        <button class="sidebar-nav-item" id="snav-config" onclick="irVista('config')">Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span></button>
         <button class="sidebar-nav-item" id="snav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-nav-group">
-        <div class="sidebar-nav-label">Tests</div>
         <button class="sidebar-nav-item" id="snav-neuro" onclick="irSector('neuro')">Tests Neuropsicológicos</button>
         <button class="sidebar-nav-item" id="snav-clinica" onclick="irSector('clinica')">Psicología Clínica</button>
         <button class="sidebar-nav-item" id="snav-dolor" onclick="irSector('dolor')">Dolor</button>
@@ -907,7 +876,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-bottom">
-        <div class="sidebar-user-email" id="topbar-email"></div>
+        <div class="sidebar-user-email" id="sidebar-email"></div>
         <button class="sidebar-salir" onclick="doLogout()">Cerrar sesión</button>
       </div>
     </aside>
@@ -5623,6 +5592,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
+var APP_VERSION = 'v1.10.76';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -5709,9 +5679,23 @@ function supaFetch(path, method, body, token, extraHeaders) {
 function supaAuth(action, body) {
   return fetch(SUPA_URL + '/auth/v1/' + action, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY },
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY
+    },
     body: JSON.stringify(body)
-  }).then(function(r){ return r.json(); });
+  }).then(function(r) {
+    return r.json().then(function(data) {
+      if (!r.ok && data && !data.error) data.error = data.msg || data.message || ('HTTP ' + r.status);
+      return data;
+    });
+  });
+}
+
+function setUserEmail(email) {
+  var el = document.getElementById('sidebar-email');
+  if (el) el.textContent = email || '';
 }
 
 // ══ AUTH ═════════════════════════════════════════════════════════════════════
@@ -5723,11 +5707,13 @@ function doLogin() {
   if (!email || !pass) { errEl.textContent = 'Completá email y contraseña.'; errEl.style.display = 'block'; return; }
   supaAuth('token?grant_type=password', { email: email, password: pass }).then(function(data) {
     if (data.error || !data.access_token) {
-      errEl.textContent = 'Email o contraseña incorrectos.'; errEl.style.display = 'block'; return;
+      errEl.textContent = data.error_description || data.msg || data.message || 'Email o contraseña incorrectos.';
+      errEl.style.display = 'block';
+      return;
     }
     SESSION = data;
     try { localStorage.setItem('psico_session', JSON.stringify(data)); } catch(e) {}
-    document.getElementById('topbar-email').textContent = email;
+    setUserEmail((data.user && data.user.email) || email);
     // Ocultar todas las pantallas y mostrar solo app
     ['screen-landing','screen-login'].forEach(function(id){
       var el = document.getElementById(id);
@@ -14494,15 +14480,12 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     body+=_wPar('',{before:0,after:80});
   }
 
-  // 8. RECOMENDACIONES (texto redactado por el profesional)
+  // 8. RECOMENDACIONES (solo texto del profesional)
+  body += secTit('8. Recomendaciones');
   if ((inf.recomendaciones || '').trim()) {
-    body += secTit('8. Recomendaciones');
     parrafos(inf.recomendaciones).forEach(function(p) { body += p; });
-    body += _wPar('', {before:0, after:80});
-  } else {
-    body += secTit('8. Sugerencias');
-    body += _wPar('', {before:0, after:80});
   }
+  body += _wPar('', {before:0, after:80});
 
   // 9. APÉNDICE B — Resultados Estadísticos (grilla Z)
   var npList = datos.filter(function(r){ return NP_LIST.indexOf(r.test)!==-1; });
@@ -14514,27 +14497,25 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     body+='<w:p><w:pPr><w:pageBreakBefore/></w:pPr></w:p>';
     body+=secTit('Apéndice B: Resultados Estadísticos');
     body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:80,after:60});
-    // Header de columnas
-    var hdrCols=['Variable','PB','M','DS','Z','-3','-2½','-2','-1½','-1','0½','0','0½','+1','+1½','+2','+2½','+3','Interpretación'];
-    var hdrRow=_wRow(hdrCols.map(function(h,i){return hdrCell(h,COL_WIDTHS_HDR[i]);}));
+    var hdrRow = _zHdrRow();
     var npRows = buildNPRows(npList);
     if(npRows.length){
       body+=_wTable([hdrRow].concat(npRows),COL_WIDTHS_HDR,{landscape:true});
     }
     if(clList.length){
       body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:120,after:60});
-      var clHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
-      body+=_wTable([clHdr].concat(buildSimpleRows(clList)),COL_CL);
+      var clTableHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
+      body+=_wTable([clTableHdr].concat(buildSimpleRows(clList)),COL_CL);
     }
     if(tdList.length){
       body+=_wPar(_wRun('TDAH',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:120,after:60});
-      var tdHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
-      body+=_wTable([tdHdr].concat(buildSimpleRows(tdList)),COL_CL);
+      var tdTableHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
+      body+=_wTable([tdTableHdr].concat(buildSimpleRows(tdList)),COL_CL);
     }
     if(doList.length){
       body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:22,font:'Arial',color:'000000'}),{before:120,after:60});
-      var doHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
-      body+=_wTable([doHdr].concat(buildSimpleRows(doList)),COL_CL);
+      var doTableHdr=_wRow([clHdr('Test / Subescala',COL_CL[0]),clHdr('PB',COL_CL[1]),clHdr('Resultado',COL_CL[2])]);
+      body+=_wTable([doTableHdr].concat(buildSimpleRows(doList)),COL_CL);
     }
   }
 
@@ -15403,6 +15384,8 @@ function guardarFamiliar() {
 window.addEventListener('DOMContentLoaded', function() {
   initPhiLogos();
   initScrollReveal();
+  var verLbl = document.getElementById('app-version-label');
+  if (verLbl) verLbl.textContent = APP_VERSION;
   // Arranque: sesión válida → app; sin sesión → landing.
   if (SESSION && SESSION.access_token) {
     document.getElementById('screen-landing').style.display = 'none';
@@ -15410,6 +15393,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var app = document.getElementById('screen-app');
     app.style.display = 'flex';
     app.classList.add('active');
+    setUserEmail(SESSION.user && SESSION.user.email ? SESSION.user.email : '');
     actualizarSaludo();
     actualizarBadgeConfig();
     actualizarWelcomeBanner(true);
