@@ -9,15 +9,15 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --brand-950: #0a1628;
-  --brand-900: #0f1f3d;
-  --brand-800: #1a3a6b;
-  --brand-700: #1042b0;
-  --brand-600: #1a56db;
+  --brand-900: #1e3830;
+  --brand-800: #2d4a3e;
+  --brand-700: #1e3830;
+  --brand-600: #3d7a5f;
   --brand-500: #2563eb;
-  --brand-400: #3b82f6;
-  --brand-200: #bfdbfe;
-  --brand-100: #eff6ff;
-  --brand-50:  #f8fafc;
+  --brand-400: #5a9e7a;
+  --brand-200: #c8d8d0;
+  --brand-100: #f0f7f4;
+  --brand-50:  #f5f8f6;
   --bg:        #f4f6f9;
   --surface:   #ffffff;
   --surface2:  #eef2f7;
@@ -27,7 +27,7 @@
   --accent:    var(--brand-600);
   --accentdk:  var(--brand-700);
   --accentlt:  var(--brand-400);
-  --text:      #0f172a;
+  --text:      #1a2420;
   --muted:     #5c6b7f;
   --green:     #0d9488;
   --yellow:    #b45309;
@@ -36,10 +36,10 @@
   --radius-sm: 6px;
   --radius:    10px;
   --radius-lg: 14px;
-  --shadow-sm: 0 1px 2px rgba(15,31,61,0.05);
-  --shadow:    0 1px 3px rgba(15,31,61,0.06), 0 4px 14px rgba(15,31,61,0.06);
-  --shadow-md: 0 8px 24px rgba(15,31,61,0.1);
-  --shadow-lg: 0 16px 40px rgba(15,31,61,0.12);
+  --shadow-sm: 0 1px 2px rgba(45,74,62,0.05);
+  --shadow:    0 1px 3px rgba(45,74,62,0.06), 0 4px 14px rgba(45,74,62,0.06);
+  --shadow-md: 0 8px 24px rgba(45,74,62,0.1);
+  --shadow-lg: 0 16px 40px rgba(45,74,62,0.12);
   --font-display: 'Plus Jakarta Sans', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'DM Mono', monospace;
@@ -61,77 +61,77 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   display:flex; align-items:center; justify-content:space-between;
   padding:0 64px; height:68px;
   background:rgba(255,255,255,0.95); backdrop-filter:blur(12px);
-  border-bottom:1px solid #e8eef5;
+  border-bottom:1px solid #e0ebe6;
 }
 .land-nav-logo { display:flex; align-items:center; gap:10px; }
 .land-nav-logo-mark { width:36px; height:36px; border-radius:10px; overflow:hidden; background:var(--brand-100); border:1px solid var(--brand-200); }
-.land-nav-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:1.1rem; font-weight:700; color:#0f172a; letter-spacing:-0.3px; }
+.land-nav-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:1.1rem; font-weight:700; color:#1a2420; letter-spacing:-0.3px; }
 .land-nav-links { display:flex; align-items:center; gap:32px; }
-.land-nav-link { font-size:0.88rem; font-weight:500; color:#64748b; cursor:pointer; transition:color 0.15s; text-decoration:none; }
-.land-nav-link:hover { color:#0f172a; }
+.land-nav-link { font-size:0.88rem; font-weight:500; color:#5a6b63; cursor:pointer; transition:color 0.15s; text-decoration:none; }
+.land-nav-link:hover { color:#1a2420; }
 .land-nav-cta { display:flex; align-items:center; gap:12px; }
-.land-btn-ghost { padding:9px 20px; border-radius:7px; font-size:0.88rem; font-weight:600; color:#1a56db; background:transparent; border:1.5px solid #1a56db; cursor:pointer; font-family:"Inter",sans-serif; transition:all 0.15s; }
-.land-btn-ghost:hover { background:#eff6ff; }
-.land-btn-solid { padding:9px 20px; border-radius:7px; font-size:0.88rem; font-weight:600; color:#fff; background:#1a56db; border:none; cursor:pointer; font-family:"Inter",sans-serif; box-shadow:0 2px 10px rgba(26,86,219,0.3); transition:all 0.15s; }
-.land-btn-solid:hover { background:#1042b0; transform:translateY(-1px); }
+.land-btn-ghost { padding:9px 20px; border-radius:7px; font-size:0.88rem; font-weight:600; color:#3d7a5f; background:transparent; border:1.5px solid #3d7a5f; cursor:pointer; font-family:"Inter",sans-serif; transition:all 0.15s; }
+.land-btn-ghost:hover { background:#f0f7f4; }
+.land-btn-solid { padding:9px 20px; border-radius:7px; font-size:0.88rem; font-weight:600; color:#fff; background:#3d7a5f; border:none; cursor:pointer; font-family:"Inter",sans-serif; box-shadow:0 2px 10px rgba(61,122,95,0.3); transition:all 0.15s; }
+.land-btn-solid:hover { background:#1e3d30; transform:translateY(-1px); }
 
 .land-body { margin-top:68px; flex:1; display:flex; flex-direction:column; }
 
 .land-hero { padding:90px 64px 70px; display:flex; align-items:center; justify-content:space-between; gap:64px; max-width:1200px; margin:0 auto; width:100%; }
 .land-hero-text { flex:1; max-width:560px; }
-.land-hero-badge { display:inline-flex; align-items:center; gap:6px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:20px; padding:5px 14px; font-size:0.78rem; font-weight:600; color:#1a56db; margin-bottom:24px; letter-spacing:0.3px; }
-.land-hero-h1 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.8rem; font-weight:800; color:#0f172a; line-height:1.15; letter-spacing:-1px; margin-bottom:20px; }
-.land-hero-h1 span { color:#1a56db; }
-.land-hero-sub { font-size:1rem; color:#64748b; line-height:1.75; margin-bottom:36px; max-width:460px; }
+.land-hero-badge { display:inline-flex; align-items:center; gap:6px; background:#f0f7f4; border:1px solid #c8d8d0; border-radius:20px; padding:5px 14px; font-size:0.78rem; font-weight:600; color:#3d7a5f; margin-bottom:24px; letter-spacing:0.3px; }
+.land-hero-h1 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.8rem; font-weight:800; color:#1a2420; line-height:1.15; letter-spacing:-1px; margin-bottom:20px; }
+.land-hero-h1 span { color:#3d7a5f; }
+.land-hero-sub { font-size:1rem; color:#5a6b63; line-height:1.75; margin-bottom:36px; max-width:460px; }
 .land-hero-btns { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-.land-hero-btn-main { padding:14px 28px; background:#1a56db; color:#fff; border:none; border-radius:9px; font-size:0.97rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 18px rgba(26,86,219,0.35); transition:all 0.15s; }
-.land-hero-btn-main:hover { background:#1042b0; transform:translateY(-2px); }
-.land-hero-btn-sec { padding:14px 24px; background:transparent; color:#0f172a; border:none; border-radius:9px; font-size:0.97rem; font-weight:500; font-family:"Inter",sans-serif; cursor:pointer; transition:all 0.15s; }
-.land-hero-btn-sec:hover { color:#1a56db; }
+.land-hero-btn-main { padding:14px 28px; background:#3d7a5f; color:#fff; border:none; border-radius:9px; font-size:0.97rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 18px rgba(61,122,95,0.35); transition:all 0.15s; }
+.land-hero-btn-main:hover { background:#1e3d30; transform:translateY(-2px); }
+.land-hero-btn-sec { padding:14px 24px; background:transparent; color:#1a2420; border:none; border-radius:9px; font-size:0.97rem; font-weight:500; font-family:"Inter",sans-serif; cursor:pointer; transition:all 0.15s; }
+.land-hero-btn-sec:hover { color:#3d7a5f; }
 
-.land-hero-visual { flex:1; max-width:460px; background:linear-gradient(135deg,#0f1f3d 0%,#1042b0 100%); border-radius:20px; padding:28px; box-shadow:0 24px 64px rgba(15,31,61,0.25); position:relative; overflow:hidden; }
-.land-hero-visual::before { content:""; position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(59,130,246,0.12); }
+.land-hero-visual { flex:1; max-width:460px; background:linear-gradient(135deg,#1e3830 0%,#2d4a3e 100%); border-radius:20px; padding:28px; box-shadow:0 24px 64px rgba(45,74,62,0.25); position:relative; overflow:hidden; }
+.land-hero-visual::before { content:""; position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(90,158,122,0.12); }
 .land-visual-screen { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:18px; margin-bottom:10px; }
 .land-visual-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.72rem; font-weight:700; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:12px; }
 .land-visual-row { display:flex; align-items:center; justify-content:space-between; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
 .land-visual-row:last-child { border-bottom:none; }
 .land-visual-test { font-size:0.8rem; color:rgba(255,255,255,0.8); font-weight:500; }
 .land-visual-z { font-family:"DM Mono",monospace; font-size:0.76rem; font-weight:500; padding:2px 10px; border-radius:20px; }
-.land-visual-z.ok { background:rgba(13,148,136,0.2); color:#5eead4; }
+.land-visual-z.ok { background:rgba(13,148,100,0.2); color:#5eead4; }
 .land-visual-z.warn { background:rgba(180,83,9,0.2); color:#fbbf24; }
 .land-visual-z.low { background:rgba(220,38,38,0.2); color:#fca5a5; }
 .land-visual-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-.land-visual-chip { background:rgba(26,86,219,0.25); border:1px solid rgba(59,130,246,0.25); border-radius:5px; padding:3px 9px; font-size:0.7rem; color:#93c5fd; font-weight:500; }
+.land-visual-chip { background:rgba(61,122,95,0.25); border:1px solid rgba(90,158,122,0.25); border-radius:5px; padding:3px 9px; font-size:0.7rem; color:#93c5fd; font-weight:500; }
 
-.land-stats { display:flex; justify-content:center; gap:0; background:#f8fafc; border-top:1px solid #e8eef5; border-bottom:1px solid #e8eef5; }
-.land-stat { flex:1; max-width:260px; text-align:center; padding:40px 20px; border-right:1px solid #e8eef5; }
+.land-stats { display:flex; justify-content:center; gap:0; background:#f5f8f6; border-top:1px solid #e0ebe6; border-bottom:1px solid #e0ebe6; }
+.land-stat { flex:1; max-width:260px; text-align:center; padding:40px 20px; border-right:1px solid #e0ebe6; }
 .land-stat:last-child { border-right:none; }
-.land-stat-n { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.4rem; font-weight:800; color:#0f1f3d; letter-spacing:-1px; }
-.land-stat-l { font-size:0.8rem; color:#64748b; margin-top:4px; font-weight:500; }
+.land-stat-n { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.4rem; font-weight:800; color:#2d4a3e; letter-spacing:-1px; }
+.land-stat-l { font-size:0.8rem; color:#5a6b63; margin-top:4px; font-weight:500; }
 
 .land-features { padding:80px 64px; background:#ffffff; }
 .land-features-inner { max-width:1200px; margin:0 auto; }
-.land-features-tag { font-size:0.75rem; font-weight:700; color:#1a56db; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; }
-.land-features-h2 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2rem; font-weight:800; color:#0f172a; letter-spacing:-0.5px; margin-bottom:48px; max-width:500px; line-height:1.25; }
+.land-features-tag { font-size:0.75rem; font-weight:700; color:#3d7a5f; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; }
+.land-features-h2 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2rem; font-weight:800; color:#1a2420; letter-spacing:-0.5px; margin-bottom:48px; max-width:500px; line-height:1.25; }
 .land-features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
-.land-feat-card { background:#f8fafc; border:1px solid #e8eef5; border-radius:14px; padding:28px; transition:all 0.2s; }
-.land-feat-card:hover { background:#fff; box-shadow:0 8px 32px rgba(15,31,61,0.08); transform:translateY(-3px); border-color:#dbeafe; }
+.land-feat-card { background:#f5f8f6; border:1px solid #e0ebe6; border-radius:14px; padding:28px; transition:all 0.2s; }
+.land-feat-card:hover { background:#fff; box-shadow:0 8px 32px rgba(45,74,62,0.08); transform:translateY(-3px); border-color:#d4eadf; }
 .land-feat-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; background:var(--brand-100); border:1px solid var(--brand-200); color:var(--accent); }
 .land-feat-icon svg { width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 .logo-mark { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .logo-mark svg { display:block; width:100%; height:100%; }
-.land-feat-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#0f172a; margin-bottom:8px; }
-.land-feat-desc { font-size:0.85rem; color:#64748b; line-height:1.65; }
+.land-feat-title { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#1a2420; margin-bottom:8px; }
+.land-feat-desc { font-size:0.85rem; color:#5a6b63; line-height:1.65; }
 
-.land-cta-section { padding:80px 64px; background:linear-gradient(135deg,#0f1f3d,#1042b0); text-align:center; }
+.land-cta-section { padding:80px 64px; background:linear-gradient(135deg,#1e3830,#2d4a3e); text-align:center; }
 .land-cta-h2 { font-family:"Plus Jakarta Sans",sans-serif; font-size:2.2rem; font-weight:800; color:#fff; letter-spacing:-0.5px; margin-bottom:12px; }
 .land-cta-sub { font-size:1rem; color:rgba(255,255,255,0.65); margin-bottom:36px; }
-.land-cta-btn { padding:16px 36px; background:#fff; color:#1042b0; border:none; border-radius:10px; font-size:1rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.2); transition:all 0.15s; }
+.land-cta-btn { padding:16px 36px; background:#fff; color:#1e3d30; border:none; border-radius:10px; font-size:1rem; font-weight:700; font-family:"Inter",sans-serif; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.2); transition:all 0.15s; }
 .land-cta-btn:hover { transform:translateY(-2px); }
 
-.land-footer { padding:24px 64px; background:#0f172a; display:flex; align-items:center; justify-content:space-between; }
+.land-footer { padding:24px 64px; background:#1e3830; display:flex; align-items:center; justify-content:space-between; }
 .land-footer-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.9rem; font-weight:700; color:#fff; }
-.land-footer-copy { font-size:0.78rem; color:#475569; }
+.land-footer-copy { font-size:0.78rem; color:#4a5e55; }
 
 
 /* ══ LOGIN ══ */
@@ -140,7 +140,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   display: none;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f1f3d 0%, #1a3a6b 50%, #1042b0 100%);
+  background: linear-gradient(135deg, #2d4a3e 0%, #1e3830 50%, #1e3d30 100%);
 }
 #screen-login.active { display: flex; }
 
@@ -151,7 +151,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   padding: 48px 44px;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 24px 64px rgba(10,20,50,0.35);
+  box-shadow: 0 24px 64px rgba(30,56,48,0.35);
 }
 .login-logo {
   text-align: center;
@@ -159,12 +159,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 }
 .login-logo-icon {
   width: 56px; height: 56px;
-  background: linear-gradient(135deg, var(--accent), var(--accentlt));
+  background: linear-gradient(135deg, var(--accentdk), var(--accent));
   border-radius: 14px;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 1.6rem;
   margin-bottom: 16px;
-  box-shadow: 0 4px 16px rgba(26,86,219,0.35);
+  box-shadow: 0 4px 16px rgba(61,122,95,0.35);
 }
 .login-titulo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
 .login-sub { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
@@ -176,14 +176,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   border-radius: 8px; padding: 11px 14px; color: var(--text);
   font-family: 'Inter', sans-serif; font-size: 0.92rem; transition: border-color 0.15s;
 }
-.login-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,86,219,0.12); }
-.login-field input::placeholder { color: #94a3b8; }
+.login-field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61,122,95,0.12); }
+.login-field input::placeholder { color: #8a9e94; }
 
 .btn-login {
-  width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), var(--accentlt));
+  width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accentdk), var(--accent));
   border: none; border-radius: 8px; color: white; font-family: 'Inter', sans-serif;
   font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 8px;
-  box-shadow: 0 3px 12px rgba(26,86,219,0.35); transition: opacity 0.2s, transform 0.1s;
+  box-shadow: 0 3px 12px rgba(61,122,95,0.35); transition: opacity 0.2s, transform 0.1s;
 }
 .btn-login:hover { opacity: 0.88; transform: translateY(-1px); }
 .login-forgot { text-align: center; margin-top: 14px; font-size: 0.82rem; }
@@ -253,7 +253,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, var(--accent), var(--accentlt));
 }
-.sector-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,31,61,0.15); border-color: var(--accentlt); }
+.sector-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(45,74,62,0.15); border-color: var(--accentlt); }
 .sector-icon { font-size: 2rem; margin-bottom: 12px; }
 .sector-titulo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--accentdk); margin-bottom: 6px; }
 .sector-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
@@ -267,9 +267,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .vista-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
 .vista-titulo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.3rem; color: var(--accentdk); }
 .btn-primary {
-  padding: 9px 18px; background: linear-gradient(135deg, var(--accent), var(--accentlt));
+  padding: 9px 18px; background: linear-gradient(135deg, var(--accentdk), var(--accent));
   border: none; border-radius: 7px; color: white; font-family: 'Inter', sans-serif;
-  font-size: 0.86rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(26,86,219,0.25);
+  font-size: 0.86rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(61,122,95,0.25);
   transition: opacity 0.2s, transform 0.1s;
 }
 .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
@@ -290,7 +290,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
   cursor: pointer; transition: all 0.15s;
 }
-.paciente-item:hover { border-color: var(--accentlt); background: #eff6ff; }
+.paciente-item:hover { border-color: var(--accentlt); background: #f0f7f4; }
 .pac-nombre { font-weight: 500; color: var(--text); }
 .pac-meta { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
 .pac-acciones { display: flex; gap: 8px; }
@@ -322,9 +322,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   font-family: 'Inter', sans-serif; font-size: 0.88rem; transition: border-color 0.15s;
 }
 .field input:focus, .field select:focus, .field textarea:focus {
-  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61,122,95,0.1);
 }
-.field input::placeholder, .field textarea::placeholder { color: #94a3b8; }
+.field input::placeholder, .field textarea::placeholder { color: #8a9e94; }
 .field select option { background: var(--surface2); }
 .field textarea { resize: vertical; min-height: 80px; }
 .btn-row { display: flex; gap: 10px; margin-top: 16px; }
@@ -342,7 +342,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   padding: 14px 16px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow);
   text-align: left; display:flex; flex-direction:column; gap:4px;
 }
-.test-card:hover { transform: translateY(-2px); border-color: var(--accentlt); box-shadow: 0 6px 18px rgba(26,86,219,0.13); }
+.test-card:hover { transform: translateY(-2px); border-color: var(--accentlt); box-shadow: 0 6px 18px rgba(61,122,95,0.13); }
 .test-icon { display:none; }
 .np-chip {
   display:inline-block; padding:5px 13px; border-radius:20px; font-size:0.78rem;
@@ -363,7 +363,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .bdi-pregunta { font-size: 0.84rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
 .bdi-opciones { display: flex; flex-direction: column; gap: 6px; }
 .bdi-opcion { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; padding: 6px 8px; border-radius: 6px; transition: background 0.12s; }
-.bdi-opcion:hover { background: rgba(26,86,219,0.06); }
+.bdi-opcion:hover { background: rgba(61,122,95,0.06); }
 .bdi-opcion input[type=radio] { margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; }
 .bdi-opcion-texto { font-size: 0.82rem; color: var(--text); line-height: 1.4; }
 .bdi-score { font-size: 0.7rem; color: var(--muted); margin-left: auto; font-family: 'DM Mono', monospace; padding-left: 8px; }
@@ -461,9 +461,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   border:1.5px solid var(--border); border-radius:var(--radius-sm);
   background:var(--surface); font-family:var(--font-body); font-size:0.88rem; color:var(--text);
 }
-.app-topbar-paciente select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(26,86,219,0.1); }
+.app-topbar-paciente select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(61,122,95,0.1); }
 .app-topbar-paciente.empty select { border-color:#fbbf24; background:#fffbeb; }
-.paciente-item.activo { border-color:var(--accent); background:var(--brand-100); box-shadow:0 0 0 1px rgba(26,86,219,0.15); }
+.paciente-item.activo { border-color:var(--accent); background:var(--brand-100); box-shadow:0 0 0 1px rgba(61,122,95,0.15); }
 .paciente-item.activo .pac-nombre::after { content:' · Activo'; font-size:0.72rem; font-weight:600; color:var(--accent); }
 .sidebar-label { padding:8px 14px 4px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.28); }
 .sidebar-tagline { font-size:0.68rem; color:rgba(255,255,255,0.38); margin-top:2px; font-weight:500; }
@@ -530,7 +530,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <!-- NAV -->
   <nav class="land-nav">
     <div class="land-nav-logo">
-      <div class="land-nav-logo-mark logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/></svg></div>
+      <div class="land-nav-logo-mark logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/></svg></div>
       <div class="land-nav-name">PsicoEscala</div>
     </div>
     <div class="land-nav-links">
@@ -547,7 +547,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <!-- HERO -->
     <section class="land-hero">
       <div class="land-hero-text">
-        <div class="land-hero-badge"><span style="width:6px;height:6px;border-radius:50%;background:#1a56db;display:inline-block;"></span> Plataforma para evaluación clínica</div>
+        <div class="land-hero-badge"><span style="width:6px;height:6px;border-radius:50%;background:#3d7a5f;display:inline-block;"></span> Plataforma para evaluación clínica</div>
         <h1 class="land-hero-h1">Evaluación psicológica <span>profesional</span>, todo en un lugar</h1>
         <p class="land-hero-sub">PsicoEscala reúne más de 30 tests estandarizados con baremos, corrección automática, perfil Z y generación de informes clínicos para profesionales de la salud mental.</p>
         <div class="land-hero-btns">
@@ -643,7 +643,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div id="screen-login" class="screen" style="display:none;">
   <div class="login-box">
     <div class="login-logo">
-      <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="login-titulo">PsicoEscala</div>
       <div class="login-sub">Plataforma de evaluación psicológica</div>
     </div>
@@ -660,7 +660,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/></svg></div>
+      <div class="logo-mark"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/></svg></div>
       <div class="sidebar-nombre">PsicoEscala</div>
       <div class="sidebar-tagline">Evaluación clínica</div>
     </div>
@@ -696,7 +696,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div class="sidebar-version">v1.10.61</div>
+      <div class="sidebar-version">v1.10.62</div>
     </div>
   </aside>
 
@@ -750,10 +750,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <circle cx="60" cy="60" r="66" fill="none" stroke="#93c5fd" stroke-width="0.6" opacity="0.3"/>
             <line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/>
             <line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/>
-            <path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/>
-            <circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/>
-            <circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/>
+            <path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/>
+            <circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/>
+            <circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/>
           </svg>
         </div>
         <div style="font-family:var(--font-display);font-size:1.85rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:14px;">PsicoEscala</div>
@@ -956,7 +956,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
               <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#1a6e3a;background:#d4f0e2;border-radius:4px;padding:1px 4px;">+2 a +3</span><span style="color:var(--text);">Muy superior</span></div>
               <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#1a6e3a;background:#d4f0e2;border-radius:4px;padding:1px 4px;">+1.5</span><span style="color:var(--text);">Superior</span></div>
               <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#1565c0;background:#d8f0fa;border-radius:4px;padding:1px 4px;">+1</span><span style="color:var(--text);">Límite superior normativo</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#325c28;background:#e8f4e0;border-radius:4px;padding:1px 4px;">−0.5 a +0.5</span><span style="color:var(--text);">Normal</span></div>
+              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#2d4a3e;background:#e8f5f0;border-radius:4px;padding:1px 4px;">−0.5 a +0.5</span><span style="color:var(--text);">Normal</span></div>
               <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#7a5c00;background:#fdf0c4;border-radius:4px;padding:1px 4px;">−1</span><span style="color:var(--text);">Límite inferior normativo</span></div>
               <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#a04000;background:#fde8d0;border-radius:4px;padding:1px 4px;">−1.5</span><span style="color:var(--text);">Dificultad leve</span></div>
               <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#a00000;background:#fad8d8;border-radius:4px;padding:1px 4px;">−2</span><span style="color:var(--text);">Dificultad moderada</span></div>
@@ -970,7 +970,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           </div>
 
           <!-- Nota para residentes -->
-          <div style="background:#f0f7e8;border:1px solid #b8ddb0;border-radius:6px;padding:10px 14px;margin-top:12px;font-size:0.75rem;color:#325c28;line-height:1.6;">
+          <div style="background:#f0f7f4;border:1px solid #c8d8d0;border-radius:6px;padding:10px 14px;margin-top:12px;font-size:0.75rem;color:#2d4a3e;line-height:1.6;">
             <strong>Nota para residentes:</strong> Los puntajes Z indican cuántas desviaciones estándar se aleja el rendimiento del paciente respecto a la media de su grupo normativo. Un Z entre −1 y +1 abarca el 68% de la población normal. Resultados entre −1 y −1.5 son "límite inferior normativo" — no necesariamente patológicos, pero merecen descripción. Por debajo de −1.5 se habla de "dificultad" con gradación clínica. Siempre integrar con la historia clínica y el contexto.
           </div>
         </div>
@@ -1194,7 +1194,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="back-btn" id="bdi-back-btn" onclick="volverSector()">← Volver</div>
       <div class="vista-header"><div class="vista-titulo">BDI-II · Inventario de Depresión de Beck</div>
       <div style="margin-bottom:16px;">
-        <button onclick="generarPDF('bdi')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+        <button onclick="generarPDF('bdi')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
 
       <div id="bdi-form">
@@ -1253,7 +1253,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="back-btn" onclick="volverSector()">← Volver</div>
       <div class="vista-header"><div class="vista-titulo">STAI · Inventario de Ansiedad Estado-Rasgo</div>
       <div style="margin-bottom:16px;">
-        <button onclick="generarPDF('stai')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+        <button onclick="generarPDF('stai')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
 
       <div id="stai-form">
@@ -1660,7 +1660,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="back-btn" onclick="volverSector()">← Volver</div>
       <div class="vista-header"><div class="vista-titulo">PHQ-9 · Cuestionario de Salud del Paciente</div>
       <div style="margin-bottom:16px;">
-        <button onclick="generarPDF('phq')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+        <button onclick="generarPDF('phq')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
       <div id="phq-form">
         <div class="card">
@@ -1714,7 +1714,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="back-btn" onclick="volverSector()">← Volver</div>
       <div class="vista-header"><div class="vista-titulo">GAD-7 · Escala de Trastorno de Ansiedad Generalizada</div>
       <div style="margin-bottom:16px;">
-        <button onclick="generarPDF('gad')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+        <button onclick="generarPDF('gad')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
       <div id="gad-form">
         <div class="card">
@@ -1762,7 +1762,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="back-btn" onclick="volverSector()">← Volver</div>
       <div class="vista-header"><div class="vista-titulo">SPAI-B · Inventario de Fobia y Ansiedad Social (Forma Breve)</div>
       <div style="margin-bottom:16px;">
-        <button onclick="generarPDF('spai')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+        <button onclick="generarPDF('spai')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
       <div id="spaib-form">
         <div class="card">
@@ -2655,7 +2655,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
       <!-- Nota metodológica -->
       <div style="background:#f4faf2;border:1px solid #a8c4a0;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:0.8rem;color:#333;">
-        <span style="font-weight:700;color:#325c28;">ℹ Nota metodológica:</span> Pinasco et al. (2023) utilizaron tiempos programados de 6 y 12 minutos. Si usás tiempos distintos, el desvío absoluto sigue siendo comparable ya que los baremos miden la <em>precisión del recuerdo prospectivo</em>, independientemente del momento programado. Ingresá los tiempos que efectivamente indicaste al paciente.
+        <span style="font-weight:700;color:#2d4a3e;">ℹ Nota metodológica:</span> Pinasco et al. (2023) utilizaron tiempos programados de 6 y 12 minutos. Si usás tiempos distintos, el desvío absoluto sigue siendo comparable ya que los baremos miden la <em>precisión del recuerdo prospectivo</em>, independientemente del momento programado. Ingresá los tiempos que efectivamente indicaste al paciente.
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:10px;align-items:end;margin-bottom:8px;">
@@ -3042,7 +3042,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="vista-header"><div class="vista-titulo">SCL-90-R · Inventario de Síntomas</div>
       <div style="margin-bottom:16px;">
         <button onclick="generarPDF('scl90')" style="
-          background:#325c28;
+          background:#2d4a3e;
           color:#fff;
           border:none;
           border-radius:8px;
@@ -3053,7 +3053,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           display:inline-flex;
           align-items:center;
           gap:8px;
-          box-shadow:0 2px 6px rgba(26,86,219,0.25);
+          box-shadow:0 2px 6px rgba(61,122,95,0.25);
         ">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
       <div id="scl90-form">
@@ -4412,7 +4412,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div id="bnt-panel-60" style="display:none;">
           <div class="card">
             <div class="card-title">BNT-60 · Versión completa</div>
-            <div style="background:#fff8f0;border:1.5px solid #325c28;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#7a4a10;">
+            <div style="background:#fff8f0;border:1.5px solid #2d4a3e;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#7a4a10;">
               <strong>Baremo:</strong> Olabarrieta-Landa et al. (2015) — muestra argentina (n=320). Ajuste por educación únicamente.<br>
               <em>Sin corrección por edad ni sexo. Interpretar con cautela en mayores de 65 años.</em>
             </div>
@@ -4437,7 +4437,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div id="bnt-panel-12" style="display:none;">
           <div class="card">
             <div class="card-title">BNT-12 · Versión abreviada</div>
-            <div style="background:#fff8f0;border:1.5px solid #325c28;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#7a4a10;">
+            <div style="background:#fff8f0;border:1.5px solid #2d4a3e;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#7a4a10;">
               <strong>Baremo:</strong> Serrano, Allegri et al. (2001) — muestra Buenos Aires (50–82 años, n=143). Sin corrección por edad ni educación.<br>
               <strong>Láminas:</strong> helicóptero, pulpo, máscara, volcán, armónica, zancos, dominó, cactus, cerradura, pirámide, bozal y paleta.<br>
               <strong>Corte diagnóstico EA:</strong> ≥9 (sens. 85%, esp. 94%).
@@ -4477,7 +4477,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="vista-header"><div class="vista-titulo">ASRS-V1.1 · Escala de Autodetección de TDAH en Adultos</div>
       <div style="margin-bottom:16px;">
         <button onclick="generarPDF('asrs')" style="
-          background:#325c28;
+          background:#2d4a3e;
           color:#fff;
           border:none;
           border-radius:8px;
@@ -4488,7 +4488,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           display:inline-flex;
           align-items:center;
           gap:8px;
-          box-shadow:0 2px 6px rgba(26,86,219,0.25);
+          box-shadow:0 2px 6px rgba(61,122,95,0.25);
         ">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
       <div id="asrs-form">
@@ -4510,7 +4510,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div id="man-area-asrs" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Sección A positivos (0–6)</label><input type="number" id="man-asrs-a" min="0" max="6" placeholder="0–6"></div><div class="field"><label>ASRS-I Inatención (0–48)</label><input type="number" id="man-asrs-i" min="0" max="48" placeholder="0–48"></div><div class="field"><label>ASRS-H Hiperactividad (0–36)</label><input type="number" id="man-asrs-h" min="0" max="36" placeholder="0–36"></div><div class="field"><label>ASRS-T Total (0–72)</label><input type="number" id="man-asrs-t" min="0" max="72" placeholder="0–72"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('asrs')">Calcular resultado →</button></div></div>
         <div id="auto-area-asrs">
         <div class="card">
-          <div style="background:#fff8f0;border:1.5px solid #325c28;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;">
+          <div style="background:#fff8f0;border:1.5px solid #2d4a3e;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;">
             <div style="font-weight:700;color:#8B3A00;margin-bottom:6px;">⚠ Punto de corte utilizado en este sistema</div>
             <p style="margin:0 0 4px;"><strong>Sección A (Screener):</strong> ítem positivo si ítems 1–3 ≥ "A veces" (≥2) o ítems 4–6 ≥ "Frecuentemente" (≥3). <strong>Screening positivo: ≥ 4 ítems positivos.</strong> Sensibilidad 68,7% · Especificidad 99,5% (Kessler et al., 2005).</p>
             <p style="margin:0;"><strong>Sección B:</strong> sumatoria orientativa 0–48. Sin baremos oficiales.</p>
@@ -4849,7 +4849,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="vista-header"><div class="vista-titulo">WURS-25 · Escala de Wender-Utah</div>
       <div style="margin-bottom:16px;">
         <button onclick="generarPDF('wurs')" style="
-          background:#325c28;
+          background:#2d4a3e;
           color:#fff;
           border:none;
           border-radius:8px;
@@ -4860,7 +4860,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           display:inline-flex;
           align-items:center;
           gap:8px;
-          box-shadow:0 2px 6px rgba(26,86,219,0.25);
+          box-shadow:0 2px 6px rgba(61,122,95,0.25);
         ">🖨 Imprimir en blanco para completar a mano</button>
       </div></div>
       <div id="wurs-form">
@@ -4875,7 +4875,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div id="man-area-wurs" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–100)</label><input type="number" id="man-wurs-total" min="0" max="100" placeholder="0–100"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('wurs')">Calcular resultado →</button></div></div>
         <div id="auto-area-wurs">
         <div class="card">
-          <div style="background:#fff8f0;border:1.5px solid #325c28;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;">
+          <div style="background:#fff8f0;border:1.5px solid #2d4a3e;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;">
             <div style="font-weight:700;color:#8B3A00;margin-bottom:6px;">⚠ Punto de corte utilizado en este sistema</div>
             <p style="margin:0;"><strong>0–25:</strong> sin historia infantil compatible · <strong>26–35:</strong> rasgos leves · <strong>36–45:</strong> probable TDAH infantil · <strong>≥46:</strong> altamente compatible con TDAH infantil. Rango total: 0–75. Fuentes: Rodríguez-Jiménez et al. (2001) · Scandar MG (2021, Rev Neurol, población argentina).</p>
           </div>
@@ -4911,7 +4911,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="vista-header">
         <div class="vista-titulo">MBI-HSS · Inventario de Burnout de Maslach</div>
         <div style="margin-bottom:16px;">
-          <button onclick="generarPDF('mbi')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+          <button onclick="generarPDF('mbi')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
         </div>
       </div>
 
@@ -5156,7 +5156,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="vista-header">
         <div class="vista-titulo">Test del Reloj · Versión Cacho a la orden</div>
         <div style="margin-bottom:16px;">
-          <button onclick="generarPDF('reloj')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(26,86,219,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+          <button onclick="generarPDF('reloj')" style="background:#2d4a3e;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(61,122,95,0.25);">🖨 Imprimir en blanco para completar a mano</button>
         </div>
       </div>
 
@@ -5314,12 +5314,12 @@ function getConfigProfesional() {
 function getProfHeaderHTML() {
   var cfg = getConfigProfesional();
   var lines = [];
-  if (cfg.nombre)    lines.push('<div style="font-size:13px;font-weight:700;color:#0f172a;letter-spacing:0.3px;">' + cfg.nombre + '</div>');
-  if (cfg.matricula) lines.push('<div style="font-size:10px;color:#475569;margin-top:1px;">' + cfg.matricula + '</div>');
-  if (cfg.direccion) lines.push('<div style="font-size:10px;color:#475569;">' + cfg.direccion + '</div>');
-  if (cfg.tel)       lines.push('<div style="font-size:10px;color:#475569;">Tel. ' + cfg.tel + '</div>');
-  if (cfg.extra)     lines.push('<div style="font-size:10px;color:#475569;">' + cfg.extra + '</div>');
-  return lines.length ? lines.join('') : '<div style="font-size:11px;color:#94a3b8;font-style:italic;">Completá tu configuración en ⚙ Configuración</div>';
+  if (cfg.nombre)    lines.push('<div style="font-size:13px;font-weight:700;color:#1a2420;letter-spacing:0.3px;">' + cfg.nombre + '</div>');
+  if (cfg.matricula) lines.push('<div style="font-size:10px;color:#4a5e55;margin-top:1px;">' + cfg.matricula + '</div>');
+  if (cfg.direccion) lines.push('<div style="font-size:10px;color:#4a5e55;">' + cfg.direccion + '</div>');
+  if (cfg.tel)       lines.push('<div style="font-size:10px;color:#4a5e55;">Tel. ' + cfg.tel + '</div>');
+  if (cfg.extra)     lines.push('<div style="font-size:10px;color:#4a5e55;">' + cfg.extra + '</div>');
+  return lines.length ? lines.join('') : '<div style="font-size:11px;color:#8a9e94;font-style:italic;">Completá tu configuración en ⚙ Configuración</div>';
 }
 function getProfFooterText() {
   var cfg = getConfigProfesional();
@@ -5609,7 +5609,7 @@ function editarPaciente(id) {
   var modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;';
   modal.innerHTML =
-    '<div style="background:var(--surface);border-radius:14px;padding:28px 32px;min-width:340px;max-width:480px;width:92%;box-shadow:0 8px 32px rgba(26,86,219,0.18);">' +
+    '<div style="background:var(--surface);border-radius:14px;padding:28px 32px;min-width:340px;max-width:480px;width:92%;box-shadow:0 8px 32px rgba(61,122,95,0.18);">' +
     '<div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:18px;">Editar paciente</div>' +
     '<div class="form-grid-3" style="margin-bottom:0;">' +
     '<div class="field" style="grid-column:1/-1;"><label>Nombre completo *</label><input type="text" id="ep-nombre" value="'+escHtml(p.nombre||'')+'"></div>' +
@@ -5813,7 +5813,7 @@ function renderFiltroHistorial() {
 function zInterpPDF(z) {
   if (z === null || z === undefined) return { label: '—', color: '#888780' };
   if (z >= 1.0)   return { label: 'Superior',            color: '#1D9E75' };
-  if (z >= 0)     return { label: 'Normal alto',          color: '#639922' };
+  if (z >= 0)     return { label: 'Normal alto',          color: '#3d7a5f' };
   if (z >= -0.99) return { label: 'Normal bajo',          color: '#888780' };
   if (z >= -1.49) return { label: 'Dificultad leve',      color: '#BA7517' };
   if (z >= -1.99) return { label: 'Dificultad moderada',  color: '#D85A30' };
@@ -5834,10 +5834,10 @@ function zBarHTML(z) {
 function cutoffBarHTML(val, max, cutoff) {
   var pct = Math.min(100, Math.round((val / max) * 100));
   var cutPct = Math.min(100, Math.round((cutoff / max) * 100));
-  var color = val >= cutoff ? '#E24B4A' : val >= cutoff * 0.75 ? '#D85A30' : '#639922';
+  var color = val >= cutoff ? '#E24B4A' : val >= cutoff * 0.75 ? '#D85A30' : '#3d7a5f';
   return '<div style="position:relative;height:10px;background:#f0e5d5;border-radius:2px;width:120px;">' +
     '<div style="position:absolute;left:0;width:' + pct + '%;top:0;bottom:0;background:' + color + ';border-radius:2px;"></div>' +
-    '<div style="position:absolute;left:' + cutPct + '%;top:-2px;bottom:-2px;width:1.5px;background:#325c28;"></div>' +
+    '<div style="position:absolute;left:' + cutPct + '%;top:-2px;bottom:-2px;width:1.5px;background:#2d4a3e;"></div>' +
     '</div>';
 }
 
@@ -5906,15 +5906,15 @@ function generarPDF(tipo) {
       estilosApp+
       'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;color:#111;background:#fff;margin:20px;padding:0;}'+
       '.vista-header{margin-bottom:12px;}'+
-      '.vista-titulo{font-size:14pt;font-weight:700;color:#1a2e16;border-bottom:2px solid #325c28;padding-bottom:6px;}'+
+      '.vista-titulo{font-size:14pt;font-weight:700;color:#1e3830;border-bottom:2px solid #2d4a3e;padding-bottom:6px;}'+
       '.card{background:#fff;border:0.5px solid #ddd;border-radius:6px;padding:14px;margin-bottom:12px;}'+
-      '.card-title{font-size:10pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#0f1f3d;border-bottom:1px solid #bfdbfe;margin-bottom:10px;padding-bottom:4px;}'+
+      '.card-title{font-size:10pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#2d4a3e;border-bottom:1px solid #c8d8d0;margin-bottom:10px;padding-bottom:4px;}'+
       '.form-grid, .form-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;}'+
-      '.field label{display:block;font-size:8pt;font-weight:700;color:#1a56db;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.3px;}'+
+      '.field label{display:block;font-size:8pt;font-weight:700;color:#3d7a5f;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.3px;}'+
       'input[type="number"],select,input[type="date"],input[type="text"]{width:100%;box-sizing:border-box;border:1px solid #ccc;border-radius:4px;padding:4px 6px;font-size:10pt;}'+
       '.scl-block,.spai-block,.asrs-block,.wurs-block,.mbi-block{margin-bottom:8px;}'+
       '.item-row,.spai-item,.scl-item{display:flex;align-items:flex-start;gap:6px;padding:3px 0;border-bottom:0.3px solid #eee;font-size:9pt;}'+
-      '.item-num,.spai-num,.scl-num{min-width:22px;font-weight:700;color:#4a7040;font-size:8pt;padding-top:2px;}'+
+      '.item-num,.spai-num,.scl-num{min-width:22px;font-weight:700;color:#3d6b55;font-size:8pt;padding-top:2px;}'+
       '.item-text,.spai-item-text,.scl-item-text{flex:1;line-height:1.4;}'+
       '.likert-opts,.radio-opts{display:flex;gap:8px;min-width:120px;justify-content:flex-end;}'+
       '.likert-opt,.radio-opt{display:flex;flex-direction:column;align-items:center;font-size:7.5pt;gap:2px;}'+
@@ -5922,8 +5922,8 @@ function generarPDF(tipo) {
       '@media print{body{margin:10mm;}@page{size:A4;margin:15mm;}}'+
     '</style></head><body>'+
     '<div style="text-align:center;margin-bottom:14px;">'+
-      '<div style="font-size:7pt;color:#475569;">'+getProfFooterText()+'</div>'+
-      '<div style="font-size:13pt;font-weight:800;color:#1a2e16;margin-top:4px;">'+cfg.titulo+'</div>'+
+      '<div style="font-size:7pt;color:#4a5e55;">'+getProfFooterText()+'</div>'+
+      '<div style="font-size:13pt;font-weight:800;color:#1e3830;margin-top:4px;">'+cfg.titulo+'</div>'+
       '<div style="margin-top:8px;font-size:9pt;display:flex;gap:30px;justify-content:center;">'+
         '<span>Paciente: ____________________________</span>'+
         '<span>Fecha: ____________</span>'+
@@ -6017,7 +6017,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   function zColor(z) {
     if (z===null||z===undefined) return '#888780';
     if (z>=1.0)   return '#1D9E75';
-    if (z>=0)     return '#639922';
+    if (z>=0)     return '#3d7a5f';
     if (z>=-0.99) return '#888780';
     if (z>=-1.49) return '#BA7517';
     if (z>=-1.99) return '#D85A30';
@@ -6065,7 +6065,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
         isX = (v === closest);
       }
       var enNormal = (v >= -1 && v <= 1);
-      var bg = enNormal ? '#dbeafe' : '#ffffff';
+      var bg = enNormal ? '#d4eadf' : '#ffffff';
       var border = '1px solid #555555';
       var inner = isX
         ? '<span style="font-size:9px;font-weight:900;color:#000;line-height:1;">X</span>'
@@ -6077,11 +6077,11 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   }
 
   // ── Estilos de tabla ──
-  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#e8f0ff;background:#0f1f3d;border-bottom:1px solid #1a3a6b;padding:5px 7px;';
-  var tdBase = 'font-size:10.5px;border-bottom:0.5px solid #dbeafe;padding:5px 7px;';
+  var thBase = 'font-size:8.5px;text-transform:uppercase;letter-spacing:0.6px;color:#e8f5f0;background:#2d4a3e;border-bottom:1px solid #1e3830;padding:5px 7px;';
+  var tdBase = 'font-size:10.5px;border-bottom:0.5px solid #d4eadf;padding:5px 7px;';
 
   function domHeader(txt) {
-    return '<tr><td colspan="9" style="background:#1a56db;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f0ff;border-bottom:1px solid #1042b0;">'+txt+'</td></tr>';
+    return '<tr><td colspan="9" style="background:#3d7a5f;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;border-bottom:1px solid #1e3d30;">'+txt+'</td></tr>';
   }
 
   // ── Fila de tabla neuropsicológica ──
@@ -6115,8 +6115,8 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
       '<td style="'+tdBase+'text-align:center;font-family:monospace;font-size:9px;">'+dsStr+'</td>'+
       '<td style="'+tdBase+'padding:3px 5px;">'+zGrilla(z)+'</td>'+
       '<td style="'+tdBase+'font-size:9px;color:#111;font-weight:700;">'+
-        (z!=null&&z!=undefined ? lbl : (nota!=null&&nota!=undefined ? '<em style="color:#4a7040;font-weight:400;">'+nota+'</em>' : '—'))+
-        (nota!=null&&nota!=undefined&&z!=null&&z!=undefined ? '<br><em style="color:#4a7040;font-weight:400;font-size:8px;">'+nota+'</em>' : '')+
+        (z!=null&&z!=undefined ? lbl : (nota!=null&&nota!=undefined ? '<em style="color:#3d6b55;font-weight:400;">'+nota+'</em>' : '—'))+
+        (nota!=null&&nota!=undefined&&z!=null&&z!=undefined ? '<br><em style="color:#3d6b55;font-weight:400;font-size:8px;">'+nota+'</em>' : '')+
       '</td>'+
       '</tr>';
   }
@@ -6230,11 +6230,11 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
     svg += '<rect width="'+W+'" height="'+H+'" fill="#ffffff"/>';
 
     // Título
-    svg += '<text x="'+W/2+'" y="18" text-anchor="middle" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;fill:#214b1a;">Perfil Neuropsicológico</text>';
+    svg += '<text x="'+W/2+'" y="18" text-anchor="middle" style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;fill:#1e3830;">Perfil Neuropsicológico</text>';
 
     // Zona −1 a +1
     var y1 = zy(1), ym1 = zy(-1);
-    svg += '<rect x="'+ML+'" y="'+y1+'" width="'+chartW+'" height="'+(ym1-y1)+'" fill="#b8ddb0" opacity="0.85"/>';
+    svg += '<rect x="'+ML+'" y="'+y1+'" width="'+chartW+'" height="'+(ym1-y1)+'" fill="#c8d8d0" opacity="0.85"/>';
 
     // Líneas horizontales Y
     // Generar líneas para cada entero entre yMin y yMax
@@ -6244,10 +6244,10 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
       var y = zy(z);
       var isZero = z === 0;
       var is1 = z === 1 || z === -1;
-      svg += '<line x1="'+ML+'" y1="'+y+'" x2="'+(ML+chartW)+'" y2="'+y+'" stroke="'+(isZero?'#c8a070':is1?'#88b080':'#b8ddb0')+'" stroke-width="'+(isZero?0.9:0.5)+'" '+(isZero?'stroke-dasharray="5 3"':'')+'/>';
+      svg += '<line x1="'+ML+'" y1="'+y+'" x2="'+(ML+chartW)+'" y2="'+y+'" stroke="'+(isZero?'#c8a070':is1?'#6aaa8a':'#c8d8d0')+'" stroke-width="'+(isZero?0.9:0.5)+'" '+(isZero?'stroke-dasharray="5 3"':'')+'/>';
       // Etiqueta Y
       var lbl = z > 0 ? '+'+z : String(z);
-      svg += '<text x="'+(ML-6)+'" y="'+(y+4)+'" text-anchor="end" style="font-size:8px;fill:#4a7040;">'+lbl+'</text>';
+      svg += '<text x="'+(ML-6)+'" y="'+(y+4)+'" text-anchor="end" style="font-size:8px;fill:#3d6b55;">'+lbl+'</text>';
     });
 
     // Separadores de dominio y etiquetas
@@ -6261,39 +6261,39 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
       // Línea separadora (antes del primer punto de cada dominio excepto el primero)
       if (gi > 0) {
         var xSep = (px(g.start) + px(g.start-1)) / 2;
-        svg += '<line x1="'+xSep+'" y1="'+MT+'" x2="'+xSep+'" y2="'+(MT+chartH)+'" stroke="#88b080" stroke-width="0.5" stroke-dasharray="3 3"/>';
+        svg += '<line x1="'+xSep+'" y1="'+MT+'" x2="'+xSep+'" y2="'+(MT+chartH)+'" stroke="#6aaa8a" stroke-width="0.5" stroke-dasharray="3 3"/>';
       }
       // Etiqueta dominio centrada
       var xC = (px(g.start) + px(g.end)) / 2;
-      svg += '<text x="'+xC+'" y="'+(MT-6)+'" text-anchor="middle" style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;fill:#4a7040;">'+g.dom+'</text>';
+      svg += '<text x="'+xC+'" y="'+(MT-6)+'" text-anchor="middle" style="font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;fill:#3d6b55;">'+g.dom+'</text>';
     });
 
     // Línea de perfil continua
     var pts = puntos.map(function(p,i){ return px(i)+','+zy(p.z); }).join(' ');
-    svg += '<polyline points="'+pts+'" fill="none" stroke="#214b1a" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
+    svg += '<polyline points="'+pts+'" fill="none" stroke="#1e3830" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
 
     // Puntos (círculo blanco + borde + punto central)
     puntos.forEach(function(p, i){
       var x = px(i), y = zy(p.z);
-      svg += '<circle cx="'+x+'" cy="'+y+'" r="4.5" fill="#ffffff" stroke="#214b1a" stroke-width="1.5"/>';
-      svg += '<circle cx="'+x+'" cy="'+y+'" r="1.6" fill="#214b1a"/>';
+      svg += '<circle cx="'+x+'" cy="'+y+'" r="4.5" fill="#ffffff" stroke="#1e3830" stroke-width="1.5"/>';
+      svg += '<circle cx="'+x+'" cy="'+y+'" r="1.6" fill="#1e3830"/>';
     });
 
     // Etiquetas eje X rotadas −50°
     puntos.forEach(function(p, i){
       var x = px(i), yBase = MT + chartH + 8;
-      svg += '<text transform="rotate(-50,'+x+','+yBase+')" x="'+x+'" y="'+yBase+'" text-anchor="end" style="font-size:7.8px;fill:#214b1a;">'+p.label+'</text>';
+      svg += '<text transform="rotate(-50,'+x+','+yBase+')" x="'+x+'" y="'+yBase+'" text-anchor="end" style="font-size:7.8px;fill:#1e3830;">'+p.label+'</text>';
     });
 
     // Leyenda
     var yL = H - 14;
-    svg += '<circle cx="'+(ML)+'" cy="'+yL+'" r="4.5" fill="#ffffff" stroke="#214b1a" stroke-width="1.5"/>';
-    svg += '<circle cx="'+(ML)+'" cy="'+yL+'" r="1.6" fill="#214b1a"/>';
-    svg += '<text x="'+(ML+10)+'" y="'+(yL+4)+'" style="font-size:7.5px;fill:#4a7040;">Puntaje Z del paciente</text>';
-    svg += '<rect x="'+(ML+145)+'" y="'+(yL-5)+'" width="30" height="10" fill="#b8ddb0" opacity="0.90"/>';
-    svg += '<text x="'+(ML+180)+'" y="'+(yL+4)+'" style="font-size:7.5px;fill:#4a7040;">Rango normal (Z −1 a +1)</text>';
+    svg += '<circle cx="'+(ML)+'" cy="'+yL+'" r="4.5" fill="#ffffff" stroke="#1e3830" stroke-width="1.5"/>';
+    svg += '<circle cx="'+(ML)+'" cy="'+yL+'" r="1.6" fill="#1e3830"/>';
+    svg += '<text x="'+(ML+10)+'" y="'+(yL+4)+'" style="font-size:7.5px;fill:#3d6b55;">Puntaje Z del paciente</text>';
+    svg += '<rect x="'+(ML+145)+'" y="'+(yL-5)+'" width="30" height="10" fill="#c8d8d0" opacity="0.90"/>';
+    svg += '<text x="'+(ML+180)+'" y="'+(yL+4)+'" style="font-size:7.5px;fill:#3d6b55;">Rango normal (Z −1 a +1)</text>';
     svg += '<line x1="'+(ML+320)+'" y1="'+yL+'" x2="'+(ML+346)+'" y2="'+yL+'" stroke="#c8a070" stroke-width="0.9" stroke-dasharray="5 3"/>';
-    svg += '<text x="'+(ML+352)+'" y="'+(yL+4)+'" style="font-size:7.5px;fill:#4a7040;">Media normativa (Z = 0)</text>';
+    svg += '<text x="'+(ML+352)+'" y="'+(yL+4)+'" style="font-size:7.5px;fill:#3d6b55;">Media normativa (Z = 0)</text>';
 
     svg += '</svg>';
     return svg;
@@ -6308,8 +6308,8 @@ function renderCuestionariosFam(d) {
     var avdeItems = [{id:'inform',label:'Información'},{id:'social',label:'Contacto social'},{id:'recreat',label:'Recreación'},{id:'autono',label:'Autonomía'},{id:'planes',label:'Planes de futuro'},{id:'responsab',label:'Responsabilidad'},{id:'opinion',label:'Expresión opinión'},{id:'aprende',label:'Aprendizaje'}];
     var ad8Items = [{id:'ad8_1',label:'Juicios/Decisiones'},{id:'ad8_2',label:'Hobbies'},{id:'ad8_3',label:'Repite preguntas'},{id:'ad8_4',label:'Aparatos/Dispositivos'},{id:'ad8_5',label:'Olvida mes/año'},{id:'ad8_6',label:'Finanzas complejas'},{id:'ad8_7',label:'Recordar citas'},{id:'ad8_8',label:'Memoria/Razonamiento'}];
     var gravLbl = ['','Leve','Moderado','Severo'];
-    var thS = 'padding:5px 8px;background:#d8ecd0;color:#214b1a;font-weight:700;border:0.5px solid #a8c4a0;font-size:9px;text-align:left;';
-    var thC = 'padding:5px 8px;background:#d8ecd0;color:#214b1a;font-weight:700;border:0.5px solid #a8c4a0;font-size:9px;text-align:center;';
+    var thS = 'padding:5px 8px;background:#dceee8;color:#1e3830;font-weight:700;border:0.5px solid #a8c4a0;font-size:9px;text-align:left;';
+    var thC = 'padding:5px 8px;background:#dceee8;color:#1e3830;font-weight:700;border:0.5px solid #a8c4a0;font-size:9px;text-align:center;';
     var tdS = 'padding:5px 8px;border:0.5px solid #a8c4a0;font-size:9px;font-weight:700;color:#111;vertical-align:top;';
     var tdC = 'padding:5px 8px;border:0.5px solid #a8c4a0;font-size:9px;font-weight:700;color:#111;text-align:center;vertical-align:top;';
     var tdT = 'padding:5px 8px;border:0.5px solid #a8c4a0;font-size:9px;color:#111;vertical-align:top;';
@@ -6324,7 +6324,7 @@ function renderCuestionariosFam(d) {
     }
 
     var html = '<div style="margin-top:14px;page-break-inside:avoid;">';
-    html += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#eef6ea;background:#214b1a;padding:5px 10px;margin-bottom:0;">REPORTE DEL ACOMPAÑANTE'+informante+'</div>';
+    html += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;background:#1e3830;padding:5px 10px;margin-bottom:0;">REPORTE DEL ACOMPAÑANTE'+informante+'</div>';
     html += '<table style="width:100%;border-collapse:collapse;">';
     html += '<thead><tr><th style="'+thS+'width:27%;">Tests</th><th style="'+thC+'width:22%;">Significativo / No significativo</th><th style="'+thS+'">Síntomas significativos</th></tr></thead><tbody>';
     if (d.npiq) html += famRow('Inventario neuropsiquiátrico NPI-Q', npiqItems, d.npiq, 1, function(i){ return i.label+(d.npiq[i.id]>0?' ('+gravLbl[d.npiq[i.id]]+')':''); });
@@ -6403,7 +6403,7 @@ function renderCuestionariosFam(d) {
             ['FP · Falsos positivos',  d.v24, gi2t!==null?TAVEC_BAR.v24[gi2t].m:null, gi2t!==null?TAVEC_BAR.v24[gi2t].d:null, d.zFP],
             ['Discrim',               d.v25, gi2t!==null?TAVEC_BAR.v25[gi2t].m:null, gi2t!==null?TAVEC_BAR.v25[gi2t].d:null, d.zDiscrim]
           ];
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">TAVEC · Test de Aprendizaje Verbal España-Complutense (Benedet & Alejandre, 1998)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">TAVEC · Test de Aprendizaje Verbal España-Complutense (Benedet & Alejandre, 1998)</td></tr>';
           tavecVars.forEach(function(tv){ if(tv[1]!==null&&tv[1]!==undefined) rows += filaTabla(tv[0], tv[1], tv[2], tv[3], tv[4], r.fecha, notaTAVEC); });
 
         } else if (testNombre === 'BEM 144 Signoret') {
@@ -6467,13 +6467,13 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'WAIS-IV') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">WAIS-IV · Retención de Dígitos, Claves, Sec. Número-Letra</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WAIS-IV · Retención de Dígitos, Claves, Sec. Número-Letra</td></tr>';
           if (d.rd_pb != null) rows += filaTabla('Retención de Dígitos', d.rd_pb, 10, 3, d.rd_z, r.fecha);
           if (d.cla_pb != null) rows += filaTabla('Claves', d.cla_pb, 10, 3, d.cla_z, r.fecha);
           if (d.sln_pb != null) rows += filaTabla('Sec. Número-Letra', d.sln_pb, 10, 3, d.sln_z, r.fecha);
 
         } else if (testNombre === 'Test del Hotel') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">Test del Hotel (Pinasco et al., 2023)</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Test del Hotel (Pinasco et al., 2023)</td></tr>';
           var hSexo = d.sexo||'f'; var hGi = d.gi!=null?d.gi:0;
           var hBar = (typeof HOTEL_BAR !== 'undefined') ? HOTEL_BAR[hSexo] : null;
           var hMT=d.mTareas||(hBar?hBar.tareas[hGi][0]:null), hDST=d.dsTareas||(hBar?hBar.tareas[hGi][1]:null);
@@ -6484,15 +6484,15 @@ function renderCuestionariosFam(d) {
           if (d.zBotones != null) rows += filaTabla('Hotel — Desvío botones', d.desvBotones!=null?d.desvBotones+' seg':null, hMB, hDSB, d.zBotones, r.fecha, 'Mem. prospectiva');
 
         } else if (testNombre === 'BADS-Llaves') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)</td></tr>';
           rows += filaTabla('Búsqueda de Llaves', d.pb!=null?d.pb:null, d.m||null, d.ds||null, d.z, r.fecha, 'Pje conv. '+(d.conv!=null?d.conv:'—'));
 
         } else if (testNombre === 'BADS-Juicio') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">BADS · Juicio Temporal (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Juicio Temporal (Farías Sarquís et al., 2021)</td></tr>';
           rows += filaTabla('Juicio Temporal', d.conv!=null?d.conv:null, d.m||null, d.ds||null, d.z, r.fecha, null);
 
         } else if (testNombre === 'BADS-Zoo') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">BADS · Mapa del Zoo (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Mapa del Zoo (Farías Sarquís et al., 2021)</td></tr>';
           var ver = d.ver||'ambas';
           if (ver==='v1'||ver==='ambas') {
             rows += filaTabla('Zoo V1 — Secuencia', d.v1s!=null?d.v1s:null, d.m_v1sec?d.m_v1sec[0]:null, d.m_v1sec?d.m_v1sec[1]:null, d.z_v1sec!=null?d.z_v1sec:null, r.fecha, null);
@@ -6512,7 +6512,7 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'BTA') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">BTA · Brief Test of Attention (Arango-Lasprilla et al., 2015)</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BTA · Brief Test of Attention (Arango-Lasprilla et al., 2015)</td></tr>';
           var btaEi = d.ei != null ? d.ei : null;
           var btaGi = d.gi != null ? d.gi : null;
           var btaEdadLabels = ['18–22','23–27','28–32','33–37','38–42','43–47','48–52','53–57','58–62','63–67','68–72','73–77','>77'];
@@ -6522,21 +6522,21 @@ function renderCuestionariosFam(d) {
 
         } else if (testNombre === 'DEX') {
           var dexVer = d.version === 'hetero' ? 'Heteroadministrado' : 'Autoadministrado';
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">DEX · Cuestionario Disejecutivo · '+dexVer+' · Querejeta et al. (2015) · Adaptación argentina</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">DEX · Cuestionario Disejecutivo · '+dexVer+' · Querejeta et al. (2015) · Adaptación argentina</td></tr>';
           rows += filaTabla('DEX — Desorg./Apatía', d.desorg, 8.60, 5.79, d.zDesorg, r.fecha, 'Ítems 1,4,6,7,8,10,11,17,18,19');
           rows += filaTabla('DEX — Desinhi./Impuls.', d.desinhi, 9.69, 5.19, d.zDesinhi, r.fecha, 'Ítems 2,3,5,9,12,13,14,15,16,20');
           rows += filaTabla('DEX Total', d.total, d.version==='hetero'?20.68:22.25, d.version==='hetero'?14.77:10.10, d.zTotal, r.fecha, 'Puntaje /80');
 
         } else if (testNombre === 'WCST-64') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
           if (d.categorias != null)
             rows += filaTabla('Categorías completadas', d.categorias+'/6', d.cat_m||null, d.cat_ds||null, d.cat_z!=null?d.cat_z:null, r.fecha);
           if (d.perse_pct != null)
             rows += filaTabla('Errores perseverativos (%)', d.perse_pct+'%', d.perse_m||null, d.perse_ds||null, d.perse_z!=null?d.perse_z:null, r.fecha);
           if (d.intentos != null)
-            rows += filaTabla('Intentos 1ª categoría <span style="font-size:8px;color:#4a7040;font-style:italic;">(ref: >20)</span>', d.intentos, null, null, null, r.fecha);
+            rows += filaTabla('Intentos 1ª categoría <span style="font-size:8px;color:#3d6b55;font-style:italic;">(ref: >20)</span>', d.intentos, null, null, null, r.fecha);
           if (d.fallas != null)
-            rows += filaTabla('Fallas en mantener set <span style="font-size:8px;color:#4a7040;font-style:italic;">(ref: >3)</span>', d.fallas, null, null, null, r.fecha);
+            rows += filaTabla('Fallas en mantener set <span style="font-size:8px;color:#3d6b55;font-style:italic;">(ref: >3)</span>', d.fallas, null, null, null, r.fecha);
 
         } else if (testNombre === 'Test del Reloj (Cacho)') {
           var d2 = r.datos || {};
@@ -6546,12 +6546,12 @@ function renderCuestionariosFam(d) {
           rows += '<tr>'+
             '<td style="'+tdBase+'font-weight:500;">Test del Reloj (Cacho)</td>'+
             '<td style="'+tdBase+'text-align:center;font-family:monospace;font-weight:700;">'+(total2!=null?total2+'/10':'—')+'</td>'+
-            '<td colspan="4" style="'+tdBase+'font-size:9px;color:#4a7040;">'+
+            '<td colspan="4" style="'+tdBase+'font-size:9px;color:#3d6b55;">'+
               (d2.esfera!=null?'Esfera:'+d2.esfera+'/2 · ':'')+(d2.numeros!=null?'Números:'+d2.numeros+'/4 · ':'')+(d2.agujas!=null?'Agujas:'+d2.agujas+'/4':'')+'</td>'+
             '<td style="'+tdBase+'">'+
               '<span style="font-size:8.5px;padding:2px 6px;border-radius:8px;font-weight:700;background:'+(normal2?'#1D9E7522':'#E24B4A22')+';color:'+(normal2?'#1D9E75':'#E24B4A')+';border:0.5px solid '+(normal2?'#1D9E7544':'#E24B4A44')+';white-space:nowrap;">'+cat2+'</span>'+
             '</td>'+
-            '<td style="'+tdBase+'text-align:center;font-size:9px;color:#4a7040;">'+(r.fecha||'')+'</td>'+
+            '<td style="'+tdBase+'text-align:center;font-size:9px;color:#3d6b55;">'+(r.fecha||'')+'</td>'+
             '</tr>';
 
         } else if (testNombre === 'Test del Hotel') {
@@ -6581,7 +6581,7 @@ function renderCuestionariosFam(d) {
           rows += filaTabla('BTA', d.pb, null, null, d.z, r.fecha, 'Pc '+(d.pc||'—')+' · '+btaEd+' · '+btaEs);
 
         } else if (testNombre === 'SDMT-escrita' || testNombre === 'SDMT-oral') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">SDMT · Symbol Digit Modalities Test ('+(sdmtVer==='escrita'?'Versión Escrita — Arango-Lasprilla et al., 2015':'Versión Oral — Vanotti et al., 2015')+')</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">SDMT · Symbol Digit Modalities Test ('+(sdmtVer==='escrita'?'Versión Escrita — Arango-Lasprilla et al., 2015':'Versión Oral — Vanotti et al., 2015')+')</td></tr>';
           var sdmtVer = testNombre === 'SDMT-oral' ? 'oral' : 'escrita';
           var sdmtEdadLabels = sdmtVer==='escrita'
             ? ['18–22','23–27','28–32','33–37','38–42','43–47','48–52','53–57','58–62','63–67','68–72','73–77','>77']
@@ -6595,7 +6595,7 @@ function renderCuestionariosFam(d) {
         } else if (testNombre === 'FAB') {
           var fabBarLabels = {escol:'Nivel educativo',edad:'Edad',sexo:'Sexo',total:'Total muestra'};
           var fabEscolL = ['Primario','Secundario','Terciario/Universitario'];
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">FAB · Frontal Assessment Battery (Dubois et al. 2000) · Baremos Aceiro et al. (2018) · Argentina · Baremo: '+(fabBarLabels[d.baremo]||'—')+(d.barLabel?' — '+d.barLabel:'')+'</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">FAB · Frontal Assessment Battery (Dubois et al. 2000) · Baremos Aceiro et al. (2018) · Argentina · Baremo: '+(fabBarLabels[d.baremo]||'—')+(d.barLabel?' — '+d.barLabel:'')+'</td></tr>';
           rows += filaTabla('FAB Total', d.total, d.M||null, d.DS||null, d.z, r.fecha, 'Puntaje /18');
           if (d.scores && d.scores.length) {
             var fabNombres = ['Semejanzas','Fluidez verbal','Secuencias motoras','Instr. conflictivas','Go-No Go','Prensión'];
@@ -6605,7 +6605,7 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'D2') {
-          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">d2 · Test de Atención (Brickenkamp) · Baremos TEA Ediciones · ' + (D2_GRUPOS[d.gi]||'') + '</td></tr>';
+          rows += '<tr><td colspan="9" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">d2 · Test de Atención (Brickenkamp) · Baremos TEA Ediciones · ' + (D2_GRUPOS[d.gi]||'') + '</td></tr>';
           var d2Indices = [
             { key:'TR',  label:'TR · Total respuestas'  },
             { key:'TA',  label:'TA · Total aciertos'    },
@@ -6629,7 +6629,7 @@ function renderCuestionariosFam(d) {
           var gi2F = d.gi != null ? d.gi : null;
           var ei2F = d.ei != null ? d.ei : null;
           var notaF = gi2F!==null && ei2F!==null ? edadLabelsF[gi2F]+' · '+escolLabelsF[ei2F] : null;
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">Figura Compleja de Rey-Osterrieth · ROCF (Rivera et al., 2015)</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Figura Compleja de Rey-Osterrieth · ROCF (Rivera et al., 2015)</td></tr>';
           if (d.copia != null) rows += filaTabla('Copia', d.copia, null, null, d.zCopia, r.fecha, 'Pc '+(d.pcCopia||'—'));
           if (d.ri    != null) rows += filaTabla('Recuerdo Inmediato', d.ri, null, null, d.zRI, r.fecha, 'Pc '+(d.pcRI||'—'));
           if (d.ir    != null) rows += filaTabla('Índice de Retención', d.ir+'%', null, null, null, r.fecha, d.ir+'%');
@@ -6640,7 +6640,7 @@ function renderCuestionariosFam(d) {
           var gi2 = d.gi != null ? d.gi : null;
           var ei2 = d.ei != null ? d.ei : null;
           var notaS = gi2!==null && ei2!==null ? 'Grupo: '+edadLabelsS[gi2]+' · Escol. '+escolLabelsS[ei2] : null;
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;border-left:3px solid #325c28;border-bottom:0.5px solid #a8c4a0;">Stroop · Test de Colores y Palabras (Golden) — Tabla I, corrección por edad</td></tr>';
+          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Stroop · Test de Colores y Palabras (Golden) — Tabla I, corrección por edad</td></tr>';
           // Baremo Golden tabla T: no hay M/DS directos, Z viene de (PT−50)/10
           var edLbls=['16–44','45–64','65–80'];
           var notaST = 'Baremo Golden · Tabla I' + (d.gi!=null?' · '+edLbls[d.gi]:'') + (d.pCorr!=null?' · P corr.='+d.pCorr+', C corr.='+d.cCorr+', PC corr.='+d.pcCorr:'');
@@ -6671,23 +6671,23 @@ function renderCuestionariosFam(d) {
   function renderDolor(list) {
     if (!list.length) return '';
     // Mismo estilo que renderCL
-    var thD  = 'font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;padding:5px 8px;text-align:left;border:0.5px solid #a8c4a0;';
-    var thDC = 'font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;padding:5px 8px;text-align:center;border:0.5px solid #a8c4a0;';
+    var thD  = 'font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;padding:5px 8px;text-align:left;border:0.5px solid #a8c4a0;';
+    var thDC = 'font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;padding:5px 8px;text-align:center;border:0.5px solid #a8c4a0;';
     var tdR  = 'font-size:10px;padding:4px 8px;border:0.5px solid #ddd;vertical-align:middle;';
     var tdRC = 'font-size:10px;padding:4px 8px;border:0.5px solid #ddd;vertical-align:middle;text-align:center;font-family:monospace;font-weight:700;';
     var tdRI = 'font-size:10px;padding:4px 8px;border:0.5px solid #ddd;vertical-align:middle;font-weight:700;color:#222;';
     function rowBg(i){ return i%2===0?'#fff':'#f5fbf3'; }
     function dolorHeader(title){
-      return '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#eef6ea;margin:10px 0 0;padding:4px 9px;background:#325c28;border-left:3px solid #214b1a;">'+title+'</div>';
+      return '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#e8f5f0;margin:10px 0 0;padding:4px 9px;background:#2d4a3e;border-left:3px solid #1e3830;">'+title+'</div>';
     }
     function miniBar(pct, col){
       return '<div style="position:relative;height:8px;background:#dff0d8;border-radius:3px;width:90px;display:inline-block;vertical-align:middle;">'+
         '<div style="position:absolute;left:0;width:'+Math.min(100,pct).toFixed(1)+'%;top:0;bottom:0;background:'+col+';border-radius:3px;"></div>'+
         '</div>';
     }
-    function pcColor(pc){ return pc>=90?'#c0392b':pc>=75?'#D85A30':pc>=40?'#BA7517':'#2e7a4f'; }
+    function pcColor(pc){ return pc>=90?'#c0392b':pc>=75?'#D85A30':pc>=40?'#BA7517':'#2d4a3e'; }
     function pcLabel(pc){ return pc>=90?'Muy elevado':pc>=75?'Elevado':pc>=40?'Moderado':'Bajo'; }
-    function bpiCol(v){ return v>=7?'#c0392b':v>=4?'#D85A30':v>=1?'#BA7517':'#2e7a4f'; }
+    function bpiCol(v){ return v>=7?'#c0392b':v>=4?'#D85A30':v>=1?'#BA7517':'#2d4a3e'; }
     function bpiLbl(v,t){ if(t==='int'){return v>=7?'Severa':v>=4?'Moderada':v>=1?'Leve':'Sin dolor';}return v>=7?'Severa':v>=4?'Moderada':v>=1?'Leve':'Sin interferencia'; }
 
     var html = '';
@@ -6697,7 +6697,7 @@ function renderCuestionariosFam(d) {
       // ── PCS ──
       if (r.test === 'PCS') {
         var tot=d.tot!=null?d.tot:r.puntaje_total, rum=d.rum!=null?d.rum:null, mag=d.mag!=null?d.mag:null, ind=d.ind!=null?d.ind:null;
-        var nivCol=tot>=30?'#c0392b':tot>=20?'#D85A30':'#2e7a4f';
+        var nivCol=tot>=30?'#c0392b':tot>=20?'#D85A30':'#2d4a3e';
         var nivLbl=tot>=30?'Clínicamente significativa (corte ≥30)':tot>=20?'Moderada':'Baja';
         html += dolorHeader('PCS · Escala de Catastrofización del Dolor');
         html += '<table style="width:100%;border-collapse:collapse;margin-bottom:6px;"><thead><tr>'+
@@ -6708,9 +6708,9 @@ function renderCuestionariosFam(d) {
         var subs=[{l:'Rumiación',v:rum,max:16,it:'1,8,9,10'},{l:'Magnificación',v:mag,max:12,it:'3,6,13'},{l:'Indefensión',v:ind,max:24,it:'2,4,5,7,11,12'}];
         subs.forEach(function(s,i){
           if(s.v===null)return;
-          var col=s.v>=Math.round(s.max*0.7)?'#c0392b':s.v>=Math.round(s.max*0.5)?'#D85A30':'#2e7a4f';
+          var col=s.v>=Math.round(s.max*0.7)?'#c0392b':s.v>=Math.round(s.max*0.5)?'#D85A30':'#2d4a3e';
           var lbl=s.v>=Math.round(s.max*0.7)?'Significativa':s.v>=Math.round(s.max*0.5)?'Moderada':'No significativa';
-          html+='<tr style="background:'+rowBg(i)+'"><td style="'+tdR+'">'+s.l+' <span style="font-size:8px;color:#4a7040;">(ítems '+s.it+')</span></td>'+
+          html+='<tr style="background:'+rowBg(i)+'"><td style="'+tdR+'">'+s.l+' <span style="font-size:8px;color:#3d6b55;">(ítems '+s.it+')</span></td>'+
             '<td style="'+tdRC+'">'+s.v+'/'+s.max+'</td>'+
             '<td style="'+tdRI+'">'+lbl+'</td></tr>';
         });
@@ -6733,7 +6733,7 @@ function renderCuestionariosFam(d) {
           var sub=d[k]||{}, score=sub.score!=null?sub.score:null, pc=sub.pc!=null?sub.pc:null;
           if(score===null&&pc===null)return;
           var lbl=pc!=null?(pc>=75?'Sintomatología significativa':'Sintomatología no significativa'):'—';
-          var col=pc!=null?(pc>=75?'#c0392b':'#2e7a4f'):'#888';
+          var col=pc!=null?(pc>=75?'#c0392b':'#2d4a3e'):'#888';
           html+='<tr style="background:'+rowBg(i)+'"><td style="'+tdR+'">'+pbqN[k]+'</td>'+
             '<td style="'+tdRC+'">'+(score!=null?score:'—')+(pc!=null?' / Pc '+pc:'')+'</td>'+
             '<td style="'+tdRI+'">'+lbl+'</td></tr>';
@@ -6773,13 +6773,13 @@ function renderCuestionariosFam(d) {
           '<th style="'+thDC+'">Puntaje</th>'+
           '<th style="'+thDC+'">Interpretación</th>'+
           '</tr></thead><tbody>';
-        if(intVal!==null) html+='<tr style="background:'+rowBg(0)+'"><td style="'+tdR+'">Índice de Intensidad <span style="font-size:8px;color:#4a7040;">(ítems 3–6)</span></td>'+
+        if(intVal!==null) html+='<tr style="background:'+rowBg(0)+'"><td style="'+tdR+'">Índice de Intensidad <span style="font-size:8px;color:#3d6b55;">(ítems 3–6)</span></td>'+
           '<td style="'+tdRC+'">'+intVal.toFixed(1)+'/10</td>'+
           '<td style="'+tdRI+'">'+bpiLbl(intVal,'int')+'</td></tr>';
-        if(infVal!==null) html+='<tr style="background:'+rowBg(1)+'"><td style="'+tdR+'">Índice de Interferencia <span style="font-size:8px;color:#4a7040;">(ítems 9A–9G)</span></td>'+
+        if(infVal!==null) html+='<tr style="background:'+rowBg(1)+'"><td style="'+tdR+'">Índice de Interferencia <span style="font-size:8px;color:#3d6b55;">(ítems 9A–9G)</span></td>'+
           '<td style="'+tdRC+'">'+infVal.toFixed(1)+'/10</td>'+
           '<td style="'+tdRI+'">'+bpiLbl(infVal,'inf')+'</td></tr>';
-        if(alivio!==null) html+='<tr style="background:'+rowBg(2)+'"><td style="'+tdR+'">Alivio con tratamiento'+(trat?' <span style="font-size:8px;color:#4a7040;">('+trat+')</span>':'')+'</td>'+
+        if(alivio!==null) html+='<tr style="background:'+rowBg(2)+'"><td style="'+tdR+'">Alivio con tratamiento'+(trat?' <span style="font-size:8px;color:#3d6b55;">('+trat+')</span>':'')+'</td>'+
           '<td style="'+tdRC+'">'+alivio+'%</td>'+
           '<td style="'+tdRI+'">'+(alivio>=50?'Alivio adecuado':alivio>=25?'Alivio parcial':'Alivio insuficiente')+'</td></tr>';
         html += '</tbody></table>';
@@ -6803,18 +6803,18 @@ function renderCuestionariosFam(d) {
     if (val===null) return '';
     var pct  = Math.min(100,(val/max)*100);
     var cpct = Math.min(100,(cutoff/max)*100);
-    var col  = val>=cutoff?'#E24B4A': val>=(cutoff*0.75)?'#D85A30':'#639922';
+    var col  = val>=cutoff?'#E24B4A': val>=(cutoff*0.75)?'#D85A30':'#3d7a5f';
     return '<div style="position:relative;height:8px;background:#dff0d8;border-radius:3px;width:100px;display:inline-block;">'+
       '<div style="position:absolute;left:0;width:'+pct.toFixed(1)+'%;top:0;bottom:0;background:'+col+';border-radius:2px;"></div>'+
-      '<div style="position:absolute;left:'+cpct.toFixed(1)+'%;top:-3px;bottom:-3px;width:1.5px;background:#325c28;"></div>'+
+      '<div style="position:absolute;left:'+cpct.toFixed(1)+'%;top:-3px;bottom:-3px;width:1.5px;background:#2d4a3e;"></div>'+
       '</div>';
   }
 
   function renderCL(list) {
     if (!list.length) return '';
     // Estilos comunes
-    var thDark = 'font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;padding:5px 8px;text-align:left;border:0.5px solid #a8c4a0;';
-    var thDarkC = 'font-size:8.5px;font-weight:700;color:#214b1a;background:#d8ecd0;padding:5px 8px;text-align:center;border:0.5px solid #a8c4a0;';
+    var thDark = 'font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;padding:5px 8px;text-align:left;border:0.5px solid #a8c4a0;';
+    var thDarkC = 'font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;padding:5px 8px;text-align:center;border:0.5px solid #a8c4a0;';
     var tdR = 'font-size:10px;padding:4px 8px;border:0.5px solid #ddd;vertical-align:middle;';
     var tdRC = 'font-size:10px;padding:4px 8px;border:0.5px solid #ddd;vertical-align:middle;text-align:center;font-family:monospace;font-weight:700;';
     var tdRI = 'font-size:10px;padding:4px 8px;border:0.5px solid #ddd;vertical-align:middle;font-weight:700;color:#222;';
@@ -6822,7 +6822,7 @@ function renderCuestionariosFam(d) {
     function rowBg(i) { return i%2===0?'#fff':'#f5fbf3'; }
 
     function clHeader(title) {
-      return '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#eef6ea;margin:10px 0 0;padding:4px 9px;background:#325c28;border-left:3px solid #214b1a;">'+title+'</div>';
+      return '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#e8f5f0;margin:10px 0 0;padding:4px 9px;background:#2d4a3e;border-left:3px solid #1e3830;">'+title+'</div>';
     }
 
     var html = '';
@@ -6854,13 +6854,13 @@ function renderCuestionariosFam(d) {
         var dimFull = ['som','obs','sen','dep','ans','hos','fob','par','psi'];
         var dimNombres = {som:'Somatizaciones',obs:'Obsesiones y Compulsiones',sen:'Sensitividad Interpersonal',dep:'Depresión',ans:'Ansiedad',hos:'Hostilidad',fob:'Ansiedad Fóbica',par:'Ideación Paranoide',psi:'Psicoticismo'};
         function sclCelBg(t) { if(t==null)return'#f5f5f5';if(t>=80)return'#e74c3c';if(t>=65)return'#f39c12';return'#f5f5f5'; }
-        function sclCelColor(t) { if(t==null)return'#aaa';if(t>=65)return'#fff';return'#1a2e16'; }
+        function sclCelColor(t) { if(t==null)return'#aaa';if(t>=65)return'#fff';return'#1e3830'; }
         html += clHeader('SCL-90-R · Inventario de Síntomas de Derogatis');
         html += '<table style="border-collapse:collapse;width:100%;font-size:10px;margin-bottom:4px;">';
-        html += '<tr><td colspan="3" style="background:#d8ecd0;color:#214b1a;font-size:8px;font-weight:700;padding:3px 8px;text-transform:uppercase;letter-spacing:1px;border:0.5px solid #a8c4a0;">Dimensiones primarias</td>'+
-          '<th style="padding:4px 6px;font-size:8px;font-weight:700;color:#eef6ea;background:#325c28;border:0.5px solid #214b1a;text-align:center;">Ptos brutos</th>'+
-          '<th style="padding:4px 6px;font-size:8px;font-weight:700;color:#eef6ea;background:#325c28;border:0.5px solid #214b1a;text-align:center;">T</th>'+
-          '<th style="padding:4px 6px;font-size:8px;font-weight:700;color:#eef6ea;background:#325c28;border:0.5px solid #214b1a;text-align:center;">Estado</th></tr>';
+        html += '<tr><td colspan="3" style="background:#dceee8;color:#1e3830;font-size:8px;font-weight:700;padding:3px 8px;text-transform:uppercase;letter-spacing:1px;border:0.5px solid #a8c4a0;">Dimensiones primarias</td>'+
+          '<th style="padding:4px 6px;font-size:8px;font-weight:700;color:#e8f5f0;background:#2d4a3e;border:0.5px solid #1e3830;text-align:center;">Ptos brutos</th>'+
+          '<th style="padding:4px 6px;font-size:8px;font-weight:700;color:#e8f5f0;background:#2d4a3e;border:0.5px solid #1e3830;text-align:center;">T</th>'+
+          '<th style="padding:4px 6px;font-size:8px;font-weight:700;color:#e8f5f0;background:#2d4a3e;border:0.5px solid #1e3830;text-align:center;">Estado</th></tr>';
         dimFull.forEach(function(k,i) {
           var t = subs[k] ? subs[k].t : null;
           var bg = sclCelBg(t); var fc = sclCelColor(t);
@@ -6872,7 +6872,7 @@ function renderCuestionariosFam(d) {
             '<td style="padding:3px 6px;border:0.5px solid #ddd;text-align:center;font-family:monospace;font-weight:700;background:'+bg+';color:'+fc+';">'+(t!=null?t:'—')+'</td>'+
             '<td style="padding:3px 6px;border:0.5px solid #ddd;text-align:center;font-size:9px;font-weight:700;color:#222;">'+estado+'</td></tr>';
         });
-        html += '<tr><td colspan="6" style="background:#d8ecd0;color:#214b1a;font-size:8px;font-weight:700;padding:3px 8px;text-transform:uppercase;letter-spacing:1px;border:0.5px solid #a8c4a0;">Escalas globales</td></tr>';
+        html += '<tr><td colspan="6" style="background:#dceee8;color:#1e3830;font-size:8px;font-weight:700;padding:3px 8px;text-transform:uppercase;letter-spacing:1px;border:0.5px solid #a8c4a0;">Escalas globales</td></tr>';
         var igt = d.igt != null ? Math.round(parseFloat(d.igt)) : null;
         [['IGS — Índice de Severidad Global', d.igs_avg!=null?parseFloat(d.igs_avg).toFixed(2):'—', igt],
          ['TSP — Total Síntomas Positivos', d.tsp!=null?d.tsp:'—', d.tsp_t!=null?d.tsp_t:null],
@@ -6899,7 +6899,7 @@ function renderCuestionariosFam(d) {
           {key:'RP',label:'Realización Personal', val:d.RP, cat:d.RP_cat, corte:'≤33', dir:'bajo'}
         ];
         function mbiBg(cat,dir){if(!cat)return'#f5f5f5';var cl=cat.toLowerCase();if(dir==='bajo')return cl==='bajo'?'#e74c3c':cl==='moderado'?'#f39c12':'#f5f5f5';return cl==='alto'?'#e74c3c':cl==='moderado'?'#f39c12':'#f5f5f5';}
-        function mbiFc(bg){return bg==='#f5f5f5'?'#1a2e16':'#fff';}
+        function mbiFc(bg){return bg==='#f5f5f5'?'#1e3830':'#fff';}
         html += clHeader('MBI-HSS · Inventario de Burnout de Maslach');
         html += '<table style="border-collapse:collapse;width:100%;font-size:10px;margin-bottom:4px;"><thead><tr>'+
           '<th style="'+thDark+'">Subescala</th>'+
@@ -7026,7 +7026,7 @@ function renderCuestionariosFam(d) {
   }
 
   // ── Logo SVG ──
-  var logoSVG = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="36" height="36"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#1a56db" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#1a56db" opacity="0.65"/></svg>';
+  var logoSVG = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="36" height="36"><circle cx="60" cy="60" r="54" fill="#eef2ff" stroke="#93c5fd" stroke-width="1"/><line x1="60" y1="8" x2="60" y2="112" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><line x1="8" y1="60" x2="112" y2="60" stroke="#93c5fd" stroke-width="0.5" opacity="0.25"/><path d="M22 68 L36 68 L42 42 L50 88 L58 48 L66 80 L74 52 L80 68 L98 68" fill="none" stroke="#3d7a5f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="88" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="66" cy="80" r="2.8" fill="#3d7a5f" opacity="0.65"/><circle cx="42" cy="42" r="2.8" fill="#3d7a5f" opacity="0.65"/></svg>';
 
   // ── Tabla escala de referencia Z ──
   var refZ = '<div style="margin-top:14px;border:0.5px solid #cccccc;border-radius:4px;overflow:hidden;font-family:sans-serif;">'+
@@ -7059,21 +7059,21 @@ function renderCuestionariosFam(d) {
     '.pg{max-width:900px;margin:0 auto;}'+
     'table{border-collapse:collapse;width:100%;}'+
     '.narrativa{font-family:Arial,sans-serif;font-size:12pt;line-height:1.5;text-align:justify;color:#1a1a1a;margin:0 0 8px 0;}'+
-    '.sec-titulo{font-family:Arial,sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#0f1f3d;border-bottom:1.5px solid #1a56db;margin:16px 0 6px;padding-bottom:3px;}'+
+    '.sec-titulo{font-family:Arial,sans-serif;font-size:11pt;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#2d4a3e;border-bottom:1.5px solid #3d7a5f;margin:16px 0 6px;padding-bottom:3px;}'+
     '.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-family:Arial,sans-serif;font-size:11pt;}'+
     '.ficha-item{display:flex;gap:6px;padding:2px 0;}'+
-    '.ficha-lbl{font-weight:700;white-space:nowrap;color:#0f1f3d;}'+
+    '.ficha-lbl{font-weight:700;white-space:nowrap;color:#2d4a3e;}'+
     '@media print{body{padding:0;}@page{margin:15mm 15mm 15mm 20mm;size:A4 portrait;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}}'+
     '</style></head><body><div class="pg">'+
 
     // ── Header ──
-    '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0f1f3d;padding-bottom:10px;margin-bottom:14px;">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #2d4a3e;padding-bottom:10px;margin-bottom:14px;">'+
     '<div style="font-family:Arial,sans-serif;">'+getProfHeaderHTML()+
     '</div>'+
     '<div style="text-align:right;font-family:Arial,sans-serif;">'+
-    '<div style="font-size:18px;font-weight:800;color:#0f1f3d;letter-spacing:-0.5px;">PsicoEscala</div>'+
-    '<div style="font-size:9px;color:#64748b;margin-top:2px;">Informe Neuropsicológico</div>'+
-    '<div style="font-size:9px;color:#94a3b8;margin-top:6px;">'+new Date().toLocaleDateString('es-AR')+'</div>'+
+    '<div style="font-size:18px;font-weight:800;color:#2d4a3e;letter-spacing:-0.5px;">PsicoEscala</div>'+
+    '<div style="font-size:9px;color:#5a6b63;margin-top:2px;">Informe Neuropsicológico</div>'+
+    '<div style="font-size:9px;color:#8a9e94;margin-top:6px;">'+new Date().toLocaleDateString('es-AR')+'</div>'+
     '</div></div>'+
 
     // ── Ficha del paciente (con datos del informe) ──
@@ -7180,19 +7180,19 @@ function renderCuestionariosFam(d) {
 
     // ── Secciones ──
     (testsNp.length ?
-      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#eef6ea;background:#214b1a;padding:5px 10px;border-left:3px solid #214b1a;margin-bottom:0;margin-top:0;">Evaluación Neuropsicológica</div>'+
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;background:#1e3830;padding:5px 10px;border-left:3px solid #1e3830;margin-bottom:0;margin-top:0;">Evaluación Neuropsicológica</div>'+
       renderNP(testsNp) : '')+
 
     (testsTd.length ?
-      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#eef6ea;background:#214b1a;padding:5px 10px;border-left:3px solid #214b1a;margin-bottom:0;margin-top:14px;">TDAH</div>'+
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;background:#1e3830;padding:5px 10px;border-left:3px solid #1e3830;margin-bottom:0;margin-top:14px;">TDAH</div>'+
       renderCL(testsTd) : '')+
 
     (testsDo.length ?
-      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#eef6ea;background:#214b1a;padding:5px 10px;border-left:3px solid #214b1a;margin-bottom:0;margin-top:14px;">Evaluación del Dolor</div>'+
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;background:#1e3830;padding:5px 10px;border-left:3px solid #1e3830;margin-bottom:0;margin-top:14px;">Evaluación del Dolor</div>'+
       renderDolor(testsDo) : '')+
 
     (testsCl.length ?
-      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#eef6ea;background:#214b1a;padding:5px 10px;border-left:3px solid #214b1a;margin-bottom:0;margin-top:14px;">Psicología Clínica</div>'+
+      '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#e8f5f0;background:#1e3830;padding:5px 10px;border-left:3px solid #1e3830;margin-bottom:0;margin-top:14px;">Psicología Clínica</div>'+
       renderCL(testsCl) : '')+
 
     (testsNp.length ? refZ : '')+
@@ -7213,7 +7213,7 @@ function renderCuestionariosFam(d) {
 
     // ── Nota y pie ──
 
-    '<div style="margin-top:8px;border-top:0.5px solid #bfdbfe;padding-top:6px;display:flex;justify-content:space-between;font-family:Arial,sans-serif;font-size:8px;color:#64748b;">'+
+    '<div style="margin-top:8px;border-top:0.5px solid #c8d8d0;padding-top:6px;display:flex;justify-content:space-between;font-family:Arial,sans-serif;font-size:8px;color:#5a6b63;">'+
     '<div>'+getProfFooterText()+'</div>'+
     '<div>'+new Date().toLocaleDateString('es-AR')+'</div></div>'+
     '</div></body></html>';
@@ -7231,7 +7231,7 @@ function editarResultado(id) {
   var modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;';
   modal.innerHTML =
-    '<div style="background:var(--surface);border-radius:14px;padding:28px 32px;min-width:320px;max-width:440px;width:90%;box-shadow:0 8px 32px rgba(26,86,219,0.18);">' +
+    '<div style="background:var(--surface);border-radius:14px;padding:28px 32px;min-width:320px;max-width:440px;width:90%;box-shadow:0 8px 32px rgba(61,122,95,0.18);">' +
     '<div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px;">Editar resultado</div>' +
     '<div style="font-size:0.82rem;color:var(--muted);margin-bottom:18px;">' + r.test + ' — ' + (r.psico_pacientes ? r.psico_pacientes.nombre : '') + '</div>' +
     '<div class="field" style="margin-bottom:16px;"><label>Fecha de evaluación</label><input type="date" id="edit-res-fecha" value="' + (r.fecha||'') + '"></div>' +
@@ -7329,13 +7329,13 @@ var NP_TESTS = [
 
 // Íconos SVG por dominio
 var NP_ICONS = {
-  global:     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#1a56db" stroke-width="1.3"/><path d="M8 2v6l3 3" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/></svg>',
-  atencion:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" fill="#1a56db"/><circle cx="8" cy="8" r="5.5" stroke="#1a56db" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/></svg>',
-  memoria:    '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="2" stroke="#1a56db" stroke-width="1.3"/><path d="M5 4V3a3 3 0 0 1 6 0v1" stroke="#1a56db" stroke-width="1.3"/><path d="M8 8v2M6 9h4" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/></svg>',
-  lenguaje:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v6H9l-3 3V10H2V4z" stroke="#1a56db" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 7h6M5 9.5h3" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/></svg>',
-  visoc:      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="#1a56db" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="#1a56db" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="#1a56db" stroke-width="1.3"/><path d="M9 11.5h5M11.5 9v5" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/></svg>',
-  ejecutivas: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L6 7l3 4 2-3 2 2" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4" r="2" stroke="#1a56db" stroke-width="1.3"/></svg>',
-  familiar:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="#1a56db" stroke-width="1.3"/><circle cx="11" cy="4" r="1.8" stroke="#1a56db" stroke-width="1.3"/><path d="M1 13c0-2.76 2.24-4 5-4s5 1.24 5 4" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/><path d="M11 7c1.66 0 3 .9 3 3" stroke="#1a56db" stroke-width="1.3" stroke-linecap="round"/></svg>'
+  global:     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#3d7a5f" stroke-width="1.3"/><path d="M8 2v6l3 3" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  atencion:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" fill="#3d7a5f"/><circle cx="8" cy="8" r="5.5" stroke="#3d7a5f" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  memoria:    '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="9" rx="2" stroke="#3d7a5f" stroke-width="1.3"/><path d="M5 4V3a3 3 0 0 1 6 0v1" stroke="#3d7a5f" stroke-width="1.3"/><path d="M8 8v2M6 9h4" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  lenguaje:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v6H9l-3 3V10H2V4z" stroke="#3d7a5f" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 7h6M5 9.5h3" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  visoc:      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="#3d7a5f" stroke-width="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="#3d7a5f" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="#3d7a5f" stroke-width="1.3"/><path d="M9 11.5h5M11.5 9v5" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  ejecutivas: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L6 7l3 4 2-3 2 2" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4" r="2" stroke="#3d7a5f" stroke-width="1.3"/></svg>',
+  familiar:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="#3d7a5f" stroke-width="1.3"/><circle cx="11" cy="4" r="1.8" stroke="#3d7a5f" stroke-width="1.3"/><path d="M1 13c0-2.76 2.24-4 5-4s5 1.24 5 4" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/><path d="M11 7c1.66 0 3 .9 3 3" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>'
 };
 
 var _npChipActivo = 'todos';
@@ -9281,7 +9281,7 @@ function calcularFAB() {
   else if (z >= -2.0)  interp = 'Dificultad moderada';
   else                 interp = 'Dificultad severa';
 
-  var color = z >= -0.5 ? '#639922' : z >= -1.0 ? '#888780' : z >= -1.5 ? '#BA7517' : z >= -2.0 ? '#D85A30' : '#E24B4A';
+  var color = z >= -0.5 ? '#3d7a5f' : z >= -1.0 ? '#888780' : z >= -1.5 ? '#BA7517' : z >= -2.0 ? '#D85A30' : '#E24B4A';
 
   // Tabla de subtests
   var html = '<table style="width:100%;border-collapse:collapse;font-size:0.84rem;margin-bottom:12px;">' +
@@ -9713,7 +9713,7 @@ function calcularAsrs() {
   var zI=parseFloat(((scoreI-bar.I.M)/bar.I.DS).toFixed(2));
   var zH=parseFloat(((scoreH-bar.H.M)/bar.H.DS).toFixed(2));
   var zT=parseFloat(((scoreT-bar.T.M)/bar.T.DS).toFixed(2));
-  function pcCol(pc){return pc>=90?'#c0392b':pc>=75?'#D85A30':pc>=40?'#555':'#2e7a4f';}
+  function pcCol(pc){return pc>=90?'#c0392b':pc>=75?'#D85A30':pc>=40?'#555':'#2d4a3e';}
   function pcLbl(pc){return pc>=90?'Muy elevado':pc>=75?'Elevado':pc>=40?'Promedio':'Bajo';}
   var detalleHtml=
     '<div class="detalle-item"><div class="detalle-num" style="color:'+(positivo?'#c0392b':'#3a7a3a')+'">'+positivos+'/6</div><div class="detalle-lbl">Ítems A positivos</div></div>'+
@@ -10565,10 +10565,10 @@ function calcularHotel() {
   var interpHtml =
     '<p><strong>Grupo:</strong> '+sexoLabel+' · '+edadLabels[gi]+' años</p>'+
     '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:8px;">'+
-    '<thead><tr><th style="text-align:left;padding:3px 6px;background:var(--accent);color:#eef6ea;">Variable</th>'+
-    '<th style="text-align:center;padding:3px 6px;background:var(--accent);color:#eef6ea;">Resultado</th>'+
-    '<th style="text-align:center;padding:3px 6px;background:var(--accent);color:#eef6ea;">Z</th>'+
-    '<th style="text-align:left;padding:3px 6px;background:var(--accent);color:#eef6ea;">Interpretación</th></tr></thead><tbody>'+
+    '<thead><tr><th style="text-align:left;padding:3px 6px;background:var(--accent);color:#e8f5f0;">Variable</th>'+
+    '<th style="text-align:center;padding:3px 6px;background:var(--accent);color:#e8f5f0;">Resultado</th>'+
+    '<th style="text-align:center;padding:3px 6px;background:var(--accent);color:#e8f5f0;">Z</th>'+
+    '<th style="text-align:left;padding:3px 6px;background:var(--accent);color:#e8f5f0;">Interpretación</th></tr></thead><tbody>'+
     '<tr><td style="padding:3px 6px;border-bottom:0.5px solid var(--border);">Tareas intentadas</td><td style="text-align:center;padding:3px 6px;border-bottom:0.5px solid var(--border);">'+intentadas+'/5</td><td style="text-align:center;padding:3px 6px;border-bottom:0.5px solid var(--border);font-weight:700;">'+(zTareas>=0?'+':'')+zTareas+'</td><td style="padding:3px 6px;border-bottom:0.5px solid var(--border);font-weight:700;">'+hotelZLabel(zTareas)+'</td></tr>'+
     '<tr style="background:#f4faf2;"><td style="padding:3px 6px;border-bottom:0.5px solid var(--border);">Desvío total tiempo</td><td style="text-align:center;padding:3px 6px;border-bottom:0.5px solid var(--border);">'+desvioTiempoTotal+' seg</td><td style="text-align:center;padding:3px 6px;border-bottom:0.5px solid var(--border);font-weight:700;">'+(zTiempo>=0?'+':'')+zTiempo+'</td><td style="padding:3px 6px;border-bottom:0.5px solid var(--border);font-weight:700;">'+hotelZLabel(zTiempo)+'</td></tr>'+
     '<tr><td style="padding:3px 6px;">Desvío botones</td><td style="text-align:center;padding:3px 6px;">'+desvBotones+' seg</td><td style="text-align:center;padding:3px 6px;font-weight:700;">'+(zBotones>=0?'+':'')+zBotones+'</td><td style="padding:3px 6px;font-weight:700;">'+hotelZLabel(zBotones)+'</td></tr>'+
@@ -10744,7 +10744,7 @@ function d2ZLabel(z) {
 
 function d2ZColor(z) {
   if (z === null) return '#888';
-  if (z >= 0.5)   return '#639922';
+  if (z >= 0.5)   return '#3d7a5f';
   if (z >= -0.5)  return 'var(--muted)';
   if (z >= -0.99) return '#888780';
   if (z >= -1.49) return '#BA7517';
@@ -10991,7 +10991,7 @@ function dexZColor(z) {
   if (z >= 2.0)  return '#E24B4A';
   if (z >= 1.0)  return '#D85A30';
   if (z >= 0.5)  return '#BA7517';
-  return '#639922';
+  return '#3d7a5f';
 }
 
 function calcularDEX() {
@@ -11108,7 +11108,7 @@ function calcularWurs() {
   var pc=1;
   for(var j=0;j<WURS_PCT.length;j++){if(total>=WURS_PCT[j].v)pc=WURS_PCT[j].p;else break;}
   var zW=parseFloat(((total-23.5)/13.16).toFixed(2));
-  function pcCol(p){return p>=90?'#c0392b':p>=75?'#D85A30':p>=40?'#555':'#2e7a4f';}
+  function pcCol(p){return p>=90?'#c0392b':p>=75?'#D85A30':p>=40?'#555':'#2d4a3e';}
   function pcLbl(p){return p>=90?'Muy elevado':p>=75?'Elevado':p>=40?'Promedio':'Bajo';}
   var clf,col;
   if(total>=46){clf='Significativo para síntomas en la infancia';col='var(--red)';}
@@ -11608,7 +11608,7 @@ function tokenPELabel(pe) {
 }
 
 function tokenPEColor(pe) {
-  if (pe>=13) return '#639922';
+  if (pe>=13) return '#3d7a5f';
   if (pe>=8)  return '#444';
   if (pe>=6)  return '#888780';
   if (pe>=4)  return '#BA7517';
@@ -11673,7 +11673,7 @@ function calcularToken() {
     z=parseFloat(((peAdj-10)/3).toFixed(2));
     detalleHtml=
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:500;">Puntaje bruto</td><td style="'+tdC+'">'+pb+'/36</td><td style="'+tdR+'">Máximo = 36</td></tr>'+
-      '<tr style="background:#f5fbf3;'+trS+'"><td style="'+tdL+'font-weight:500;">Categoría (punto de corte)</td><td style="'+tdC+'color:'+(pb>=29?'#639922':'#D85A30')+';">'+catBruto+'</td><td style="'+tdR+'">De Renzi &amp; Faglioni (1978)</td></tr>'+
+      '<tr style="background:#f5fbf3;'+trS+'"><td style="'+tdL+'font-weight:500;">Categoría (punto de corte)</td><td style="'+tdC+'color:'+(pb>=29?'#3d7a5f':'#D85A30')+';">'+catBruto+'</td><td style="'+tdR+'">De Renzi &amp; Faglioni (1978)</td></tr>'+
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:500;">PE sin ajuste</td><td style="'+tdC+'">'+pe+'</td><td style="'+tdR+'">Tabla 1 · Aranciva et al. (2012)</td></tr>'+
       '<tr style="background:#f5fbf3;'+trS+'"><td style="'+tdL+'font-weight:500;">Ajuste escolaridad ('+escol+' años)</td><td style="'+tdC+'">'+(ajuste>=0?'+':'')+ajuste+'</td><td style="'+tdR+'">Tabla 3 · Aranciva et al. (2012)</td></tr>'+
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:700;">PE ajustada</td><td style="'+tdC+'color:'+color+';">'+peAdj+'</td><td style="'+tdL+'font-weight:600;color:'+color+';">'+label+'</td></tr>'+
@@ -11690,7 +11690,7 @@ function calcularToken() {
     z=parseFloat(((nssae-10)/3).toFixed(2));
     detalleHtml=
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:500;">Puntaje bruto</td><td style="'+tdC+'">'+pb+'/36</td><td style="'+tdR+'">Máximo = 36</td></tr>'+
-      '<tr style="background:#f5fbf3;'+trS+'"><td style="'+tdL+'font-weight:500;">Categoría (punto de corte)</td><td style="'+tdC+'color:'+(pb>=29?'#639922':'#D85A30')+';">'+catBruto+'</td><td style="'+tdR+'">De Renzi &amp; Faglioni (1978)</td></tr>'+
+      '<tr style="background:#f5fbf3;'+trS+'"><td style="'+tdL+'font-weight:500;">Categoría (punto de corte)</td><td style="'+tdC+'color:'+(pb>=29?'#3d7a5f':'#D85A30')+';">'+catBruto+'</td><td style="'+tdR+'">De Renzi &amp; Faglioni (1978)</td></tr>'+
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:500;">Grupo etario</td><td style="'+tdC+'">'+grupNombre+' años</td><td style="'+tdR+'">Tabla 4 · Peña-Casanova et al. (2009)</td></tr>'+
       '<tr style="background:#f5fbf3;'+trS+'"><td style="'+tdL+'font-weight:500;">NSSA (ajustado por edad)</td><td style="'+tdC+'">'+nssa+'</td><td style="'+tdR+'">Media=10 · DS=3</td></tr>'+
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:500;">Ajuste escolaridad ('+escol+' años)</td><td style="'+tdC+'">'+(nssae-nssa>=0?'+':'')+(nssae-nssa)+'</td><td style="'+tdR+'">Tabla 6 · b=0.29451</td></tr>'+
@@ -11700,7 +11700,7 @@ function calcularToken() {
   } else {
     // ── Fallback: solo punto de corte ──
     baremoNombre = 'De Renzi &amp; Faglioni (1978) · Punto de corte ≥29';
-    peAdj=null; label=catBruto; color=(pb>=29?'#639922':'#D85A30'); z=null;
+    peAdj=null; label=catBruto; color=(pb>=29?'#3d7a5f':'#D85A30'); z=null;
     detalleHtml=
       '<tr style="'+trS+'"><td style="'+tdL+'font-weight:500;">Puntaje bruto</td><td style="'+tdC+'">'+pb+'/36</td><td style="'+tdR+'">Máximo = 36</td></tr>'+
       '<tr style="background:#f5fbf3;"><td style="'+tdL+'font-weight:700;">Categoría</td><td style="'+tdC+'color:'+color+';">'+catBruto+'</td><td style="'+tdR+'">Punto de corte ≥29 · De Renzi &amp; Faglioni (1978)</td></tr>';
@@ -12065,19 +12065,19 @@ function dolorColorNiv(pc) {
   if(pc>=90) return {txt:'Muy elevado', c:'#c0392b'};
   if(pc>=75) return {txt:'Elevado', c:'#D85A30'};
   if(pc>=40) return {txt:'Moderado', c:'#BA7517'};
-  return {txt:'Bajo', c:'#639922'};
+  return {txt:'Bajo', c:'#3d7a5f'};
 }
 function dolorColorBPI(v, tipo) {
   if(tipo==='int') {
     if(v>=7) return {txt:'Severa', c:'#c0392b'};
     if(v>=4) return {txt:'Moderada', c:'#D85A30'};
     if(v>=1) return {txt:'Leve', c:'#BA7517'};
-    return {txt:'Sin dolor', c:'#639922'};
+    return {txt:'Sin dolor', c:'#3d7a5f'};
   }
   if(v>=7) return {txt:'Severa', c:'#c0392b'};
   if(v>=4) return {txt:'Moderada', c:'#D85A30'};
   if(v>=1) return {txt:'Leve', c:'#BA7517'};
-  return {txt:'Sin interferencia', c:'#639922'};
+  return {txt:'Sin interferencia', c:'#3d7a5f'};
 }
 
 // ── Render ítems ──
@@ -12398,7 +12398,7 @@ function calcularPCS(){
   var niv,nc;
   if(tot>=30){niv='Elevada / Clínicamente significativa';nc='#c0392b';}
   else if(tot>=20){niv='Moderada';nc='#D85A30';}
-  else{niv='Baja';nc='#639922';}
+  else{niv='Baja';nc='#3d7a5f';}
   window._pcsData={tot:tot,rum:rum,mag:mag,ind:ind,niv:niv};
   var det='<div class="detalle-item"><div class="detalle-num" style="color:'+nc+'">'+tot+'</div><div class="detalle-lbl">Total /52</div></div>'+
     '<div class="detalle-item"><div class="detalle-num">'+rum+'</div><div class="detalle-lbl">Rumiación /16</div></div>'+
@@ -13546,7 +13546,7 @@ function _xe(s) {
 }
 
 // ── Colores ───────────────────────────────────────────────────────────
-var WC = { VERDE_OSC:'214b1a', VERDE_MED:'325c28', VERDE_CLR:'B8DDB0', GRIS_CLR:'EEEEEE', BLANCO:'FFFFFF' };
+var WC = { VERDE_OSC:'1e3830', VERDE_MED:'2d4a3e', VERDE_CLR:'C8D8D0', GRIS_CLR:'EEEEEE', BLANCO:'FFFFFF' };
 
 // ── Helpers XML docx ──────────────────────────────────────────────────
 function _wRun(txt, opts) {
@@ -14436,7 +14436,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     // Línea separadora
     '<w:p>'+
       '<w:pPr><w:spacing w:before="60" w:after="0"/>'+
-      '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="325c28"/></w:pBdr></w:pPr>'+
+      '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="2d4a3e"/></w:pBdr></w:pPr>'+
     '</w:p>'+
   '</w:hdr>';
 
@@ -14446,11 +14446,11 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       // Línea superior del footer
       '<w:p>'+
         '<w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="0"/>'+
-        '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="325c28"/></w:pBdr></w:pPr>'+
+        '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="2d4a3e"/></w:pBdr></w:pPr>'+
       '</w:p>'+
       '<w:p>'+
         '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:b/><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="214b1a"/>'+
+        '<w:r><w:rPr><w:b/><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="1e3830"/>'+
         '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
         '<w:t>CENTRO DE REHABILITACIÓN GONZÁLEZ PALAU - FUNDACIÓN CIATEC</w:t></w:r>'+
       '</w:p>'+
@@ -14809,7 +14809,7 @@ function renderPerfilZ() {
     if (z === null || z === undefined) return {bg:'transparent',txt:'var(--muted)',lbl:'—'};
     if (z >= 1.5)  return {bg:'#d8f0fa',txt:'#1565c0',lbl:'Superior'};
     if (z >= 1.0)  return {bg:'#d8eaff',txt:'#1a4a8a',lbl:'Sobre el promedio'};
-    if (z >= -0.99)return {bg:'#e8f4e0',txt:'#325c28',lbl:'Esperado'};
+    if (z >= -0.99)return {bg:'#e8f5f0',txt:'#2d4a3e',lbl:'Esperado'};
     if (z >= -1.49)return {bg:'#fdf0c4',txt:'#7a5c00',lbl:'Límite inferior normativo'};
     if (z >= -1.99)return {bg:'#fde8d0',txt:'#a04000',lbl:'Dificultad leve'};
     return             {bg:'#fad8d8',txt:'#a00000',lbl:'Dificultad moderada'};
