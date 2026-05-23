@@ -6278,27 +6278,20 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
 
   // ── Perfil Z tipo grilla neuropsicológica ──
   var COLS = [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3]; // extended dynamically per row in zGrilla
-  function zGrilla(z) {
-    var dynCols = COLS.slice();
+  function zGrillaCells(z, isEven) {
     var zClamped = z;
-    var cellStyle = 'width:12px;min-width:12px;max-width:12px;height:13px;text-align:center;vertical-align:middle;padding:0;border:1px solid #555555;';
-    var hds = dynCols.map(function(v) {
-      return '<td style="'+cellStyle+'font-size:6.5px;color:#000;font-family:Arial,sans-serif;font-weight:700;background:#C8D8D0;border-bottom:none;">'+
-        zColLabel(v) + '</td>';
+    var stripe = isEven ? '#F0F7F4' : '#FFFFFF';
+    var marked = null;
+    if (zClamped !== null && zClamped !== undefined) {
+      var zForX = Math.max(-3, Math.min(3, zClamped));
+      marked = COLS.reduce(function(a, b) { return Math.abs(b - zForX) < Math.abs(a - zForX) ? b : a; });
+    }
+    return COLS.map(function(v) {
+      var isX = marked !== null && v === marked;
+      var bg = (v >= -1 && v <= 1) ? '#D4EAE0' : '#FFFFFF';
+      var inner = isX ? '<span style="font-size:8px;font-weight:900;color:#000;">X</span>' : '';
+      return '<td style="width:14px;min-width:14px;text-align:center;vertical-align:middle;padding:2px 0;border:1px solid #BFBFBF;background:'+bg+';font-size:8px;">'+inner+'</td>';
     }).join('');
-    var cells = dynCols.map(function(v) {
-      var isX = false;
-      if (zClamped !== null && zClamped !== undefined) {
-        var zForX = Math.max(-3, Math.min(3, zClamped));
-        var closest = dynCols.reduce(function(a, b) { return Math.abs(b - zForX) < Math.abs(a - zForX) ? b : a; });
-        isX = (v === closest);
-      }
-      var enNormal = (v >= -1 && v <= 1);
-      var bg = enNormal ? '#d4eadf' : '#ffffff';
-      var inner = isX ? '<span style="font-size:8px;font-weight:900;color:#000;line-height:1;">X</span>' : '';
-      return '<td style="'+cellStyle+'background:'+bg+';">'+inner+'</td>';
-    }).join('');
-    return '<table style="border-collapse:collapse;table-layout:fixed;margin:0 auto;width:auto;"><tr>'+hds+'</tr><tr>'+cells+'</tr></table>';
   }
 
   // ── Estilos de tabla ──
@@ -6306,7 +6299,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   var tdBase = 'font-size:10.5px;color:#000000;border-bottom:0.5px solid #d4eadf;padding:5px 7px;';
 
   function domHeader(txt) {
-    return '<tr><td colspan="8" style="background:#C8D8D0;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#000000;border-bottom:1px solid #c8d8d0;text-align:center;">'+txt+'</td></tr>';
+    return '<tr><td colspan="19" style="background:#C8D8D0;padding:4px 10px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#000000;border-bottom:1px solid #c8d8d0;text-align:center;">'+txt+'</td></tr>';
   }
 
   // ── Fila de tabla neuropsicológica ──
@@ -6323,39 +6316,44 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
     return 'Dificultad elevada';
   }
 
-  function filaTabla(label, pb, m, ds, z, fecha, nota) {
-    var t   = zToT(z);
-    var pbStr = pb!==null&&pb!==undefined ? String(parseFloat(pb).toFixed ? parseFloat(pb)%1===0 ? parseInt(pb) : parseFloat(pb).toFixed(1) : pb) : '—';
-    var mStr  = m!==null&&m!==undefined   ? parseFloat(m).toFixed(2)  : '—';
-    var dsStr = ds!==null&&ds!==undefined ? parseFloat(ds).toFixed(1) : '—';
-    var zStr  = z!==null&&z!==undefined   ? parseFloat(z).toFixed(1) : '—';
-    var tStr  = t!==null ? t : '—';
+  function filaTabla(label, pb, m, ds, z, fecha, nota, isEven) {
+    filaTabla._n = filaTabla._n || 0;
+    if (isEven === undefined) isEven = filaTabla._n % 2 === 0;
+    filaTabla._n++;
+    var pbStr = pb !== null && pb !== undefined ? String(parseFloat(pb).toFixed ? parseFloat(pb) % 1 === 0 ? parseInt(pb) : parseFloat(pb).toFixed(1) : pb) : '—';
+    var mStr  = m !== null && m !== undefined ? parseFloat(m).toFixed(1) : '—';
+    var dsStr = ds !== null && ds !== undefined ? parseFloat(ds).toFixed(1) : '—';
+    var zStr  = z !== null && z !== undefined ? parseFloat(z).toFixed(1) : '—';
     var lbl   = zLabel(z);
+    var stripe = isEven ? '#F0F7F4' : '#FFFFFF';
+    var tdS = tdBase + 'background:' + stripe + ';';
+    var tdZ = tdS + 'font-weight:700;';
     return '<tr>'+
-      '<td style="'+tdBase+'font-weight:500;">'+label+'</td>'+
-      '<td style="'+tdBase+'text-align:center;font-family:monospace;font-weight:700;">'+pbStr+'</td>'+
-      '<td style="'+tdBase+'text-align:center;font-family:monospace;font-weight:700;">'+zStr+'</td>'+
-      '<td style="'+tdBase+'text-align:center;font-family:monospace;">'+tStr+'</td>'+
-      '<td style="'+tdBase+'text-align:center;font-family:monospace;font-size:9px;">'+mStr+'</td>'+
-      '<td style="'+tdBase+'text-align:center;font-family:monospace;font-size:9px;">'+dsStr+'</td>'+
-      '<td style="'+tdBase+'padding:2px 4px;text-align:center;vertical-align:middle;">'+zGrilla(z)+'</td>'+
-      '<td style="'+tdBase+'font-size:9px;color:#111;font-weight:700;">'+
-        (z!=null&&z!=undefined ? lbl : (nota!=null&&nota!=undefined ? '<em style="color:#3d6b55;font-weight:400;">'+nota+'</em>' : '—'))+
-        (nota!=null&&nota!=undefined&&z!=null&&z!=undefined ? '<br><em style="color:#3d6b55;font-weight:400;font-size:8px;">'+nota+'</em>' : '')+
+      '<td style="'+tdBase+'background:#FFFFFF;font-weight:500;">'+label+'</td>'+
+      '<td style="'+tdS+'text-align:center;font-family:monospace;font-weight:700;">'+pbStr+'</td>'+
+      '<td style="'+tdS+'text-align:center;font-family:monospace;font-size:9px;">'+mStr+'</td>'+
+      '<td style="'+tdS+'text-align:center;font-family:monospace;font-size:9px;">'+dsStr+'</td>'+
+      '<td style="'+tdZ+'text-align:center;font-family:monospace;">'+zStr+'</td>'+
+      zGrillaCells(z, isEven) +
+      '<td style="'+tdS+'font-size:9px;font-weight:700;">'+
+        (z != null && z != undefined ? lbl : (nota != null && nota != undefined ? '<em style="color:#3d6b55;font-weight:400;">'+nota+'</em>' : '—'))+
+        (nota != null && nota != undefined && z != null && z != undefined ? '<br><em style="color:#3d6b55;font-weight:400;font-size:8px;">'+nota+'</em>' : '')+
       '</td>'+
       '</tr>';
   }
 
   function tablaHeader() {
+    var zHdr = COLS.map(function(v) {
+      return '<th style="'+thBase+'text-align:center;font-size:7px;padding:3px 2px;">'+zColLabel(v)+'</th>';
+    }).join('');
     return '<thead><tr>'+
-      '<th style="'+thBase+'min-width:120px;">Variable</th>'+
+      '<th style="'+thBase+'min-width:110px;">Variable</th>'+
       '<th style="'+thBase+'text-align:center;">PB</th>'+
-      '<th style="'+thBase+'text-align:center;">Z</th>'+
-      '<th style="'+thBase+'text-align:center;">T</th>'+
       '<th style="'+thBase+'text-align:center;">M</th>'+
       '<th style="'+thBase+'text-align:center;">DS</th>'+
-      '<th style="'+thBase+'text-align:center;">Perfil</th>'+
-      '<th style="'+thBase+'">Interpretación</th>'+
+      '<th style="'+thBase+'text-align:center;">Z</th>'+
+      zHdr +
+      '<th style="'+thBase+'min-width:100px;">Interpretación</th>'+
       '</tr></thead>';
   }
 
@@ -6569,6 +6567,7 @@ function renderCuestionariosFam(d) {
 
     function renderNP(list) {
     if (!list.length) return '';
+    filaTabla._n = 0;
     var rows = '';
 
     // Agrupar por dominio
@@ -6628,7 +6627,7 @@ function renderCuestionariosFam(d) {
             ['FP · Falsos positivos',  d.v24, gi2t!==null?TAVEC_BAR.v24[gi2t].m:null, gi2t!==null?TAVEC_BAR.v24[gi2t].d:null, d.zFP],
             ['Discrim',               d.v25, gi2t!==null?TAVEC_BAR.v25[gi2t].m:null, gi2t!==null?TAVEC_BAR.v25[gi2t].d:null, d.zDiscrim]
           ];
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">TAVEC · Test de Aprendizaje Verbal España-Complutense (Benedet & Alejandre, 1998)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">TAVEC · Test de Aprendizaje Verbal España-Complutense (Benedet & Alejandre, 1998)</td></tr>';
           tavecVars.forEach(function(tv){ if(tv[1]!==null&&tv[1]!==undefined) rows += filaTabla(tv[0], tv[1], tv[2], tv[3], tv[4], r.fecha, notaTAVEC); });
 
         } else if (testNombre === 'BEM 144 Signoret') {
@@ -6692,13 +6691,13 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'WAIS-IV') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WAIS-IV · Retención de Dígitos, Claves, Sec. Número-Letra</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WAIS-IV · Retención de Dígitos, Claves, Sec. Número-Letra</td></tr>';
           if (d.rd_pb != null) rows += filaTabla('Retención de Dígitos', d.rd_pb, 10, 3, d.rd_z, r.fecha);
           if (d.cla_pb != null) rows += filaTabla('Claves', d.cla_pb, 10, 3, d.cla_z, r.fecha);
           if (d.sln_pb != null) rows += filaTabla('Sec. Número-Letra', d.sln_pb, 10, 3, d.sln_z, r.fecha);
 
         } else if (testNombre === 'Test del Hotel') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Test del Hotel (Pinasco et al., 2023)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Test del Hotel (Pinasco et al., 2023)</td></tr>';
           var hSexo = d.sexo||'f'; var hGi = d.gi!=null?d.gi:0;
           var hBar = (typeof HOTEL_BAR !== 'undefined') ? HOTEL_BAR[hSexo] : null;
           var hMT=d.mTareas||(hBar?hBar.tareas[hGi][0]:null), hDST=d.dsTareas||(hBar?hBar.tareas[hGi][1]:null);
@@ -6709,15 +6708,15 @@ function renderCuestionariosFam(d) {
           if (d.zBotones != null) rows += filaTabla('Hotel — Desvío botones', d.desvBotones!=null?d.desvBotones+' seg':null, hMB, hDSB, d.zBotones, r.fecha, 'Mem. prospectiva');
 
         } else if (testNombre === 'BADS-Llaves') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)</td></tr>';
           rows += filaTabla('Búsqueda de Llaves', d.pb!=null?d.pb:null, d.m||null, d.ds||null, d.z, r.fecha, 'Pje conv. '+(d.conv!=null?d.conv:'—'));
 
         } else if (testNombre === 'BADS-Juicio') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Juicio Temporal (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Juicio Temporal (Farías Sarquís et al., 2021)</td></tr>';
           rows += filaTabla('Juicio Temporal', d.conv!=null?d.conv:null, d.m||null, d.ds||null, d.z, r.fecha, null);
 
         } else if (testNombre === 'BADS-Zoo') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Mapa del Zoo (Farías Sarquís et al., 2021)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BADS · Mapa del Zoo (Farías Sarquís et al., 2021)</td></tr>';
           var ver = d.ver||'ambas';
           if (ver==='v1'||ver==='ambas') {
             rows += filaTabla('Zoo V1 — Secuencia', d.v1s!=null?d.v1s:null, d.m_v1sec?d.m_v1sec[0]:null, d.m_v1sec?d.m_v1sec[1]:null, d.z_v1sec!=null?d.z_v1sec:null, r.fecha, null);
@@ -6737,7 +6736,7 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'BTA') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BTA · Brief Test of Attention (Arango-Lasprilla et al., 2015)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">BTA · Brief Test of Attention (Arango-Lasprilla et al., 2015)</td></tr>';
           var btaEi = d.ei != null ? d.ei : null;
           var btaGi = d.gi != null ? d.gi : null;
           var btaEdadLabels = ['18–22','23–27','28–32','33–37','38–42','43–47','48–52','53–57','58–62','63–67','68–72','73–77','>77'];
@@ -6747,13 +6746,13 @@ function renderCuestionariosFam(d) {
 
         } else if (testNombre === 'DEX') {
           var dexVer = d.version === 'hetero' ? 'Heteroadministrado' : 'Autoadministrado';
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">DEX · Cuestionario Disejecutivo · '+dexVer+' · Querejeta et al. (2015) · Adaptación argentina</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">DEX · Cuestionario Disejecutivo · '+dexVer+' · Querejeta et al. (2015) · Adaptación argentina</td></tr>';
           rows += filaTabla('DEX — Desorg./Apatía', d.desorg, 8.60, 5.79, d.zDesorg, r.fecha, 'Ítems 1,4,6,7,8,10,11,17,18,19');
           rows += filaTabla('DEX — Desinhi./Impuls.', d.desinhi, 9.69, 5.19, d.zDesinhi, r.fecha, 'Ítems 2,3,5,9,12,13,14,15,16,20');
           rows += filaTabla('DEX Total', d.total, d.version==='hetero'?20.68:22.25, d.version==='hetero'?14.77:10.10, d.zTotal, r.fecha, 'Puntaje /80');
 
         } else if (testNombre === 'WCST-64') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
           if (d.categorias != null)
             rows += filaTabla('Categorías completadas', d.categorias+'/6', d.cat_m||null, d.cat_ds||null, d.cat_z!=null?d.cat_z:null, r.fecha);
           if (d.perse_pct != null)
@@ -6806,7 +6805,7 @@ function renderCuestionariosFam(d) {
           rows += filaTabla('BTA', d.pb, null, null, d.z, r.fecha, 'Pc '+(d.pc||'—')+' · '+btaEd+' · '+btaEs);
 
         } else if (testNombre === 'SDMT-escrita' || testNombre === 'SDMT-oral') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">SDMT · Symbol Digit Modalities Test ('+(sdmtVer==='escrita'?'Versión Escrita — Arango-Lasprilla et al., 2015':'Versión Oral — Vanotti et al., 2015')+')</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">SDMT · Symbol Digit Modalities Test ('+(sdmtVer==='escrita'?'Versión Escrita — Arango-Lasprilla et al., 2015':'Versión Oral — Vanotti et al., 2015')+')</td></tr>';
           var sdmtVer = testNombre === 'SDMT-oral' ? 'oral' : 'escrita';
           var sdmtEdadLabels = sdmtVer==='escrita'
             ? ['18–22','23–27','28–32','33–37','38–42','43–47','48–52','53–57','58–62','63–67','68–72','73–77','>77']
@@ -6820,7 +6819,7 @@ function renderCuestionariosFam(d) {
         } else if (testNombre === 'FAB') {
           var fabBarLabels = {escol:'Nivel educativo',edad:'Edad',sexo:'Sexo',total:'Total muestra'};
           var fabEscolL = ['Primario','Secundario','Terciario/Universitario'];
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">FAB · Frontal Assessment Battery (Dubois et al. 2000) · Baremos Aceiro et al. (2018) · Argentina · Baremo: '+(fabBarLabels[d.baremo]||'—')+(d.barLabel?' — '+d.barLabel:'')+'</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">FAB · Frontal Assessment Battery (Dubois et al. 2000) · Baremos Aceiro et al. (2018) · Argentina · Baremo: '+(fabBarLabels[d.baremo]||'—')+(d.barLabel?' — '+d.barLabel:'')+'</td></tr>';
           rows += filaTabla('FAB Total', d.total, d.M||null, d.DS||null, d.z, r.fecha, 'Puntaje /18');
           if (d.scores && d.scores.length) {
             var fabNombres = ['Semejanzas','Fluidez verbal','Secuencias motoras','Instr. conflictivas','Go-No Go','Prensión'];
@@ -6830,7 +6829,7 @@ function renderCuestionariosFam(d) {
           }
 
         } else if (testNombre === 'D2') {
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">d2 · Test de Atención (Brickenkamp) · Baremos TEA Ediciones · ' + (D2_GRUPOS[d.gi]||'') + '</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">d2 · Test de Atención (Brickenkamp) · Baremos TEA Ediciones · ' + (D2_GRUPOS[d.gi]||'') + '</td></tr>';
           var d2Indices = [
             { key:'TR',  label:'TR · Total respuestas'  },
             { key:'TA',  label:'TA · Total aciertos'    },
@@ -6854,7 +6853,7 @@ function renderCuestionariosFam(d) {
           var gi2F = d.gi != null ? d.gi : null;
           var ei2F = d.ei != null ? d.ei : null;
           var notaF = gi2F!==null && ei2F!==null ? edadLabelsF[gi2F]+' · '+escolLabelsF[ei2F] : null;
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Figura Compleja de Rey-Osterrieth · ROCF (Rivera et al., 2015)</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Figura Compleja de Rey-Osterrieth · ROCF (Rivera et al., 2015)</td></tr>';
           if (d.copia != null) rows += filaTabla('Copia', d.copia, null, null, d.zCopia, r.fecha, 'Pc '+(d.pcCopia||'—'));
           if (d.ri    != null) rows += filaTabla('Recuerdo Inmediato', d.ri, null, null, d.zRI, r.fecha, 'Pc '+(d.pcRI||'—'));
           if (d.ir    != null) rows += filaTabla('Índice de Retención', d.ir+'%', null, null, null, r.fecha, d.ir+'%');
@@ -6865,7 +6864,7 @@ function renderCuestionariosFam(d) {
           var gi2 = d.gi != null ? d.gi : null;
           var ei2 = d.ei != null ? d.ei : null;
           var notaS = gi2!==null && ei2!==null ? 'Grupo: '+edadLabelsS[gi2]+' · Escol. '+escolLabelsS[ei2] : null;
-          rows += '<tr><td colspan="8" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Stroop · Test de Colores y Palabras (Golden) — Tabla I, corrección por edad</td></tr>';
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">Stroop · Test de Colores y Palabras (Golden) — Tabla I, corrección por edad</td></tr>';
           // Baremo Golden tabla T: no hay M/DS directos, Z viene de (PT−50)/10
           var edLbls=['16–44','45–64','65–80'];
           var notaST = 'Baremo Golden · Tabla I' + (d.gi!=null?' · '+edLbls[d.gi]:'') + (d.pCorr!=null?' · P corr.='+d.pCorr+', C corr.='+d.cCorr+', PC corr.='+d.pcCorr:'');
@@ -13830,8 +13829,17 @@ function _xe(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Colores ───────────────────────────────────────────────────────────
+// ── Colores (PsicoEscala; estructura según informe de referencia) ───
 var WC = { VERDE_OSC:'1e3830', VERDE_MED:'2d4a3e', VERDE_CLR:'C8D8D0', GRIS_CLR:'EEEEEE', BLANCO:'FFFFFF' };
+var WT = {
+  TBL_FULL: 13398,
+  HDR: 'C8D8D0',
+  DOM: 'C8D8D0',
+  STRIPE: 'F0F7F4',
+  WHITE: 'FFFFFF',
+  NORM: 'D4EAE0',
+  TXT: '000000'
+};
 
 // ── Helpers XML docx ──────────────────────────────────────────────────
 function _wRun(txt, opts) {
@@ -13888,11 +13896,12 @@ function _wRow(cells, opts) {
   return '<w:tr>'+trpr+cells.join('')+'</w:tr>';
 }
 
-function _wTable(rows, colWidths) {
-  var totalW = colWidths.reduce(function(a, b) { return a + b; }, 0);
+function _wTable(rows, colWidths, opts) {
+  opts = opts || {};
+  var tblW = opts.tblW || WT.TBL_FULL;
   var tblGrid = '<w:tblGrid>'+colWidths.map(function(w){return '<w:gridCol w:w="'+w+'"/>';}).join('')+'</w:tblGrid>';
   var tblPr = '<w:tblPr>'+
-    '<w:tblW w:w="'+totalW+'" w:type="dxa"/>'+
+    '<w:tblW w:w="'+tblW+'" w:type="dxa"/>'+
     '<w:jc w:val="center"/>'+
     '<w:tblLayout w:type="fixed"/>'+
     '<w:tblBorders>'+
@@ -13914,25 +13923,26 @@ function _wTable(rows, colWidths) {
 var ZCOLS = [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3];
 var ZCOL_W = 290;
 
-// Anchos ajustados al ancho útil A4 apaisado (~15400 dxa): grilla completa −3…+3 centrada
-var _ZGRILLA_W2 = 410;
-var COL_WIDTHS_HDR = [2000, 400, 400, 400, 420].concat(ZCOLS.map(function() { return _ZGRILLA_W2; })).concat([1100]);
-var _TOTAL_HDR = COL_WIDTHS_HDR.reduce(function(a, b) { return a + b; }, 0);
+// Anchos idénticos al informe de referencia (A4 apaisado, tabla 13398 dxa)
+var COL_DP = [2600, 6760];
+var COL_CL = [3200, 1200, 4960];
+var COL_FAM = [3200, 1800, 4360];
+var COL_WIDTHS_HDR = [2200, 460, 460, 460].concat(Array(14).fill(540)).concat([1258]);
 
 function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
-  var bg = isEven ? 'F0F7F4' : 'FFFFFF';
-
   if (isSubhdr) {
     var totalCols = COL_WIDTHS_HDR.length;
-    var totalW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0);
+    var totalW = COL_WIDTHS_HDR.reduce(function(a, b) { return a + b; }, 0);
     return _wRow([
       _wCell(
-        _wPar(_wRun(label,{bold:true,sz:20,color:'000000',font:'Arial'}),
-              {align:'center',before:30,after:30,shading:'C8D8D0'}),
-        {w:totalW, fill:'C8D8D0', span:totalCols}
+        _wPar(_wRun(label, {bold: true, sz: 20, color: WT.TXT, font: 'Arial'}),
+              {align: 'center', before: 25, after: 25}),
+        {w: totalW, fill: WT.DOM, span: totalCols}
       )
     ]);
   }
+
+  var stripe = isEven ? WT.STRIPE : WT.WHITE;
 
   // Fila de dato
   var pbStr = pb!==null&&pb!==undefined ? String(pb) : '—';
@@ -13970,37 +13980,29 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   }
 
   var cells = [];
-  // Variable
-  cells.push(_wCell(_wPar(_wRun(label,{sz:20,bold:false,color:'000000',font:'Arial'}),{before:20,after:20}),{w:COL_WIDTHS_HDR[0],fill:bg}));
-  // PB
-  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[1],fill:bg}));
-  // M
-  cells.push(_wCell(_wPar(_wRun(mStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[2],fill:bg}));
-  // DS
-  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[3],fill:bg}));
-  // Z
-  cells.push(_wCell(_wPar(_wRun(zStr,{sz:20,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[4],fill:bg}));
-  // Grilla Z: 13 celdas
-  ZCOLS.forEach(function(v,i){
+  cells.push(_wCell(_wPar(_wRun(label, {sz: 20, bold: false, color: WT.TXT, font: 'Arial'}), {before: 20, after: 20}), {w: COL_WIDTHS_HDR[0], fill: WT.WHITE}));
+  cells.push(_wCell(_wPar(_wRun(pbStr, {sz: 20, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: COL_WIDTHS_HDR[1], fill: stripe}));
+  cells.push(_wCell(_wPar(_wRun(mStr, {sz: 20, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: COL_WIDTHS_HDR[2], fill: stripe}));
+  cells.push(_wCell(_wPar(_wRun(dsStr, {sz: 20, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: COL_WIDTHS_HDR[3], fill: stripe}));
+  cells.push(_wCell(_wPar(_wRun(zStr, {sz: 20, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: COL_WIDTHS_HDR[4], fill: stripe}));
+  ZCOLS.forEach(function(v, i) {
     var isMarked = (markedCol === i);
-    var cellFill = normZone[i] ? 'D4EAE0' : 'FFFFFF';
+    var cellFill = normZone[i] ? WT.NORM : WT.WHITE;
     var content = isMarked
-      ? _wPar(_wRun('X',{sz:18,bold:true,font:'Arial',color:'000000'}),{align:'center',before:40,after:40})
-      : _wPar('',{before:40,after:40});
-    cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true}));
+      ? _wPar(_wRun('X', {sz: 18, bold: true, font: 'Arial', color: WT.TXT}), {align: 'center', before: 40, after: 40})
+      : _wPar('', {before: 40, after: 40});
+    cells.push(_wCell(content, {w: COL_WIDTHS_HDR[5 + i], fill: cellFill, noWrap: true}));
   });
-  // Interpretación
   var interpTxt = zInterp(z);
-  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:20,bold:false,color:'000000',font:'Arial'}),{before:20,after:20}),{w:COL_WIDTHS_HDR[18],fill:bg}));
+  cells.push(_wCell(_wPar(_wRun(interpTxt, {sz: 20, bold: false, color: WT.TXT, font: 'Arial'}), {before: 20, after: 20}), {w: COL_WIDTHS_HDR[18], fill: stripe}));
 
   return _wRow(cells);
 }
 
 function _zHdrRow() {
   var cells = [];
-  var hdrFill = 'C8D8D0';
   function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt,{sz:16,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
+    return _wCell(_wPar(_wRun(txt, {sz: 16, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true, noWrap: true});
   }
   cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
@@ -14253,11 +14255,17 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     return rows;
   }
 
-  // ── Tabla simple para CL/TD/DO (Instrumento | Puntaje | Resultado) ──
-  var COL_CL=[3200,1200,4960];
-  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'C8D8D0',hdrBorder:true});}
-  function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
-  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:'000000',font:'Arial'}),{before:25,after:25,shading:'C8D8D0'}),{w:9360,fill:'C8D8D0',span:3})]);}
+  // ── Tabla simple CL/TD/DO (Instrumento | Puntaje | Resultado) ──
+  var COL_CL_SUM = COL_CL.reduce(function(a, b) { return a + b; }, 0);
+  function clHdr(txt, w) {
+    return _wCell(_wPar(_wRun(txt, {sz: 18, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true});
+  }
+  function clCell(txt, w, bg, center) {
+    return _wCell(_wPar(_wRun(txt || '—', {sz: 20, font: 'Arial', color: WT.TXT}), {align: center ? 'center' : 'left', before: 20, after: 20}), {w: w, fill: bg || WT.WHITE});
+  }
+  function clDomHdr(txt) {
+    return _wRow([_wCell(_wPar(_wRun(txt, {bold: true, sz: 20, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 25, after: 25}), {w: COL_CL_SUM, fill: WT.DOM, span: 3})]);
+  }
   function buildSimpleRows(list){
     if(!list.length)return[];
     var rows=[],rc=0;
@@ -14278,10 +14286,14 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     list.forEach(function(r){
       var d=r.datos||{};
       rows.push(clDomHdr(r.test));
-      function addCL(lbl,pb,res){
-        var bg=rc%2===0?'F0F7F4':'FFFFFF';
+      function addCL(lbl, pb, res) {
+        var bg = rc % 2 === 0 ? WT.STRIPE : WT.WHITE;
         var resNorm = normCat(res, pb, r.test);
-        rows.push(_wRow([clCell(lbl,COL_CL[0],bg),clCell(String(pb!=null?pb:'—'),COL_CL[1],bg,true),clCell(resNorm||'—',COL_CL[2],bg)]));
+        rows.push(_wRow([
+          clCell(lbl, COL_CL[0], bg),
+          clCell(String(pb != null ? pb : '—'), COL_CL[1], bg, true),
+          clCell(resNorm || '—', COL_CL[2], bg)
+        ]));
         rc++;
       }
       if(r.test==='BDI-II'){addCL('BDI-II — Total',r.puntaje_total,r.categoria||'—');}
@@ -14338,21 +14350,12 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     });
   }
 
-  // ── Tabla datos personales (fondo claro como grilla Z, texto negro) ──
-  var _dpRowIdx = 0;
+  // ── Tabla datos personales (2 columnas, como informe de referencia) ──
   function dpRow(lbl, val) {
-    var bg = _dpRowIdx % 2 === 0 ? 'F0F7F4' : 'FFFFFF';
-    _dpRowIdx++;
     return _wRow([
-      _wCell(_wPar(_wRun(lbl, {bold:true, sz:20, font:'Arial', color:'000000'}), {before:40, after:40}), {w:2600, fill:bg}),
-      _wCell(_wPar(_wRun(val || '—', {sz:20, font:'Arial', color:'000000'}), {before:40, after:40}), {w:6760, fill:bg})
+      _wCell(_wPar(_wRun(lbl, {bold: true, sz: 20, font: 'Arial', color: WT.TXT}), {before: 20, after: 20}), {w: COL_DP[0], fill: WT.STRIPE}),
+      _wCell(_wPar(_wRun(val || '—', {sz: 20, font: 'Arial', color: WT.TXT}), {before: 20, after: 20}), {w: COL_DP[1], fill: WT.WHITE})
     ]);
-  }
-  function dpHdrRow() {
-    return _wRow([
-      _wCell(_wPar(_wRun('Campo', {bold:true, sz:20, font:'Arial', color:'000000'}), {align:'center', before:30, after:30}), {w:2600, fill:'C8D8D0', hdrBorder:true}),
-      _wCell(_wPar(_wRun('Dato', {bold:true, sz:20, font:'Arial', color:'000000'}), {align:'center', before:30, after:30}), {w:6760, fill:'C8D8D0', hdrBorder:true})
-    ], {hdr:true});
   }
 
   // ── Sección título ──
@@ -14367,28 +14370,26 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
   body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'000000',font:'Arial'}),{align:'center',before:0,after:120});
 
   // 2. DATOS DEL PACIENTE
-  _dpRowIdx = 0;
   body+=secTit('1. Datos del Paciente');
   body+=_wTable([
-    dpHdrRow(),
     dpRow('Apellido y Nombre', pacNombre),
-    dpRow('Edad',              pacEdad),
+    dpRow('Edad', pacEdad),
     dpRow('Fecha de Nacimiento', pacFnac),
-    dpRow('Fecha de Evaluación', inf.fecha_evaluacion||fechaEval),
-    dpRow('DNI',               inf.dni||pacDNI||'—'),
-    dpRow('Educación',         pacEscol),
-    dpRow('Ocupación',         inf.ocupacion||pacOcup),
-    dpRow('Procedencia',       inf.procedencia||'—'),
-    dpRow('Sexo',              pacSexo),
-    dpRow('Dominancia Manual', inf.dominancia||'—'),
-    dpRow('Datos de Contacto', inf.contacto||'—'),
-    dpRow('Derivado por',      inf.derivado_por||'—'),
-    dpRow('Evaluado por',      inf.evaluado_por||'—'),
-    dpRow('Ant. Clínicos',     inf.ant_clinicos||'—'),
-    dpRow('Ant. Psiq./Psicol.',inf.ant_psiquiatricos||'—'),
-    dpRow('Ant. Familiares',   inf.ant_familiares||'—'),
-    dpRow('Hábitos Tóxicos',   inf.habitos_toxicos||'—'),
-  ],[2600,6760]);
+    dpRow('Fecha de Evaluación', inf.fecha_evaluacion || fechaEval),
+    dpRow('DNI', inf.dni || pacDNI || '—'),
+    dpRow('Educación', pacEscol),
+    dpRow('Ocupación', inf.ocupacion || pacOcup),
+    dpRow('Procedencia', inf.procedencia || '—'),
+    dpRow('Sexo', pacSexo),
+    dpRow('Dominancia Manual', inf.dominancia || '—'),
+    dpRow('Datos de Contacto', inf.contacto || '—'),
+    dpRow('Derivado por', inf.derivado_por || '—'),
+    dpRow('Evaluado por', inf.evaluado_por || '—'),
+    dpRow('Ant. Clínicos', inf.ant_clinicos || '—'),
+    dpRow('Ant. Psiquiátricos/Psicológicos', inf.ant_psiquiatricos || '—'),
+    dpRow('Ant. Familiares', inf.ant_familiares || '—'),
+    dpRow('Hábitos Tóxicos', inf.habitos_toxicos || '—'),
+  ], COL_DP);
   body+=_wPar('',{before:0,after:80});
 
   // 3. MOTIVO DE CONSULTA
@@ -14496,9 +14497,12 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     body+=secTit('Reporte del Acompañante');
     var fam=famResults[famResults.length-1].datos||{};
     // Tabla: Tests | Significativo/No significativo | Síntomas
-    var COL_FAM=[3200,1800,4360];
-    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'C8D8D0',hdrBorder:true});}
-    function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
+    function famHdrCell(txt, w) {
+      return _wCell(_wPar(_wRun(txt, {sz: 18, bold: true, color: WT.TXT, font: 'Arial'}), {align: 'center', before: 20, after: 20}), {w: w, fill: WT.HDR, hdrBorder: true});
+    }
+    function famCell(txt, w, bg, center) {
+      return _wCell(_wPar(_wRun(txt || '—', {sz: 20, font: 'Arial', color: WT.TXT}), {align: center ? 'center' : 'left', before: 20, after: 20}), {w: w, fill: bg || WT.WHITE});
+    }
     
     var famRows=[];
     famRows.push(_wRow([famHdrCell('Tests',COL_FAM[0]),famHdrCell('Significativo / No significativo',COL_FAM[1]),famHdrCell('Síntomas',COL_FAM[2])],{hdr:true}));
@@ -14521,7 +14525,13 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
       });
       npiqSint = sintomas.length ? sintomas.join(' · ') : '—';
     }
-    famRows.push(_wRow([famCell('Inventario neuropsiquiátrico NPI-Q',COL_FAM[0],'C8D8D0'),famCell(npiqSig,COL_FAM[1],'C8D8D0',true),famCell(npiqSint,COL_FAM[2],'C8D8D0')]));
+    var famRc = 0;
+    function famDataRow(c0, c1, c2) {
+      var bg = famRc % 2 === 0 ? WT.STRIPE : WT.WHITE;
+      famRc++;
+      famRows.push(_wRow([famCell(c0, COL_FAM[0], bg), famCell(c1, COL_FAM[1], bg, true), famCell(c2, COL_FAM[2], bg)]));
+    }
+    famDataRow('Inventario neuropsiquiátrico NPI-Q', npiqSig, npiqSint);
     
     // AVD helper
     function avdSintomas(obj, labels){
@@ -14543,19 +14553,19 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     var avdbVal = fam.avdbTotal!=null?fam.avdbTotal:(fam.avdb_total!=null?fam.avdb_total:null);
     var avdbSig = avdbVal!=null ? (avdbVal<4?'No significativo':'Significativo') : '—';
     var avdbSint = avdSintomas(fam.avdb, AVDB_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Básicas',COL_FAM[0]),famCell(avdbSig,COL_FAM[1],'',true),famCell(avdbSint,COL_FAM[2])]));
+    famDataRow('Escala de AVD Básicas', avdbSig, avdbSint);
     
     // AVD Instrumentales
     var avdiVal = fam.avdiTotal!=null?fam.avdiTotal:(fam.avdi_total!=null?fam.avdi_total:null);
     var avdiSig = avdiVal!=null ? (avdiVal<6?'No significativo':'Significativo') : '—';
     var avdiSint = avdSintomas(fam.avdi, AVDI_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Instrumentales',COL_FAM[0],'C8D8D0'),famCell(avdiSig,COL_FAM[1],'C8D8D0',true),famCell(avdiSint,COL_FAM[2],'C8D8D0')]));
+    famDataRow('Escala de AVD Instrumentales', avdiSig, avdiSint);
     
     // AVD Expansivas
     var avdeVal = fam.avdeTotal!=null?fam.avdeTotal:(fam.avde_total!=null?fam.avde_total:null);
     var avdeSig = avdeVal!=null ? (avdeVal<8?'No significativo':'Significativo') : '—';
     var avdeSint = avdSintomas(fam.avde, AVDE_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Expansivas',COL_FAM[0]),famCell(avdeSig,COL_FAM[1],'',true),famCell(avdeSint,COL_FAM[2])]));
+    famDataRow('Escala de AVD Expansivas', avdeSig, avdeSint);
     
     // AD8-ARG
     var AD8_LABELS=[{id:'ad8_1',label:'Cambios en juicio'},{id:'ad8_2',label:'Menor interés en hobbies'},{id:'ad8_3',label:'Repite preguntas'},{id:'ad8_4',label:'Dificultad con dispositivos'},{id:'ad8_5',label:'Olvida mes o año'},{id:'ad8_6',label:'Dificultad con finanzas'},{id:'ad8_7',label:'Olvida citas'},{id:'ad8_8',label:'Problemas de memoria'}];
@@ -14567,7 +14577,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
       AD8_LABELS.forEach(function(it){if(fam.ad8[it.id]==='si')ad8Afect.push(it.label);});
       ad8Sint = ad8Afect.length?ad8Afect.join(' · '):'—';
     }
-    famRows.push(_wRow([famCell('Cuestionario del Informante AD8-ARG',COL_FAM[0],'C8D8D0'),famCell(ad8Sig,COL_FAM[1],'C8D8D0',true),famCell(ad8Sint,COL_FAM[2],'C8D8D0')]));
+    famDataRow('Cuestionario del Informante AD8-ARG', ad8Sig, ad8Sint);
     
     body+=_wTable(famRows,COL_FAM);
     body+=_wPar('N/V = no valorado; N/C = paciente no está en condiciones para responder o ser valorado.',{before:40,after:80});
