@@ -696,7 +696,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
       <div class="sidebar-user" id="topbar-email"></div>
       <button class="sidebar-btn-salir" onclick="doLogout()">Cerrar sesión</button>
-      <div class="sidebar-version">v1.10.63</div>
+      <div class="sidebar-version">v1.10.64</div>
     </div>
   </aside>
 
@@ -14046,21 +14046,21 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // ── Tabla datos personales ──
   function dpRow(lbl,val){
     return _wRow([
-      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:'1e3830'}),{before:40,after:40}),{w:2600,fill:'C8D8D0'}),
-      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'000000'}),{before:40,after:40}),{w:6760,fill:'FFFFFF'}),
+      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:'FFFFFF'}),{before:40,after:40}),{w:2600,fill:'2d4a3e'}),
+      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'1a2420'}),{before:40,after:40}),{w:6760,fill:'FFFFFF'}),
     ]);
   }
 
   // ── Sección título (línea verde bajo) ──
   function secTit(txt){
-    return _wPar(_wRun(txt,{bold:true,sz:22,color:'000000',font:'Arial'}),{before:240,after:60,border_b:'595959'});
+    return _wPar(_wRun(txt,{bold:true,sz:22,color:'1e3830',font:'Arial'}),{before:240,after:60,border_b:'2d4a3e'});
   }
 
   // ── Construir cuerpo ──
   var body='';
 
   // 1. TÍTULO
-  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'000000',font:'Arial'}),{align:'center',before:0,after:120});
+  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'2d4a3e',font:'Arial'}),{align:'center',before:0,after:120});
 
   // 2. DATOS DEL PACIENTE
   body+=secTit('1. Datos del Paciente');
@@ -14314,27 +14314,27 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // Header XML — tabla 1 fila 3 celdas: logo GP | centro vacío | logo CIATEC
   // Header: tabla 1 fila, 3 celdas — logo GP izq | espacio | logo CT der
   // Imágenes via drawingML inline con namespaces completos
+  var cfg = getConfigProfesional();
+  var profNombre   = cfg.nombre    || 'PsicoEscala';
+  var profMatric   = cfg.matricula || '';
+  var profDir      = cfg.direccion || '';
+  var profTel      = cfg.tel       ? 'Tel. '+cfg.tel : '';
+  var profExtra    = cfg.extra     || '';
+
+  // Construir filas de datos del profesional
+  function hdrRun(txt, bold, sz, color) {
+    return '<w:r><w:rPr>'+(bold?'<w:b/>':'')+'<w:sz w:val="'+(sz||18)+'"/><w:szCs w:val="'+(sz||18)+'"/><w:color w:val="'+(color||'1e3830')+'"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr><w:t xml:space="preserve">'+txt+'</w:t></w:r>';
+  }
+  function hdrPar(runs, align) {
+    return '<w:p><w:pPr>'+(align?'<w:jc w:val="'+align+'"/>':'')+'<w:spacing w:before="0" w:after="40"/></w:pPr>'+runs+'</w:p>';
+  }
+
   var headerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:hdr'+
-    ' xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"'+
-    ' xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"'+
-    ' xmlns:o="urn:schemas-microsoft-com:office:office"'+
-    ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'+
-    ' xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'+
-    ' xmlns:v="urn:schemas-microsoft-com:vml"'+
-    ' xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"'+
-    ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'+
-    ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'+
-    ' xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"'+
-    ' xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"'+
-    ' xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"'+
-    ' xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml"'+
-    ' xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"'+
-    ' mc:Ignorable="w14 wp14">'+
-    // Tabla para posicionar logos: izq | centro | der
+    '<w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
+    // Tabla: izquierda datos prof | derecha marca PsicoEscala
     '<w:tbl>'+
       '<w:tblPr>'+
-        '<w:tblW w:w="13398" w:type="dxa"/>'+
+        '<w:tblW w:w="9360" w:type="dxa"/>'+
         '<w:tblBorders>'+
           '<w:top w:val="none"/><w:left w:val="none"/>'+
           '<w:bottom w:val="none"/><w:right w:val="none"/>'+
@@ -14342,130 +14342,69 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         '</w:tblBorders>'+
         '<w:tblLayout w:type="fixed"/>'+
       '</w:tblPr>'+
-      '<w:tblGrid>'+
-        '<w:gridCol w:w="1800"/>'+
-        '<w:gridCol w:w="5760"/>'+
-        '<w:gridCol w:w="1800"/>'+
-      '</w:tblGrid>'+
+      '<w:tblGrid><w:gridCol w:w="6000"/><w:gridCol w:w="3360"/></w:tblGrid>'+
       '<w:tr>'+
-        // Celda izquierda: logo GP
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="1800" w:type="dxa"/></w:tcPr>'+
-          '<w:p>'+
-            '<w:pPr><w:jc w:val="left"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-            '<w:r><w:rPr/>'+
-              '<w:drawing>'+
-                '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
-                  '<wp:extent cx="576000" cy="576000"/>'+
-                  '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
-                  '<wp:docPr id="1" name="LogoGP" descr="Logo González Palau"/>'+
-                  '<wp:cNvGraphicFramePr>'+
-                    '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'+
-                  '</wp:cNvGraphicFramePr>'+
-                  '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
-                    '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                        '<pic:nvPicPr>'+
-                          '<pic:cNvPr id="1" name="LogoGP"/>'+
-                          '<pic:cNvPicPr><a:picLocks noChangeAspect="1" noChangeArrowheads="1"/></pic:cNvPicPr>'+
-                        '</pic:nvPicPr>'+
-                        '<pic:blipFill>'+
-                          '<a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rImgGP">'+
-                            '<a:extLst><a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}"><a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/></a:ext></a:extLst>'+
-                          '</a:blip>'+
-                          '<a:stretch><a:fillRect/></a:stretch>'+
-                        '</pic:blipFill>'+
-                        '<pic:spPr bwMode="auto">'+
-                          '<a:xfrm><a:off x="0" y="0"/><a:ext cx="576000" cy="576000"/></a:xfrm>'+
-                          '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+
-                        '</pic:spPr>'+
-                      '</pic:pic>'+
-                    '</a:graphicData>'+
-                  '</a:graphic>'+
-                '</wp:inline>'+
-              '</w:drawing>'+
-            '</w:r>'+
-          '</w:p>'+
-        '</w:tc>'+
-        // Celda central: vacía
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="5760" w:type="dxa"/></w:tcPr>'+
+        // Celda izquierda: datos del profesional
+        '<w:tc><w:tcPr><w:tcW w:w="6000" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr>'+
+          hdrPar(hdrRun(profNombre, true, 22, '2d4a3e'))+
+          (profMatric ? hdrPar(hdrRun(profMatric, false, 16, '5a6b63')) : '')+
+          (profDir    ? hdrPar(hdrRun(profDir,    false, 16, '5a6b63')) : '')+
+          (profTel    ? hdrPar(hdrRun(profTel,    false, 16, '5a6b63')) : '')+
+          (profExtra  ? hdrPar(hdrRun(profExtra,  false, 16, '5a6b63')) : '')+
           '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>'+
         '</w:tc>'+
-        // Celda derecha: logo CIATEC
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="1800" w:type="dxa"/></w:tcPr>'+
-          '<w:p>'+
-            '<w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-            '<w:r><w:rPr/>'+
-              '<w:drawing>'+
-                '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
-                  '<wp:extent cx="576000" cy="576000"/>'+
-                  '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
-                  '<wp:docPr id="2" name="LogoCT" descr="Logo CIATEC"/>'+
-                  '<wp:cNvGraphicFramePr>'+
-                    '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'+
-                  '</wp:cNvGraphicFramePr>'+
-                  '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
-                    '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                        '<pic:nvPicPr>'+
-                          '<pic:cNvPr id="2" name="LogoCT"/>'+
-                          '<pic:cNvPicPr><a:picLocks noChangeAspect="1" noChangeArrowheads="1"/></pic:cNvPicPr>'+
-                        '</pic:nvPicPr>'+
-                        '<pic:blipFill>'+
-                          '<a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rImgCT">'+
-                            '<a:extLst><a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}"><a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/></a:ext></a:extLst>'+
-                          '</a:blip>'+
-                          '<a:stretch><a:fillRect/></a:stretch>'+
-                        '</pic:blipFill>'+
-                        '<pic:spPr bwMode="auto">'+
-                          '<a:xfrm><a:off x="0" y="0"/><a:ext cx="576000" cy="576000"/></a:xfrm>'+
-                          '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+
-                        '</pic:spPr>'+
-                      '</pic:pic>'+
-                    '</a:graphicData>'+
-                  '</a:graphic>'+
-                '</wp:inline>'+
-              '</w:drawing>'+
-            '</w:r>'+
-          '</w:p>'+
+        // Celda derecha: marca PsicoEscala
+        '<w:tc><w:tcPr><w:tcW w:w="3360" w:type="dxa"/><w:vAlign w:val="center"/>'+
+          '<w:shd w:val="clear" w:color="auto" w:fill="2d4a3e"/>'+
+        '</w:tcPr>'+
+          hdrPar(hdrRun('PsicoEscala', true, 26, 'FFFFFF'), 'center')+
+          hdrPar(hdrRun('Informe Neuropsicológico', false, 14, 'C8D8D0'), 'center')+
+          '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>'+
         '</w:tc>'+
       '</w:tr>'+
     '</w:tbl>'+
-    // Línea separadora
+    // Línea separadora verde
     '<w:p>'+
       '<w:pPr><w:spacing w:before="60" w:after="0"/>'+
-      '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="2d4a3e"/></w:pBdr></w:pPr>'+
+      '<w:pBdr><w:bottom w:val="single" w:sz="8" w:space="1" w:color="2d4a3e"/></w:pBdr></w:pPr>'+
     '</w:p>'+
   '</w:hdr>';
 
-  // Footer XML — pie institucional centrado — texto institucional centrado
+  // Footer XML — datos del profesional
+  var footerParts = [profNombre];
+  if (profMatric) footerParts.push(profMatric);
+  if (profTel)    footerParts.push(profTel);
+  var footerTxt = footerParts.join(' · ');
+  var fechaDoc  = new Date().toLocaleDateString('es-AR');
+
   var footerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
     '<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
-      // Línea superior del footer
       '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="0"/>'+
+        '<w:pPr><w:spacing w:before="60" w:after="0"/>'+
         '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="2d4a3e"/></w:pBdr></w:pPr>'+
       '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:b/><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="1e3830"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>CENTRO DE REHABILITACIÓN GONZÁLEZ PALAU - FUNDACIÓN CIATEC</w:t></w:r>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:sz w:val="13"/><w:szCs w:val="13"/><w:color w:val="444444"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>Neuropsicología – Neuro rehabilitación – Psicoterapia</w:t></w:r>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:sz w:val="13"/><w:szCs w:val="13"/><w:color w:val="444444"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>Av. Laplace 5264 – Villa Belgrano, Córdoba – Tel/whatsapp: 3515513257 – E-mail: secretariafgonzalezp@gmail.com</w:t></w:r>'+
-      '</w:p>'+
+      '<w:tbl>'+
+        '<w:tblPr>'+
+          '<w:tblW w:w="9360" w:type="dxa"/>'+
+          '<w:tblBorders><w:top w:val="none"/><w:left w:val="none"/><w:bottom w:val="none"/><w:right w:val="none"/><w:insideH w:val="none"/><w:insideV w:val="none"/></w:tblBorders>'+
+          '<w:tblLayout w:type="fixed"/>'+
+        '</w:tblPr>'+
+        '<w:tblGrid><w:gridCol w:w="7000"/><w:gridCol w:w="2360"/></w:tblGrid>'+
+        '<w:tr>'+
+          '<w:tc><w:tcPr><w:tcW w:w="7000" w:type="dxa"/></w:tcPr>'+
+            '<w:p><w:pPr><w:spacing w:before="20" w:after="0"/></w:pPr>'+
+              '<w:r><w:rPr><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="5a6b63"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+              '<w:t>'+footerTxt+'</w:t></w:r>'+
+            '</w:p>'+
+          '</w:tc>'+
+          '<w:tc><w:tcPr><w:tcW w:w="2360" w:type="dxa"/></w:tcPr>'+
+            '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="20" w:after="0"/></w:pPr>'+
+              '<w:r><w:rPr><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="5a6b63"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+              '<w:t>'+fechaDoc+'</w:t></w:r>'+
+            '</w:p>'+
+          '</w:tc>'+
+        '</w:tr>'+
+      '</w:tbl>'+
     '</w:ftr>';
 
   // header/footer rels dentro de word/_rels/document.xml.rels
