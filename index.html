@@ -825,7 +825,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.77</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.78</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -5592,7 +5592,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.77';
+var APP_VERSION = 'v1.10.78';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -12282,9 +12282,22 @@ function guardarInforme() {
   }, leerInformeDesdeFormulario());
   if (window._firmaBase64) body.firma_imagen = window._firmaBase64;
 
-  supaFetch('/rest/v1/psico_informes?on_conflict=user_id,paciente_id', 'POST', body, SESSION.access_token, {
-    'Prefer': 'resolution=merge-duplicates,return=representation'
-  })
+  // Buscar si ya existe un informe para este paciente
+  supaFetch('/rest/v1/psico_informes?user_id=eq.' + SESSION.user.id + '&paciente_id=eq.' + INFORME_PAC_ID + '&select=id', 'GET', null, SESSION.access_token)
+    .then(function(r) { return r.json(); })
+    .then(function(existing) {
+      var method, url;
+      if (existing && existing.length > 0) {
+        // Ya existe — hacer PATCH
+        method = 'PATCH';
+        url = '/rest/v1/psico_informes?user_id=eq.' + SESSION.user.id + '&paciente_id=eq.' + INFORME_PAC_ID;
+      } else {
+        // No existe — hacer POST
+        method = 'POST';
+        url = '/rest/v1/psico_informes';
+      }
+      return supaFetch(url, method, body, SESSION.access_token, {'Prefer': 'return=representation'});
+    })
     .then(function(r) {
       return r.json().then(function(data) {
         if (!r.ok) {
