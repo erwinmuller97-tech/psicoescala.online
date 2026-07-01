@@ -825,7 +825,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.79</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.80</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -928,7 +928,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         </div>
       </div>
 
-      <div class="sectores-grid" style="display:none;">
+      <div class="sectores-grid">
         <div class="sector-card" onclick="irSector('clinica')">
           <div class="sector-icon">🧠</div>
           <div class="sector-titulo">Psicología Clínica</div>
@@ -948,8 +948,11 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <div class="sector-titulo">Neuropsicológicos</div>
           <div class="sector-sub">Tests para evaluación de memoria, atención y funciones ejecutivas.</div>
           <div class="sector-tests">
-            <span class="sector-tag">Rey Verbal</span>
             <span class="sector-tag">TMT A/B</span>
+            <span class="sector-tag">TAVEC</span>
+            <span class="sector-tag">Figura Compleja de Rey</span>
+            <span class="sector-tag">Stroop</span>
+            <span class="sector-tag">Rey Verbal</span>
             <span class="sector-tag">Fluencia</span>
             <span class="sector-tag">MoCA</span>
             <span class="sector-tag">Mini Mental Parkinson</span>
@@ -5749,7 +5752,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.79';
+var APP_VERSION = 'v1.10.80';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -6419,8 +6422,8 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   }
 
   // ── Clasificación de tests ──
-  var NP = ['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
-  var CL = ['BDI-II','STAI','PHQ-9','GAD-7','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
+  var NP = ['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','Mini Mental Parkinson','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
+  var CL = ['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
   var TD = ['ASRS-V1.1','WURS-25','DEX'];
   var DO = ['PCS','PBQ','CSQ','BPI'];
   function tipo(t){ return NP.indexOf(t)!==-1?'np': CL.indexOf(t)!==-1?'cl': TD.indexOf(t)!==-1?'td': DO.indexOf(t)!==-1?'do':'cl'; }
@@ -6776,7 +6779,7 @@ function renderCuestionariosFam(d) {
 
     // Agrupar por dominio
     var dominios = {
-      'COGNITIVO GLOBAL':    ['MoCA','ACE-R','Test del Reloj (Cacho)'],
+      'COGNITIVO GLOBAL':    ['MoCA','Mini Mental Parkinson','ACE-R','Test del Reloj (Cacho)'],
       'MEMORIA':             ['Rey Verbal','TAVEC','BEM 144 Signoret'],
       'ATENCIÓN':            ['D2','WAIS-IV','SDMT-escrita','SDMT-oral','BTA'],
       'FUNC. EJECUTIVAS':    ['FAB','IFS','TMT A-B','Stroop','BADS-Zoo','BADS-Llaves','BADS-Juicio','Test del Hotel','WCST-64'],
@@ -7735,18 +7738,18 @@ var NP_TESTS = [
   {id:'bta',      n:'BTA',               d:'Brief Test of Attention · Series N y P',      t:'Atención',           dom:'atencion'},
   {id:'tmt',      n:'TMT A y B',         d:'Trail Making Test · atención y flexibilidad',  t:'Atención',           dom:'atencion'},
   {id:'sdmt',     n:'SDMT',              d:'Symbol Digit Modalities · escrita + oral',    t:'Atención',           dom:'atencion'},
-  {id:'stroop',   n:'Stroop',            d:'P · C · PC · Interferencia',                  t:'Atención',           dom:'atencion'},
+  {id:'stroop',   n:'Stroop',            d:'Test de Colores y Palabras · P · C · PC · Interferencia', t:'Atención', dom:'atencion'},
   {id:'waisiv',   n:'WAIS-IV',           d:'Dígitos · Claves · SLN',                      t:'Atención / Mem. trabajo', dom:'atencion'},
   // Memoria
   {id:'rey',      n:'Rey Verbal',        d:'RAVLT · Aprendizaje verbal episódico',         t:'Memoria',            dom:'memoria'},
   {id:'signoret', n:'BEM 144',           d:'Signoret · Memoria lógica y episódica',       t:'Memoria',            dom:'memoria'},
-  {id:'tavec',    n:'TAVEC',             d:'Aprendizaje verbal España-Complutense · 7 grupos edad', t:'Memoria', dom:'memoria'},
+  {id:'tavec',    n:'TAVEC',             d:'Test de Aprendizaje Verbal España-Complutense · 7 grupos edad', t:'Memoria', dom:'memoria'},
   // Lenguaje
   {id:'token',    n:'Token Test',        d:'Comprensión auditiva verbal · De Renzi & Faglioni 1978 · Aranciva et al. 2012', t:'Lenguaje', dom:'lenguaje'},
   {id:'flv',      n:'Fluencia Verbal',   d:'Semántica y fonológica',                      t:'Lenguaje',           dom:'lenguaje'},
   {id:'bnt',      n:'BNT',               d:'Denominación de Boston · BNT-12 / BNT-60',   t:'Lenguaje',           dom:'lenguaje'},
   // Visoconstructivo
-  {id:'fcr',      n:'Figura de Rey',     d:'Copia y Recuerdo Inmediato · ROCF',           t:'Visoconstructivo',   dom:'visoc'},
+  {id:'fcr',      n:'Figura Compleja de Rey', d:'Copia y Recuerdo Inmediato · ROCF (Rivera et al.)', t:'Visoconstructivo', dom:'visoc'},
   // Ejecutivas
   {id:'fab',      n:'FAB',               d:'Frontal Assessment Battery · Aceiro 2018',    t:'Ejecutivas',         dom:'ejecutivas'},
   {id:'ifs',      n:'IFS',               d:'INECO Frontal Screening',                    t:'Ejecutivas',         dom:'ejecutivas'},
@@ -7770,6 +7773,25 @@ var NP_ICONS = {
   ejecutivas: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L6 7l3 4 2-3 2 2" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4" r="2" stroke="#3d7a5f" stroke-width="1.3"/></svg>',
   familiar:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="#3d7a5f" stroke-width="1.3"/><circle cx="11" cy="4" r="1.8" stroke="#3d7a5f" stroke-width="1.3"/><path d="M1 13c0-2.76 2.24-4 5-4s5 1.24 5 4" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/><path d="M11 7c1.66 0 3 .9 3 3" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>'
 };
+
+var NP_FEATURED = ['tmt', 'tavec', 'fcr', 'stroop', 'mmp', 'moca'];
+var NP_FEATURED_ICONS = { tmt:'🔗', tavec:'📚', fcr:'🔷', stroop:'🎨', mmp:'🧠', moca:'⏱' };
+
+function npFeaturedHtml() {
+  return NP_FEATURED.map(function(id) {
+    var t = null;
+    for (var i = 0; i < NP_TESTS.length; i++) {
+      if (NP_TESTS[i].id === id) { t = NP_TESTS[i]; break; }
+    }
+    if (!t) return '';
+    var ico = NP_FEATURED_ICONS[id] || '🔬';
+    return '<div class="test-card" onclick="irTest(\'' + t.id + '\')">' +
+      '<div class="test-icon">' + ico + '</div>' +
+      '<div class="test-nombre">' + t.n + '</div>' +
+      '<div class="test-desc">' + t.d + '</div>' +
+      '<span class="test-tag">' + t.t + '</span></div>';
+  }).join('');
+}
 
 var _npChipActivo = 'todos';
 function npChip(el, dom) {
@@ -7872,7 +7894,12 @@ function irSector(s) {
   } else if (s === 'neuro') {
     document.getElementById('sector-titulo').textContent = 'Neuropsicológicos';
     document.getElementById('tests-grid').innerHTML =
+      '<div style="margin-bottom:18px;">' +
+        '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Tests principales</div>' +
+        '<div class="tests-grid" style="margin-bottom:4px;">' + npFeaturedHtml() + '</div>' +
+      '</div>' +
       '<div style="margin-bottom:12px;">' +
+        '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Todos los tests</div>' +
         '<input type="text" id="np-q" placeholder="Buscar test..." ' +
           'style="width:100%;padding:8px 12px;border:0.5px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);margin-bottom:10px;" ' +
           'oninput="npRender()">' +
@@ -14637,8 +14664,8 @@ function _prepareLogoPngBytes(logoB64) {
 
 async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf) {
   // ── Clasificar tests (igual que PDF) ──
-  var NP_LIST=['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
-  var CL_LIST=['BDI-II','STAI','PHQ-9','GAD-7','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
+  var NP_LIST=['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','Mini Mental Parkinson','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
+  var CL_LIST=['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
   var TD_LIST=['ASRS-V1.1','WURS-25','DEX'];
   var DO_LIST=['PCS','PBQ','CSQ','BPI'];
   function tipoTest(t){return NP_LIST.indexOf(t)!==-1?'np':CL_LIST.indexOf(t)!==-1?'cl':TD_LIST.indexOf(t)!==-1?'td':DO_LIST.indexOf(t)!==-1?'do':'cl';}
@@ -14719,7 +14746,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     var byTest={};
     list.forEach(function(r){byTest[r.test]=r;});
     var DOMS={
-      'COGNITIVO GLOBAL':   ['MoCA','ACE-R','Test del Reloj (Cacho)'],
+      'COGNITIVO GLOBAL':   ['MoCA','Mini Mental Parkinson','ACE-R','Test del Reloj (Cacho)'],
       'MEMORIA':            ['Rey Verbal','TAVEC','BEM 144 Signoret'],
       'ATENCIÓN':           ['D2','WAIS-IV','SDMT-escrita','SDMT-oral','BTA'],
       'FUNC. EJECUTIVAS':   ['FAB','IFS','TMT A-B','Stroop','BADS-Zoo','BADS-Llaves','BADS-Juicio','Test del Hotel','WCST-64'],
@@ -14807,6 +14834,7 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
         else if(tn==='IFS'){add('IFS — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='FAB'){add('FAB — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='MoCA'){add('MoCA',r.puntaje_total,null,null,r.puntaje_z,null);}
+        else if(tn==='Mini Mental Parkinson'){add('Mini Mental Parkinson',r.puntaje_total,null,null,null,null);}
         else if(tn==='ACE-R'){add('ACE-R — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='Test del Reloj (Cacho)'){add('Test del Reloj (Cacho)',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='BTA'){add('BTA',d.puntaje,d.m,d.ds,d.z,d.pc?'Pc '+d.pc:null);}
@@ -15566,12 +15594,12 @@ function renderPerfilZ() {
 
   // Filtrar solo tests NP con Z
   var NP_LIST = ['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12',
-    'TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret',
+    'TMT A-B','Fluencia Verbal','MoCA','Mini Mental Parkinson','IFS','ACE-R','WCST-64','BEM 144 Signoret',
     'Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral',
     'BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
 
   var DOMINIOS = {
-    'Cognitivo global':    ['MoCA','ACE-R','Test del Reloj (Cacho)'],
+    'Cognitivo global':    ['MoCA','Mini Mental Parkinson','ACE-R','Test del Reloj (Cacho)'],
     'Atención':            ['TMT A-B','WAIS-IV','D2','SDMT-escrita','SDMT-oral','BTA'],
     'Memoria':             ['Rey Verbal','TAVEC','BEM 144 Signoret'],
     'Funciones ejecutivas':['FAB','IFS','Stroop','WCST-64','Test del Hotel','BADS-Zoo','BADS-Llaves','BADS-Juicio'],
