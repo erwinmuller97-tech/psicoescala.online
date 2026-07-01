@@ -465,7 +465,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 }
 .back-btn:hover { color: var(--accent); }
 
+.tests-sector-wrap { display: block; }
 .tests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tests-featured-grid .test-icon { display: block; font-size: 1.6rem; margin-bottom: 8px; }
 .test-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 14px 16px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow);
@@ -825,7 +827,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.81</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.82</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -917,7 +919,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="welcome-banner" id="welcome-banner">
         ¡Hola, <span id="welcome-nombre">Profesional</span>! Te damos la bienvenida a PsicoEscala.
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;text-align:center;padding-bottom:24px;">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:32vh;text-align:center;padding:24px 0 16px;">
         <div class="logo-mark" style="width:80px;height:80px;margin-bottom:24px;" aria-hidden="true"></div>
         <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:10px;">Panel general</div>
         <div style="font-size:0.87rem;color:var(--muted);max-width:440px;line-height:1.75;">Administración y puntuación automatizada de tests neuropsicológicos con baremos, perfil Z e informes clínicos.</div>
@@ -965,10 +967,16 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         </div>
         <div class="sector-card" onclick="irSector('dolor')">
           <div class="sector-icon">⬡</div>
-          <div class="sector-nombre">Dolor</div>
-          <div class="sector-desc">PCS · CSQ · PBQ · BPI</div>
+          <div class="sector-titulo">Dolor</div>
+          <div class="sector-sub">Evaluación del dolor crónico y afrontamiento.</div>
+          <div class="sector-tests">
+            <span class="sector-tag">PCS</span>
+            <span class="sector-tag">CSQ</span>
+            <span class="sector-tag">PBQ</span>
+            <span class="sector-tag">BPI</span>
+          </div>
         </div>
-      <div class="sector-card" onclick="irSector('tdah')">
+        <div class="sector-card" onclick="irSector('tdah')">
           <div class="sector-icon">⚡</div>
           <div class="sector-titulo">TDAH</div>
           <div class="sector-sub">Escalas de evaluación para TDAH en adultos.</div>
@@ -1355,7 +1363,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="vista" id="vista-sector">
       <div class="back-btn" onclick="irVista('inicio')">← Volver al inicio</div>
       <div class="vista-header"><div class="vista-titulo" id="sector-titulo">Tests</div></div>
-      <div class="tests-grid" id="tests-grid"></div>
+      <div class="tests-sector-wrap" id="tests-grid"></div>
     </div>
 
     <!-- ── TEST BDI ── -->
@@ -5752,7 +5760,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.81';
+var APP_VERSION = 'v1.10.82';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7803,7 +7811,11 @@ function npChip(el, dom) {
 function npRender() {
   var qEl = document.getElementById('np-q');
   var q = qEl ? qEl.value.toLowerCase() : '';
+  var seen = {};
   var r = NP_TESTS.filter(function(t) {
+    if (NP_FEATURED.indexOf(t.id) >= 0) return false;
+    if (seen[t.id]) return false;
+    seen[t.id] = true;
     var dok = _npChipActivo === 'todos' || t.dom === _npChipActivo;
     var tok = !q || (t.n + ' ' + t.d + ' ' + t.t).toLowerCase().includes(q);
     return dok && tok;
@@ -7831,6 +7843,7 @@ function irSector(s) {
   if (s === 'clinica') {
     document.getElementById('sector-titulo').textContent = 'Psicología Clínica';
     document.getElementById('tests-grid').innerHTML =
+      '<div class="tests-grid">' +
       '<div class="test-card" onclick="irTest(\'bdi\')">' +
         '<div class="test-icon">😔</div>' +
         '<div class="test-nombre">BDI-II</div>' +
@@ -7890,13 +7903,13 @@ function irSector(s) {
         '<div class="test-nombre">MBI-HSS</div>'+
         '<div class="test-desc">Inventario de Burnout de Maslach — Profesionales de salud</div>'+
         '<span class="test-tag">22 ítems · 3 subescalas</span>'+
-      '</div>';
+      '</div></div>';
   } else if (s === 'neuro') {
     document.getElementById('sector-titulo').textContent = 'Neuropsicológicos';
     document.getElementById('tests-grid').innerHTML =
       '<div style="margin-bottom:18px;">' +
         '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Tests principales</div>' +
-        '<div class="tests-grid" style="margin-bottom:4px;">' + npFeaturedHtml() + '</div>' +
+        '<div class="tests-grid tests-featured-grid" style="margin-bottom:4px;">' + npFeaturedHtml() + '</div>' +
       '</div>' +
       '<div style="margin-bottom:12px;">' +
         '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Todos los tests</div>' +
@@ -7920,6 +7933,7 @@ function irSector(s) {
   if (s === 'dolor') {
     document.getElementById('sector-titulo').textContent = 'Evaluación del Dolor';
     document.getElementById('tests-grid').innerHTML =
+      '<div class="tests-grid">' +
       '<div class="test-card" onclick="irTest(\'pcs\')">' +
         '<div class="test-icon">🔥</div>' +
         '<div class="test-nombre">PCS</div>' +
@@ -7943,11 +7957,12 @@ function irSector(s) {
         '<div class="test-nombre">BPI</div>' +
         '<div class="test-desc">Inventario Breve de Dolor — Índice de Intensidad e Interferencia funcional</div>' +
         '<span class="test-tag">Cleeland & Ryan 1994 · ítems 3–6 y 9A–9G</span>' +
-      '</div>';
+      '</div></div>';
   }
   if (s === 'tdah') {
     document.getElementById('sector-titulo').textContent = 'TDAH';
     document.getElementById('tests-grid').innerHTML =
+      '<div class="tests-grid">' +
       '<div class="test-card" onclick="irTest(\'asrs\')">' +
         '<div class="test-icon">⚡</div>' +
         '<div class="test-nombre">ASRS-V1.1</div>' +
@@ -7964,7 +7979,7 @@ function irSector(s) {
         '<div class="test-nombre">DEX</div>'+
         '<div class="test-desc">Cuestionario Disejecutivo · Síntomas del síndrome disejecutivo · Autoadministrado o informante</div>'+
         '<span class="test-tag">Wilson et al. 1999 · Querejeta et al. 2015 · Argentina</span>'+
-      '</div>';
+      '</div></div>';
   }
 }
 
