@@ -825,7 +825,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.78</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.79</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -938,6 +938,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <span class="sector-tag">STAI</span>
             <span class="sector-tag">PHQ-9</span>
             <span class="sector-tag">GAD-7</span>
+            <span class="sector-tag">Birleson</span>
+            <span class="sector-tag">AAA</span>
             <span class="sector-tag">SPAI-B</span>
           </div>
         </div>
@@ -950,6 +952,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <span class="sector-tag">TMT A/B</span>
             <span class="sector-tag">Fluencia</span>
             <span class="sector-tag">MoCA</span>
+            <span class="sector-tag">Mini Mental Parkinson</span>
             <span class="sector-tag">IFS</span>
             <span class="sector-tag">WAIS-IV</span>
             <span class="sector-tag">ACE-R</span>
@@ -1920,6 +1923,108 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
     </div>
 
+<!-- ── TEST BIRLESON (PACES) ── -->
+    <div class="vista" id="vista-birleson">
+      <div class="back-btn" onclick="volverSector()">← Volver</div>
+      <div class="vista-header"><div class="vista-titulo">Birleson · Escala de Depresión en Adolescentes (PACES)</div>
+      <div style="margin-bottom:16px;">
+        <button onclick="generarPDF('birleson')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(45,92,34,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+      </div></div>
+      <div id="birleson-form">
+        <div class="card">
+          <div class="card-title">Datos de la evaluación</div>
+          <div class="form-grid">
+            <div class="field"><label>Paciente *</label><select id="birleson-paciente"><option value="">— Seleccionar paciente —</option></select></div>
+            <div class="field"><label>Fecha</label><input type="date" id="birleson-fecha"></div>
+          </div>
+        </div>
+        <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-birleson" onclick="setModo('birleson','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-birleson" onclick="setModo('birleson','manual')">✏ Carga manual</button></div>
+        <div id="man-area-birleson" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá el puntaje total (0–36). Punto de corte: ≥14.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–36)</label><input type="number" id="man-birleson-total" min="0" max="36" placeholder="0–36"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('birleson')">Calcular resultado →</button></div></div>
+        <div id="auto-area-birleson">
+        <div class="card">
+          <div class="card-title">Ítems del cuestionario</div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Por favor respondé honestamente cómo te sentiste en las últimas dos semanas. No hay respuestas buenas ni malas.</p>
+          <div id="birleson-items-container"></div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn-secondary" onclick="limpiarBirleson()">🗑 Limpiar</button>
+            <button class="btn-primary" onclick="calcularBirleson()">Calcular resultado →</button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div id="birleson-resultado" style="display:none;">
+        <div class="resultado-box">
+          <div class="resultado-puntaje">
+            <div class="puntaje-grande" id="birleson-pts">0</div>
+            <div class="puntaje-info">
+              <div class="puntaje-label">Puntaje total Birleson (PACES)</div>
+              <div class="puntaje-categoria" id="birleson-cat">—</div>
+              <div class="puntaje-rango" id="birleson-rango">Punto de corte: ≥14</div>
+              <span class="badge-grande" id="birleson-badge">—</span>
+            </div>
+          </div>
+          <div class="interp-box"><div class="interp-titulo">📋 Interpretación clínica</div><div class="interp-texto" id="birleson-interp"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="document.getElementById('birleson-resultado').style.display='none';document.getElementById('birleson-form').style.display='block';">← Modificar</button>
+          <button class="btn-secondary" onclick="generarPDF('birleson')">📄 Formulario en blanco</button>
+          <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+          <button class="btn-primary" onclick="guardarResultadoBirleson()">💾 Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+
+<!-- ── TEST AAA ── -->
+    <div class="vista" id="vista-aaa">
+      <div class="back-btn" onclick="volverSector()">← Volver</div>
+      <div class="vista-header"><div class="vista-titulo">AAA · Autoreporte de Ansiedad para Adolescentes</div>
+      <div style="margin-bottom:16px;">
+        <button onclick="generarPDF('aaa')" style="background:#325c28;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.85rem;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 6px rgba(45,92,34,0.25);">🖨 Imprimir en blanco para completar a mano</button>
+      </div></div>
+      <div id="aaa-form">
+        <div class="card">
+          <div class="card-title">Datos de la evaluación</div>
+          <div class="form-grid">
+            <div class="field"><label>Paciente *</label><select id="aaa-paciente"><option value="">— Seleccionar paciente —</option></select></div>
+            <div class="field"><label>Fecha</label><input type="date" id="aaa-fecha"></div>
+          </div>
+        </div>
+        <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-aaa" onclick="setModo('aaa','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-aaa" onclick="setModo('aaa','manual')">✏ Carga manual</button></div>
+        <div id="man-area-aaa" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá el puntaje total (0–82). Punto de corte: ≥25.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–82)</label><input type="number" id="man-aaa-total" min="0" max="82" placeholder="0–82"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('aaa')">Calcular resultado →</button></div></div>
+        <div id="auto-area-aaa">
+        <div class="card">
+          <div class="card-title">Ítems del cuestionario</div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Marcá qué tanto se aplica cada frase en las últimas dos semanas (0 = Nunca · 1 = Algunas veces · 2 = Siempre).</p>
+          <div id="aaa-items-container"></div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn-secondary" onclick="limpiarAAA()">🗑 Limpiar</button>
+            <button class="btn-primary" onclick="calcularAAA()">Calcular resultado →</button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div id="aaa-resultado" style="display:none;">
+        <div class="resultado-box">
+          <div class="resultado-puntaje">
+            <div class="puntaje-grande" id="aaa-pts">0</div>
+            <div class="puntaje-info">
+              <div class="puntaje-label">Puntaje total AAA</div>
+              <div class="puntaje-categoria" id="aaa-cat">—</div>
+              <div class="puntaje-rango" id="aaa-rango">Punto de corte: ≥25</div>
+              <span class="badge-grande" id="aaa-badge">—</span>
+            </div>
+          </div>
+          <div class="interp-box"><div class="interp-titulo">📋 Interpretación clínica</div><div class="interp-texto" id="aaa-interp"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="document.getElementById('aaa-resultado').style.display='none';document.getElementById('aaa-form').style.display='block';">← Modificar</button>
+          <button class="btn-secondary" onclick="generarPDF('aaa')">📄 Formulario en blanco</button>
+          <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+          <button class="btn-primary" onclick="guardarResultadoAAA()">💾 Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ── TEST SPAI-B ── -->
     <div class="vista" id="vista-spaib">
       <div class="back-btn" onclick="volverSector()">← Volver</div>
@@ -2040,6 +2145,58 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <button class="btn-secondary" onclick="document.getElementById('moca-resultado').style.display='none';document.getElementById('moca-form').style.display='block';">← Modificar</button>
           <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
           <button class="btn-primary" onclick="guardarResultadoMoCA()">💾 Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+
+<!-- ── TEST Mini Mental Parkinson ── -->
+    <div class="vista" id="vista-mmp">
+      <div class="back-btn" onclick="volverSector()">← Volver</div>
+      <div class="vista-header"><div class="vista-titulo">MMP · Mini Mental Parkinson</div></div>
+      <div id="mmp-form">
+        <div class="card">
+          <div class="card-title">Datos de la evaluación</div>
+          <div class="form-grid-3">
+            <div class="field"><label>Paciente *</label><select id="mmp-paciente"><option value="">— Seleccionar paciente —</option></select></div>
+            <div class="field"><label>Fecha</label><input type="date" id="mmp-fecha"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Puntajes por dominio</div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Ingresá el puntaje bruto de cada subsección según el protocolo MMP (Fernández et al.). Puntaje total máximo: 32. Punto de corte: &lt;24 sugiere deterioro cognitivo.</p>
+          <div class="form-grid">
+            <div class="field"><label>Orientación temporal y espacial (0–10)</label><input type="number" id="mmp-orient" min="0" max="10" placeholder="0–10"></div>
+            <div class="field"><label>Memoria inmediata — tarjetas ABC (0–3)</label><input type="number" id="mmp-mem" min="0" max="3" placeholder="0–3"></div>
+            <div class="field"><label>Atención — restas 100−7 (0–5)</label><input type="number" id="mmp-aten" min="0" max="5" placeholder="0–5"></div>
+            <div class="field"><label>Control mental — MUNDO al revés (0–3)</label><input type="number" id="mmp-control" min="0" max="3" placeholder="0–3"></div>
+            <div class="field"><label>Fluencia verbal — animales letra L (0–3)</label><input type="number" id="mmp-fluencia" min="0" max="3" placeholder="0–3"></div>
+            <div class="field"><label>Memoria de asociación — tarjetas DEF (0–3)</label><input type="number" id="mmp-mem-asoc" min="0" max="3" placeholder="0–3"></div>
+            <div class="field"><label>Reconocimiento — tarjeta G (0–4)</label><input type="number" id="mmp-recon" min="0" max="4" placeholder="0–4"></div>
+            <div class="field"><label>Procesamiento de conceptos (0–3)</label><input type="number" id="mmp-conceptos" min="0" max="3" placeholder="0–3"></div>
+          </div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn-secondary" onclick="limpiarMMP()">🗑 Limpiar</button>
+            <button class="btn-primary" onclick="calcularMMP()">Calcular resultado →</button>
+          </div>
+        </div>
+      </div>
+      <div id="mmp-resultado" style="display:none;">
+        <div class="resultado-box">
+          <div class="resultado-puntaje">
+            <div class="puntaje-grande" id="mmp-pts-total">0</div>
+            <div class="puntaje-info">
+              <div class="puntaje-label">Puntaje total MMP</div>
+              <div class="puntaje-categoria" id="mmp-cat">—</div>
+              <span class="badge-grande" id="mmp-badge">—</span>
+            </div>
+          </div>
+          <div class="resultado-detalle" id="mmp-dominios"></div>
+          <div class="interp-box"><div class="interp-titulo">📋 Interpretación clínica</div><div class="interp-texto" id="mmp-interp"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="document.getElementById('mmp-resultado').style.display='none';document.getElementById('mmp-form').style.display='block';">← Modificar</button>
+          <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+          <button class="btn-primary" onclick="guardarResultadoMMP()">💾 Guardar resultado</button>
         </div>
       </div>
     </div>
@@ -5592,7 +5749,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.78';
+var APP_VERSION = 'v1.10.79';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -6127,6 +6284,8 @@ var PDF_BLANK_MAP = {
   'stai':  { vistaId:'vista-stai',  titulo:'STAI · Inventario de Ansiedad Estado-Rasgo' },
   'phq':   { vistaId:'vista-phq',   titulo:'PHQ-9 · Cuestionario de Salud del Paciente' },
   'gad':   { vistaId:'vista-gad',   titulo:'GAD-7 · Escala de Ansiedad Generalizada' },
+  'birleson': { vistaId:'vista-birleson', titulo:'Birleson · Escala de Depresión en Adolescentes (PACES)' },
+  'aaa':   { vistaId:'vista-aaa',   titulo:'AAA · Autoreporte de Ansiedad para Adolescentes' },
   'spai':  { vistaId:'vista-spaib', titulo:'SPAI-B · Inventario de Fobia y Ansiedad Social' },
   'scl90': { vistaId:'vista-scl90', titulo:'SCL-90-R · Inventario de Síntomas de Derogatis' },
   'asrs':  { vistaId:'vista-asrs',  titulo:'ASRS-V1.1 · Escala de Autodetección de TDAH' },
@@ -7427,13 +7586,13 @@ function renderCuestionariosFam(d) {
         'BPI':                'Inventario Breve de Dolor (BPI)'
       };
       var DOMINIOS = [
-        {label:'Screening cognitivo global',      tests:['MoCA','ACE-R']},
+        {label:'Screening cognitivo global',      tests:['MoCA','Mini Mental Parkinson','ACE-R']},
         {label:'Atención y velocidad de procesamiento', tests:['WAIS-IV','TMT A-B','SDMT-escrita','SDMT-oral','BTA']},
         {label:'Lenguaje',                         tests:['Fluencia Verbal','BNT-60','BNT-12']},
         {label:'Memoria',                          tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
         {label:'Funciones ejecutivas',             tests:['WCST-64','IFS','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
         {label:'Evaluación cognitiva global',      tests:['Test del Reloj (Cacho)']},
-        {label:'Psicología clínica',               tests:['BDI-II','STAI','PHQ-9','GAD-7','SPAI-B','SCL-90-R','MBI-HSS']},
+        {label:'Psicología clínica',               tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS']},
         {label:'TDAH',                             tests:['ASRS-V1.1','WURS-25']},
         {label:'Evaluación del dolor',                tests:['PCS','CSQ','PBQ','BPI']}
       ];
@@ -7568,6 +7727,7 @@ function irVista(v) {
 var NP_TESTS = [
   // Cognitivo global
   {id:'moca',     n:'MoCA',              d:'Montreal Cognitive Assessment',               t:'Cognitivo global',   dom:'global'},
+  {id:'mmp',      n:'Mini Mental Parkinson', d:'Screening cognitivo en Parkinson · Fernández et al.', t:'Cognitivo global', dom:'global'},
   {id:'acer',     n:'ACE-R',             d:"Addenbrooke's Cognitive Examination",         t:'Cognitivo global',   dom:'global'},
   {id:'reloj',    n:'Test del Reloj',    d:'Cribado cognitivo · Cacho et al. 1999',       t:'Cognitivo global',   dom:'global'},
   // Atención
@@ -7672,6 +7832,18 @@ function irSector(s) {
         '<div class="test-nombre">GAD-7</div>' +
         '<div class="test-desc">Escala de Trastorno de Ansiedad Generalizada</div>' +
         '<span class="test-tag">7 ítems</span>' +
+      '</div>' +
+      '<div class="test-card" onclick="irTest(\'birleson\')">' +
+        '<div class="test-icon">📝</div>' +
+        '<div class="test-nombre">Birleson (PACES)</div>' +
+        '<div class="test-desc">Escala de Depresión en Adolescentes · DSRS</div>' +
+        '<span class="test-tag">18 ítems · Corte ≥14</span>' +
+      '</div>' +
+      '<div class="test-card" onclick="irTest(\'aaa\')">' +
+        '<div class="test-icon">😟</div>' +
+        '<div class="test-nombre">AAA</div>' +
+        '<div class="test-desc">Autoreporte de Ansiedad para Adolescentes</div>' +
+        '<span class="test-tag">41 ítems · Corte ≥25</span>' +
       '</div>' +
       '<div class="test-card" onclick="irTest(\'spaib\')">' +
         '<div class="test-icon">👥</div>' +
@@ -7780,9 +7952,12 @@ function irTest(t) {
   if (t === 'flv') iniciarFLV();
   if (t === 'phq') iniciarPHQ();
   if (t === 'gad') iniciarGAD();
+  if (t === 'birleson') iniciarBirleson();
+  if (t === 'aaa') iniciarAAA();
   if (t === 'spaib') iniciarSPAIB();
   if (t === 'csi') iniciarCSI();
   if (t === 'moca') iniciarMoCA();
+  if (t === 'mmp') iniciarMMP();
   if (t === 'ifs') iniciarIFS();
   if (t === 'fab') iniciarFAB();
   if (t === 'pcs') iniciarPCS();
@@ -7865,6 +8040,12 @@ var MANUAL_CAMPOS = {
   'gad': [
     { id:'man-gad-total', label:'Puntaje total (0–21)', min:0, max:21 }
   ],
+  'birleson': [
+    { id:'man-birleson-total', label:'Puntaje total (0–36)', min:0, max:36 }
+  ],
+  'aaa': [
+    { id:'man-aaa-total', label:'Puntaje total (0–82)', min:0, max:82 }
+  ],
   'spaib': [
     { id:'man-spaib-total', label:'Puntaje total (0–90)', min:0, max:90 }
   ],
@@ -7943,6 +8124,8 @@ function calcularManual(testId) {
   }
   if (testId === 'phq') { _calcularPHQManual(parseInt(document.getElementById('man-phq-total').value)); return; }
   if (testId === 'gad') { _calcularGADManual(parseInt(document.getElementById('man-gad-total').value)); return; }
+  if (testId === 'birleson') { _calcularBirlesonManual(parseInt(document.getElementById('man-birleson-total').value)); return; }
+  if (testId === 'aaa') { _calcularAAAManual(parseInt(document.getElementById('man-aaa-total').value)); return; }
   if (testId === 'spaib') { _calcularSPAIBManual(parseInt(document.getElementById('man-spaib-total').value)); return; }
   if (testId === 'asrs') {
     var secA = parseInt(document.getElementById('man-asrs-a').value);
@@ -9164,6 +9347,245 @@ function guardarResultadoGAD(){
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };});
 }
 
+// ══ BIRLESON (PACES) ════════════════════════════════════════════════════════
+var BIRLESON_CORTE = 14;
+var BIRLESON_OPS = ['Nunca (0)', 'Algunas veces (1)', 'Siempre (2)'];
+var BIRLESON_ITEMS = [
+  'Me interesan las cosas tanto como antes',
+  'Duermo muy bien',
+  'Me dan ganas de llorar',
+  'Me gusta salir con mis amigos',
+  'Me gustaría escapar, salir corriendo',
+  'Me duele la panza',
+  'Tengo mucha energía',
+  'Disfruto la comida',
+  'Puedo defenderme por mí mismo',
+  'Creo que no vale la pena vivir',
+  'Soy bueno para las cosas que hago',
+  'Disfruto lo que hago tanto como lo hacía antes',
+  'Me gusta hablar con mi familia',
+  'Tengo sueños horribles',
+  'Me siento muy solo',
+  'Me animo fácilmente',
+  'Me siento tan triste que me cuesta trabajo soportarlo',
+  'Me siento muy aburrido'
+];
+var BIRLESON_REVERSE = [true,true,false,true,false,true,true,true,false,false,true,true,false,false,false,true,false,false];
+
+function birlesonScore(i, raw) { return BIRLESON_REVERSE[i] ? (2 - raw) : raw; }
+
+function iniciarBirleson() {
+  var c = document.getElementById('birleson-items-container');
+  c.innerHTML = BIRLESON_ITEMS.map(function(item, i) {
+    return '<div class="bdi-item"><div class="bdi-pregunta">' + (i+1) + '. ' + item + '</div>' +
+      '<div class="bdi-opciones">' +
+      BIRLESON_OPS.map(function(op, j) {
+        return '<label class="bdi-opcion"><input type="radio" name="birleson_' + i + '" value="' + j + '"><span class="bdi-opcion-texto">' + op + '</span></label>';
+      }).join('') + '</div></div>';
+  }).join('');
+  document.getElementById('birleson-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('birleson-form').style.display = 'block';
+  document.getElementById('birleson-resultado').style.display = 'none';
+}
+
+function _mostrarResultadoBirleson(total) {
+  var positivo = total >= BIRLESON_CORTE;
+  var cat, badge, interp;
+  if (total < 13) { cat = 'Sin indicadores significativos'; badge = 'bg-minima'; }
+  else if (total <= 21) { cat = 'Síntomas depresivos'; badge = 'bg-moderada'; }
+  else { cat = 'Depresión mayor (probable)'; badge = 'bg-grave'; }
+  if (positivo) {
+    interp = '<p>El puntaje (' + total + '/36) se encuentra <strong>por encima del punto de corte (≥' + BIRLESON_CORTE + ')</strong>, sugiriendo presencia de síntomas depresivos que requieren evaluación clínica.</p>';
+  } else {
+    interp = '<p>El puntaje (' + total + '/36) se encuentra <strong>por debajo del punto de corte (≥' + BIRLESON_CORTE + ')</strong>, sin indicadores significativos de depresión en el screening.</p>';
+  }
+  if (total >= 22) interp += '<p>Puntaje ≥22: compatible con <strong>depresión mayor</strong>. Se recomienda evaluación diagnóstica completa.</p>';
+  else if (total >= 13) interp += '<p>Puntaje 13–21: rango de <strong>síntomas depresivos</strong>. Se sugiere seguimiento clínico.</p>';
+  interp += '<p><em>Fuente: Birleson (1981); validación PACES. Interpretación orientativa.</em></p>';
+  document.getElementById('birleson-pts').textContent = total;
+  document.getElementById('birleson-cat').textContent = cat;
+  document.getElementById('birleson-rango').textContent = 'Punto de corte: ≥' + BIRLESON_CORTE;
+  document.getElementById('birleson-badge').textContent = positivo ? 'Screening positivo' : 'Screening negativo';
+  document.getElementById('birleson-badge').className = 'badge-grande ' + badge;
+  document.getElementById('birleson-interp').innerHTML = interp;
+  document.getElementById('birleson-form').style.display = 'none';
+  document.getElementById('birleson-resultado').style.display = 'block';
+}
+
+function calcularBirleson() {
+  var total = 0; var sinR = 0;
+  window._birlesonItems = [];
+  for (var i = 0; i < BIRLESON_ITEMS.length; i++) {
+    var s = document.querySelector('[name="birleson_' + i + '"]:checked');
+    if (s) {
+      var raw = parseInt(s.value, 10);
+      var pts = birlesonScore(i, raw);
+      total += pts;
+      window._birlesonItems.push({ item: i + 1, raw: raw, pts: pts });
+    } else sinR++;
+  }
+  if (sinR > 0 && !confirm('Hay ' + sinR + ' ítem(s) sin respuesta. ¿Continuar?')) return;
+  _mostrarResultadoBirleson(total);
+}
+
+function _calcularBirlesonManual(total) {
+  window._birlesonItems = [];
+  _mostrarResultadoBirleson(total);
+}
+
+function guardarResultadoBirleson() {
+  if (!SESSION) return;
+  var pacId = document.getElementById('birleson-paciente').value;
+  var pts = parseInt(document.getElementById('birleson-pts').textContent, 10);
+  var cat = document.getElementById('birleson-cat').textContent;
+  var fecha = document.getElementById('birleson-fecha').value;
+  if (!pacId) { toast('Seleccioná un paciente primero'); return; }
+  supaFetch('/rest/v1/psico_resultados','POST',{
+    user_id: SESSION.user.id, paciente_id: pacId, test: 'Birleson', fecha: fecha,
+    puntaje_total: pts, categoria: cat,
+    datos: { total: pts, corte: BIRLESON_CORTE, items: window._birlesonItems || [], screening_positivo: pts >= BIRLESON_CORTE }
+  }, SESSION.access_token).then(function(){
+    cargarResultados();
+    toast('✓ Resultado guardado', 'success');
+    var btnAll = document.querySelectorAll('.vista.active .btn-primary');
+    var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
+    if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
+  });
+}
+
+function limpiarBirleson() {
+  if (!confirm('¿Limpiar?')) return;
+  document.querySelectorAll('[name^="birleson_"]').forEach(function(r){ r.checked = false; });
+}
+
+// ══ AAA ══════════════════════════════════════════════════════════════════════
+var AAA_CORTE = 25;
+var AAA_OPS = ['Nunca (0)', 'Algunas veces (1)', 'Siempre (2)'];
+var AAA_ITEMS = [
+  'Cuando tengo miedo no respiro bien.',
+  'Cuando estoy en la escuela me duele la cabeza.',
+  'Me molesta estar con personas que no conozco.',
+  'Cuando duermo en una casa que no es la mía siento miedo.',
+  'Me preocupa saber si le caigo bien a las personas.',
+  'Cuando tengo miedo, siento que me voy a desmayar.',
+  'Soy nervioso(a).',
+  'Sigo a mis papás a donde ellos van.',
+  'Las personas me dicen que me veo nervioso(a).',
+  'Me pongo nervioso(a) cuando estoy con personas que no conozco.',
+  'Cuando estoy en la escuela me duele la panza.',
+  'Cuando tengo mucho miedo, siento que me voy a volver loco(a).',
+  'Me siento preocupado(a) cuando duermo solo(a).',
+  'Me preocupo de ser tan bueno(a) como los otros niños (por ejemplo, en la escuela).',
+  'Cuando tengo mucho miedo, siento como si las cosas no fueran reales.',
+  'En las noches sueño que cosas feas le van a pasar a mis papás.',
+  'Me preocupo cuando tengo que ir a la escuela.',
+  'Cuando tengo mucho miedo, mi corazón late muy rápido.',
+  'Tiemblo.',
+  'En las noches sueño que me va pasar algo malo.',
+  'Me preocupa pensar cómo me van a salir las cosas.',
+  'Cuando tengo miedo, sudo mucho.',
+  'Me preocupo mucho.',
+  'Me preocupo sin motivo.',
+  'Estar solo(a) en casa me da miedo.',
+  'Me cuesta trabajo hablar con personas que no conozco.',
+  'Cuando tengo miedo, siento que no puedo tragar.',
+  'Las personas me dicen que me preocupo mucho.',
+  'No me gusta estar lejos de mi familia.',
+  'Tengo miedo de tener ataques de pánico.',
+  'Me preocupa pensar que algo malo le pase a mis papás.',
+  'Me da pena estar con personas que no conozco.',
+  'Me preocupa qué pasará conmigo cuando sea grande.',
+  'Cuando tengo miedo me dan ganas de vomitar.',
+  'Me preocupa saber si hago las cosas bien.',
+  'Me da miedo ir a la escuela.',
+  'Me preocupo por las cosas que pasaron.',
+  'Cuando tengo miedo, me siento mareado(a).',
+  'Me pongo nervioso(a) cuando tengo que hacer algo delante de otros niños o adultos (por ejemplo, leer en voz alta, hablar, jugar).',
+  'Me pongo nervioso(a) cuando voy a fiestas, bailes, o alguna parte donde hay personas que no conozco.',
+  'Soy tímido(a).'
+];
+
+function iniciarAAA() {
+  var c = document.getElementById('aaa-items-container');
+  c.innerHTML = AAA_ITEMS.map(function(item, i) {
+    return '<div class="bdi-item"><div class="bdi-pregunta">' + (i+1) + '. ' + item + '</div>' +
+      '<div class="bdi-opciones">' +
+      AAA_OPS.map(function(op, j) {
+        return '<label class="bdi-opcion"><input type="radio" name="aaa_' + i + '" value="' + j + '"><span class="bdi-opcion-texto">' + op + '</span></label>';
+      }).join('') + '</div></div>';
+  }).join('');
+  document.getElementById('aaa-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('aaa-form').style.display = 'block';
+  document.getElementById('aaa-resultado').style.display = 'none';
+}
+
+function _mostrarResultadoAAA(total) {
+  var positivo = total >= AAA_CORTE;
+  var cat, badge, interp;
+  if (!positivo) { cat = 'Sin indicadores significativos'; badge = 'bg-minima'; }
+  else if (total < 40) { cat = 'Ansiedad clínica probable'; badge = 'bg-moderada'; }
+  else { cat = 'Ansiedad elevada'; badge = 'bg-grave'; }
+  if (positivo) {
+    interp = '<p>El puntaje (' + total + '/82) se encuentra <strong>por encima del punto de corte (≥' + AAA_CORTE + ')</strong>. Probabilidad estimada ≥70% de presentar algún trastorno de ansiedad.</p>';
+  } else {
+    interp = '<p>El puntaje (' + total + '/82) se encuentra <strong>por debajo del punto de corte (≥' + AAA_CORTE + ')</strong>, sin indicadores significativos en el screening de ansiedad.</p>';
+  }
+  interp += '<p><em>Fuente: Instituto Nacional de Psiquiatría RFM; adaptación De la Peña Olvera. Interpretación orientativa.</em></p>';
+  document.getElementById('aaa-pts').textContent = total;
+  document.getElementById('aaa-cat').textContent = cat;
+  document.getElementById('aaa-rango').textContent = 'Punto de corte: ≥' + AAA_CORTE;
+  document.getElementById('aaa-badge').textContent = positivo ? 'Screening positivo' : 'Screening negativo';
+  document.getElementById('aaa-badge').className = 'badge-grande ' + badge;
+  document.getElementById('aaa-interp').innerHTML = interp;
+  document.getElementById('aaa-form').style.display = 'none';
+  document.getElementById('aaa-resultado').style.display = 'block';
+}
+
+function calcularAAA() {
+  var total = 0; var sinR = 0;
+  window._aaaItems = [];
+  for (var i = 0; i < AAA_ITEMS.length; i++) {
+    var s = document.querySelector('[name="aaa_' + i + '"]:checked');
+    if (s) {
+      var raw = parseInt(s.value, 10);
+      total += raw;
+      window._aaaItems.push({ item: i + 1, raw: raw });
+    } else sinR++;
+  }
+  if (sinR > 0 && !confirm('Hay ' + sinR + ' ítem(s) sin respuesta. ¿Continuar?')) return;
+  _mostrarResultadoAAA(total);
+}
+
+function _calcularAAAManual(total) {
+  window._aaaItems = [];
+  _mostrarResultadoAAA(total);
+}
+
+function guardarResultadoAAA() {
+  if (!SESSION) return;
+  var pacId = document.getElementById('aaa-paciente').value;
+  var pts = parseInt(document.getElementById('aaa-pts').textContent, 10);
+  var cat = document.getElementById('aaa-cat').textContent;
+  var fecha = document.getElementById('aaa-fecha').value;
+  if (!pacId) { toast('Seleccioná un paciente primero'); return; }
+  supaFetch('/rest/v1/psico_resultados','POST',{
+    user_id: SESSION.user.id, paciente_id: pacId, test: 'AAA', fecha: fecha,
+    puntaje_total: pts, categoria: cat,
+    datos: { total: pts, corte: AAA_CORTE, items: window._aaaItems || [], screening_positivo: pts >= AAA_CORTE }
+  }, SESSION.access_token).then(function(){
+    cargarResultados();
+    toast('✓ Resultado guardado', 'success');
+    var btnAll = document.querySelectorAll('.vista.active .btn-primary');
+    var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
+    if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
+  });
+}
+
+function limpiarAAA() {
+  if (!confirm('¿Limpiar?')) return;
+  document.querySelectorAll('[name^="aaa_"]').forEach(function(r){ r.checked = false; });
+}
+
 // ══ SPAI-B ═══════════════════════════════════════════════════════════════════
 var SPAIB_ITEMS = [
   'Evito situaciones en las que puedo ser el centro de atención',
@@ -9333,6 +9755,91 @@ function guardarResultadoMoCA(){
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };});
+}
+
+// ══ Mini Mental Parkinson (MMP) ══════════════════════════════════════════════
+var MMP_CORTE = 24;
+var MMP_CAMPOS = [
+  {id:'mmp-orient', max:10, label:'Orientación temporal y espacial'},
+  {id:'mmp-mem', max:3, label:'Memoria inmediata — tarjetas ABC'},
+  {id:'mmp-aten', max:5, label:'Atención — restas 100−7'},
+  {id:'mmp-control', max:3, label:'Control mental — MUNDO al revés'},
+  {id:'mmp-fluencia', max:3, label:'Fluencia verbal — animales letra L'},
+  {id:'mmp-mem-asoc', max:3, label:'Memoria de asociación — tarjetas DEF'},
+  {id:'mmp-recon', max:4, label:'Reconocimiento — tarjeta G'},
+  {id:'mmp-conceptos', max:3, label:'Procesamiento de conceptos'}
+];
+
+function iniciarMMP() {
+  document.getElementById('mmp-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('mmp-form').style.display = 'block';
+  document.getElementById('mmp-resultado').style.display = 'none';
+}
+
+function calcularMMP() {
+  var total = 0; var vals = {}; var todos = true;
+  MMP_CAMPOS.forEach(function(c) {
+    var v = document.getElementById(c.id).value;
+    if (v === '') { todos = false; }
+    else {
+      var n = parseInt(v, 10);
+      if (n < 0 || n > c.max) { toast('Puntaje inválido en ' + c.label, 'error'); todos = false; return; }
+      vals[c.id] = n;
+      total += n;
+    }
+  });
+  if (!todos) { toast('Completá todos los dominios', 'error'); return; }
+  var normal = total >= MMP_CORTE;
+  var cat = normal ? 'Normal' : 'Por debajo del punto de corte';
+  var badge = normal ? 'bg-minima' : 'bg-grave';
+  var dominiosHtml = MMP_CAMPOS.map(function(c) {
+    var v = vals[c.id]; var pct = Math.round((v / c.max) * 100);
+    var col = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--red)';
+    return '<div class="detalle-item"><div class="detalle-num" style="color:' + col + '">' + v + '/' + c.max + '</div><div class="detalle-lbl">' + c.label + '</div></div>';
+  }).join('');
+  var interp = '<p>Puntaje total: <strong>' + total + '/32</strong>. Punto de corte: ≥' + MMP_CORTE + '.</p>';
+  if (normal) interp += '<p>El puntaje se encuentra <strong>dentro del rango normal</strong>. No se observa deterioro cognitivo significativo según el criterio MMP.</p>';
+  else interp += '<p>El puntaje se encuentra <strong>por debajo del punto de corte (&lt;24)</strong>, sugiriendo posible deterioro cognitivo. Se recomienda evaluación neuropsicológica completa.</p>';
+  var domBajos = MMP_CAMPOS.filter(function(c) { return vals[c.id] < Math.floor(c.max * 0.5); }).map(function(c) { return c.label; });
+  if (domBajos.length) interp += '<p>Dominios con desempeño reducido (&lt; 50%): ' + domBajos.join(', ') + '.</p>';
+  interp += '<p><em>Fuente: Mahieux et al. (1995); Fernández et al. Interpretación orientativa.</em></p>';
+  document.getElementById('mmp-pts-total').textContent = total;
+  document.getElementById('mmp-cat').textContent = cat;
+  document.getElementById('mmp-badge').textContent = normal ? 'Normal' : 'Alterado';
+  document.getElementById('mmp-badge').className = 'badge-grande ' + badge;
+  document.getElementById('mmp-dominios').innerHTML = dominiosHtml;
+  document.getElementById('mmp-interp').innerHTML = interp;
+  document.getElementById('mmp-form').style.display = 'none';
+  document.getElementById('mmp-resultado').style.display = 'block';
+}
+
+function guardarResultadoMMP() {
+  if (!SESSION) return;
+  var pacId = document.getElementById('mmp-paciente').value;
+  var pts = parseInt(document.getElementById('mmp-pts-total').textContent, 10);
+  var cat = document.getElementById('mmp-cat').textContent;
+  var fecha = document.getElementById('mmp-fecha').value;
+  if (!pacId) { toast('Seleccioná un paciente primero'); return; }
+  var mmpVals = {};
+  MMP_CAMPOS.forEach(function(c) {
+    var v = document.getElementById(c.id).value;
+    if (v !== '') mmpVals[c.id] = parseInt(v, 10);
+  });
+  supaFetch('/rest/v1/psico_resultados', 'POST', {
+    user_id: SESSION.user.id, paciente_id: pacId, test: 'Mini Mental Parkinson', fecha: fecha,
+    puntaje_total: pts, categoria: cat,
+    datos: { total: pts, corte: MMP_CORTE, dominios: mmpVals }
+  }, SESSION.access_token).then(function() {
+    cargarResultados();
+    toast('✓ Resultado guardado', 'success');
+    var btnAll = document.querySelectorAll('.vista.active .btn-primary');
+    var btn = btnAll.length ? btnAll[btnAll.length - 1] : null;
+    if (btn) { btn.classList.add('btn-saved'); setTimeout(function() { btn.classList.remove('btn-saved'); }, 1500); }
+  });
+}
+
+function limpiarMMP() {
+  MMP_CAMPOS.forEach(function(c) { var el = document.getElementById(c.id); if (el) el.value = ''; });
 }
 
 // ══ IFS ══════════════════════════════════════════════════════════════════════
@@ -14194,14 +14701,14 @@ async function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEsc
     'BPI':'Inventario Breve de Dolor (BPI)'
   };
   var DOMINIOS_PRUEBAS=[
-    {label:'Screening cognitivo global',           tests:['MoCA','ACE-R']},
+    {label:'Screening cognitivo global',           tests:['MoCA','Mini Mental Parkinson','ACE-R']},
     {label:'Atención y velocidad de procesamiento',tests:['WAIS-IV','TMT A-B','D2','SDMT-escrita','SDMT-oral','BTA']},
     {label:'Lenguaje',                              tests:['Fluencia Verbal','BNT-60','BNT-12','Token Test']},
     {label:'Memoria',                               tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
     {label:'Funciones ejecutivas',                  tests:['WCST-64','IFS','FAB','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
     {label:'Habilidades visoconstructivas',         tests:['Figura Rey','Test del Reloj (Cacho)']},
     {label:'TDAH',                                  tests:['ASRS-V1.1','WURS-25','DEX']},
-    {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
+    {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
     {label:'Evaluación del dolor',                  tests:['PCS','CSQ','PBQ','BPI']},
     {label:'Cuestionarios familiares',              tests:['Cuestionarios Familiares']},
   ];
