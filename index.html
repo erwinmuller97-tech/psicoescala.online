@@ -933,7 +933,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.86</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.87</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6045,7 +6045,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.86';
+var APP_VERSION = 'v1.10.87';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7836,7 +7836,7 @@ function renderCuestionariosFam(d) {
     '.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 20px;font-family:Arial,sans-serif;font-size:11pt;}'+
     '.ficha-item{display:flex;gap:6px;padding:2px 0;}'+
     '.ficha-lbl{font-weight:700;white-space:nowrap;color:#2d4a3e;}'+
-    '@media print{body{padding:0;}@page{margin:10mm 8mm;size:A4 landscape;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}}'+
+    '@media print{body{padding:0;}@page{margin:10mm 8mm;size:A4 portrait;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}}'+
     '</style></head><body><div class="pg">'+
 
     // ── Header ──
@@ -15248,8 +15248,60 @@ function _xe(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Colores ───────────────────────────────────────────────────────────
-var WC = { VERDE_OSC:'214b1a', VERDE_MED:'325c28', VERDE_CLR:'B8DDB0', GRIS_CLR:'EEEEEE', BLANCO:'FFFFFF' };
+// ── Colores PsicoEscala (alineados con PDF) ─────────────────────────────
+var WC = { VERDE_OSC:'2d4a3e', VERDE_MED:'3d7a5f', VERDE_CLR:'D4EAE0', GRIS_CLR:'F0F7F4', BLANCO:'FFFFFF' };
+var _WORD_PAGE_W = 9360; // A4 vertical, márgenes 720 DXA c/u
+
+// ── Header Word desde config profesional ──────────────────────────────
+function _wProfHeaderLeft() {
+  var cfg = getConfigProfesional();
+  var parts = [];
+  if (cfg.nombre)    parts.push(_wPar(_wRun(cfg.nombre, {bold:true, sz:22, color:WC.VERDE_OSC, font:'Arial'}), {before:0, after:20}));
+  if (cfg.matricula) parts.push(_wPar(_wRun(cfg.matricula, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
+  if (cfg.direccion) parts.push(_wPar(_wRun(cfg.direccion, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
+  if (cfg.tel)       parts.push(_wPar(_wRun('Tel. '+cfg.tel, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
+  if (cfg.extra)     parts.push(_wPar(_wRun(cfg.extra, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
+  if (!parts.length) parts.push(_wPar(_wRun('Completá tu configuración en ⚙ Configuración', {sz:18, ital:true, color:'8a9e94', font:'Arial'}), {before:0, after:10}));
+  return parts.join('');
+}
+function _wProfHeaderRight() {
+  var dateStr = new Date().toLocaleDateString('es-AR');
+  return '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
+    '<w:r><w:rPr><w:b/><w:sz w:val="28"/><w:color w:val="'+WC.VERDE_OSC+'"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:t>PsicoEscala</w:t></w:r></w:p>'+
+    '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
+    '<w:r><w:rPr><w:sz w:val="16"/><w:color w:val="5a6b63"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:t>Informe Neuropsicológico</w:t></w:r></w:p>'+
+    '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
+    '<w:r><w:rPr><w:sz w:val="16"/><w:color w:val="8a9e94"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:t>'+_xe(dateStr)+'</w:t></w:r></w:p>';
+}
+function _buildWordHeaderXml() {
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
+    '<w:tbl><w:tblPr><w:tblW w:w="'+_WORD_PAGE_W+'" w:type="dxa"/><w:tblBorders>'+
+    '<w:top w:val="none"/><w:left w:val="none"/><w:bottom w:val="none"/><w:right w:val="none"/>'+
+    '<w:insideH w:val="none"/><w:insideV w:val="none"/></w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr>'+
+    '<w:tblGrid><w:gridCol w:w="5200"/><w:gridCol w:w="4160"/></w:tblGrid>'+
+    '<w:tr><w:tc><w:tcPr><w:tcW w:w="5200" w:type="dxa"/></w:tcPr>'+_wProfHeaderLeft()+'</w:tc>'+
+    '<w:tc><w:tcPr><w:tcW w:w="4160" w:type="dxa"/></w:tcPr>'+_wProfHeaderRight()+'</w:tc></w:tr></w:tbl>'+
+    '<w:p><w:pPr><w:spacing w:before="60" w:after="0"/>'+
+    '<w:pBdr><w:bottom w:val="single" w:sz="8" w:space="1" w:color="'+WC.VERDE_OSC+'"/></w:pBdr></w:pPr></w:p>'+
+    '</w:hdr>';
+}
+function _buildWordFooterXml() {
+  var footerTxt = getProfFooterText();
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    '<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
+    '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="0"/>'+
+    '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="c8d8d0"/></w:pBdr></w:pPr></w:p>'+
+    '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
+    '<w:r><w:rPr><w:sz w:val="14"/><w:color w:val="'+WC.VERDE_OSC+'"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:t>'+_xe(footerTxt)+'</w:t></w:r></w:p>'+
+    '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
+    '<w:r><w:rPr><w:sz w:val="13"/><w:color w:val="8a9e94"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:t>PsicoEscala · psicoescala.online@gmail.com</w:t></w:r></w:p></w:ftr>';
+}
 
 // ── Helpers XML docx ──────────────────────────────────────────────────
 function _wRun(txt, opts) {
@@ -15309,15 +15361,15 @@ function _wRow(cells, opts) {
 function _wTable(rows, colWidths) {
   var tblGrid = '<w:tblGrid>'+colWidths.map(function(w){return '<w:gridCol w:w="'+w+'"/>';}).join('')+'</w:tblGrid>';
   var tblPr = '<w:tblPr>'+
-    '<w:tblW w:w="13398" w:type="dxa"/>'+
+    '<w:tblW w:w="'+_WORD_PAGE_W+'" w:type="dxa"/>'+
     '<w:tblLayout w:type="fixed"/>'+
     '<w:tblBorders>'+
-      '<w:top    w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:bottom w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:left   w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:right  w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:insideH w:val="single" w:sz="6" w:color="BFBFBF"/>'+
-      '<w:insideV w:val="single" w:sz="6" w:color="BFBFBF"/>'+
+      '<w:top    w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
+      '<w:bottom w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
+      '<w:left   w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
+      '<w:right  w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
+      '<w:insideH w:val="single" w:sz="4" w:color="c8d8d0"/>'+
+      '<w:insideV w:val="single" w:sz="4" w:color="c8d8d0"/>'+
     '</w:tblBorders>'+
   '</w:tblPr>';
   return '<w:tbl>'+tblPr+tblGrid+rows.join('')+'</w:tbl>';
@@ -15330,27 +15382,23 @@ function _wTable(rows, colWidths) {
 var ZCOLS = [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3];
 var ZCOL_W = 290; // 290 DXA ≈ 5.1mm por columna × 13 = 3770 DXA
 
-// anchos de columnas fijas: Variable(2600) | PB(620) | M(620) | DS(620) | Z(620) | 13×grilla(290×13=3770) | Interp(1510) = total 10360
-// Ajustamos a A4: ~9360 DXA (A4 con márgenes 1134 each → content = 11906-2268 = 9638, usamos 9360)
-// Variable(2200) | PB(560) | M(560) | DS(560) | Z(560) | 13×grilla(240×13=3120) | Interp(1800) = 9360
-// Anchos landscape A4 márgenes 720 (15398 DXA):
-// Variable(2200) PB(460) M(460) DS(460) Z(540) 13×grilla(540×13=7020) Interp(1258) = 13398 ~ ok
-var _ZGRILLA_W2 = 540;
-var COL_WIDTHS_HDR = [2200, 460, 460, 460, 540].concat(ZCOLS.map(function(){return _ZGRILLA_W2;})).concat([1258]);
-var _TOTAL_HDR = 13398;
+// A4 vertical márgenes 720 → ancho útil 9360 DXA
+// Variable(2200) PB(520) M(520) DS(520) Z(520) 13×grilla(230×13=2990) Interp(1690) = 9360
+var _ZGRILLA_W2 = 230;
+var COL_WIDTHS_HDR = [2200, 520, 520, 520, 520].concat(ZCOLS.map(function(){return _ZGRILLA_W2;})).concat([1690]);
+var _TOTAL_HDR = _WORD_PAGE_W;
 
 function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
-  var bg = isEven ? 'F2F2F2' : 'FFFFFF';
+  var bg = isEven ? WC.GRIS_CLR : WC.BLANCO;
 
   if (isSubhdr) {
-    // Fila de subencabezado de dominio (texto centrado, fondo verde claro)
     var totalCols = COL_WIDTHS_HDR.length;
     var totalW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0);
     return _wRow([
       _wCell(
-        _wPar(_wRun(label,{bold:true,sz:20,color:'000000',font:'Arial'}),
-              {align:'center',before:30,after:30,shading:'D9D9D9'}),
-        {w:totalW, fill:'D9D9D9', span:totalCols}
+        _wPar(_wRun(label,{bold:true,sz:18,color:WC.BLANCO,font:'Arial'}),
+              {align:'center',before:30,after:30,shading:WC.VERDE_MED}),
+        {w:totalW, fill:WC.VERDE_MED, span:totalCols}
       )
     ]);
   }
@@ -15405,10 +15453,10 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   // Grilla Z: 13 celdas
   ZCOLS.forEach(function(v,i){
     var isMarked = (markedCol === i);
-    var cellFill = normZone[i] ? 'DAE3F3' : 'FFFFFF';
+    var cellFill = normZone[i] ? WC.VERDE_CLR : WC.BLANCO;
     var content = isMarked
-      ? _wPar(_wRun('X',{sz:18,bold:true,font:'Arial',color:'000000'}),{align:'center',before:40,after:40})
-      : _wPar('',{before:40,after:40});
+      ? _wPar(_wRun('X',{sz:16,bold:true,font:'Arial',color:WC.VERDE_OSC}),{align:'center',before:30,after:30})
+      : _wPar('',{before:30,after:30});
     cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true}));
   });
   // Interpretación
@@ -15419,11 +15467,10 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 }
 
 function _zHdrRow() {
-  // Etiquetas de encabezado de la grilla: enteros con signo, vacío para .5
   var cells = [];
-  var hdrFill = 'F2F2F2';
+  var hdrFill = WC.VERDE_MED;
   function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
+    return _wCell(_wPar(_wRun(txt,{sz:16,bold:true,color:WC.BLANCO,font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
   }
   cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
@@ -15670,10 +15717,10 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   }
 
   // ── Tabla simple para CL/TD/DO (Instrumento | Puntaje | Resultado) ──
-  var COL_CL=[3200,1200,4960];
-  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'F2F2F2',hdrBorder:true});}
-  function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
-  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:'000000',font:'Arial'}),{before:25,after:25,shading:'D9D9D9'}),{w:9360,fill:'D9D9D9',span:3})]);}
+  var COL_CL=[2800,1100,5460];
+  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
+  function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:WC.VERDE_OSC}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
+  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:WC.BLANCO,font:'Arial'}),{before:25,after:25,shading:WC.VERDE_MED}),{w:_WORD_PAGE_W,fill:WC.VERDE_MED,span:3})]);}
   function buildSimpleRows(list){
     if(!list.length)return[];
     var rows=[],rc=0;
@@ -15695,7 +15742,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       var d=r.datos||{};
       rows.push(clDomHdr(r.test));
       function addCL(lbl,pb,res){
-        var bg=rc%2===0?'F2F2F2':'FFFFFF';
+        var bg=rc%2===0?WC.GRIS_CLR:WC.BLANCO;
         var resNorm = normCat(res, pb, r.test);
         rows.push(_wRow([clCell(lbl,COL_CL[0],bg),clCell(String(pb!=null?pb:'—'),COL_CL[1],bg,true),clCell(resNorm||'—',COL_CL[2],bg)]));
         rc++;
@@ -15769,14 +15816,14 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // ── Tabla datos personales ──
   function dpRow(lbl,val){
     return _wRow([
-      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:'000000'}),{before:40,after:40}),{w:2600,fill:'F2F2F2'}),
-      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'000000'}),{before:40,after:40}),{w:6760,fill:'FFFFFF'}),
+      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:40,after:40}),{w:2600,fill:WC.GRIS_CLR}),
+      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'1a1a1a'}),{before:40,after:40}),{w:6760,fill:WC.BLANCO}),
     ]);
   }
 
-  // ── Sección título (línea verde bajo) ──
+  // ── Sección título (línea verde bajo, estilo PDF) ──
   function secTit(txt){
-    return _wPar(_wRun(txt,{bold:true,sz:22,color:'000000',font:'Arial'}),{before:240,after:60,border_b:'595959'});
+    return _wPar(_wRun(txt,{bold:true,sz:22,color:WC.VERDE_OSC,font:'Arial'}),{before:240,after:60,border_b:WC.VERDE_MED});
   }
 
   // ── Construir cuerpo ──
@@ -15829,7 +15876,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       var presentes=dom.tests.filter(function(t){return testsTomados.indexOf(t)!==-1;});
       if(!presentes.length)return;
       // Subdominio en negrita
-      body+=_wPar(_wRun(dom.label,{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:20});
+      body+=_wPar(_wRun(dom.label,{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:20});
       // Lista de tests
       var listaTexto=presentes.map(function(t){return NOMBRES_TEST[t]||t;}).join(' · ');
       body+=_wPar(_wRun(listaTexto,{sz:19,font:'Arial',color:'333333'}),{align:'both',before:0,after:60});
@@ -15850,24 +15897,22 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     body+=_wPar('',{before:0,after:80});
   }
 
-  // 8. SUGERENCIAS (fijas siempre)
-  body+=secTit('8. Sugerencias');
-  body+='<w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">1.  Sostener consulta con profesional derivante a fines de correlacionar los resultados obtenidos con estudios complementarios (neuroimágenes, laboratorio, entre otros).</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">2.  Mantener chequeo médico general a fin de controlar factores de salud que puedan influir sobre el estado cognitivo (cardiovasculares, niveles de colesterol y triglicéridos, etc.), ya que son factores de riesgo para fluctuaciones cognitivas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">3.  Repetir estudio de valoración neuropsicológica en un plazo de 12 a 18 meses, a los fines de tener un estudio confirmatorio y de seguimiento sobre las variaciones de su estado cognitivo actual.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">4.  Se sugiere iniciar un programa de estimulación cognitiva a fin de evitar consolidación de déficits cognitivos y lograr mayores estrategias de aprendizaje y memoria con alcance ecológico, y de mejoramiento de la funcionalidad instrumental y expansiva.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">5.  Sostener proceso psicoterapéutico y/o psiquiátrico para el abordaje de la sintomatología emocional y el reforzamiento de estrategias de gestión de estrés.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">6.  Realizar y/o sostener consulta con psiquiatría a fin de prevenir y controlar afectividad negativa y labilidad emocional, como el manejo de cambios conductuales incipientes.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">7.  El profesional derivante podrá valorar la pertinencia de sugerir un programa de orientación y acompañamiento a familiares.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">8.  Sostener hábitos preventivos del funcionamiento cognitivo según se detallan en el Apéndice A del presente informe.</w:t></w:r></w:p>';
-  body+=_wPar('',{before:0,after:80});
+  // 8. RECOMENDACIONES (desde informe, como PDF)
+  if((inf.recomendaciones||'').trim()){
+    body+=secTit('8. Recomendaciones');
+    parrafos(inf.recomendaciones).forEach(function(p){body+=p;});
+    body+=_wPar('',{before:0,after:80});
+  }
 
-  // 9. APÉNDICE A
-  body+=secTit('Apéndice A: Sugerencias para Mantener su Mente Activa');
-  body+=_wPar(_wRun('Ciertos hábitos han demostrado eficacia en la protección del funcionamiento cognitivo (prevención) y en la disminución del posible impacto de estresores diarios. Siguiendo las evidencias científicas en torno a la protección de la memoria y de las restantes funciones cerebrales, se le sugiere que:',{sz:20,font:'Arial',color:'000000'}),{align:'both',before:0,after:80});
-  body+='<w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Realice ejercicio físico periódicamente. El mismo debe implicar una frecuencia de al menos 3 veces por semana, y una duración de 45 minutos. Puede realizar caminatas, o alguna otra actividad física aeróbica de su agrado. Se sugiere, en caso posible, complementar la actividad aeróbica con actividades de flexibilidad, como yoga, y de resistencia (que impliquen fuerza). Para el inicio del programa de ejercicio debe contar con previa autorización y asesoramiento médico.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Lleve un estilo de vida saludable, intentado no abusar del alcohol y ni del tabaco.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Mantenga una dieta variada, que incluya al menos 5 porciones de frutas y vegetales cada día. Evite el consumo de grasas saturadas o snacks. Beba al menos 1,5 a 2 litros de agua a diario (al menos 6 vasos), fundamental fuente protectora del cerebro.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Evite situaciones de estrés emocional y mantenga actividades ocio recreativas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Mantenga una amplia gama de intereses y actividades de entretenimiento (ver películas, escuchar música). Retome sus intereses previos que le brindaban satisfacción.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Busque generar momentos de encuentro con sus amistades significativas o familiares, intercambie con ellos temas de su interés.</w:t></w:r></w:p>';
-  body+=_wPar('',{before:0,after:120});
+  // APÉNDICE — RESULTADOS ESTADÍSTICOS
+  body+=secTit('Apéndice: Resultados Estadísticos');
 
-  // 10. APÉNDICE B - RESULTADOS ESTADÍSTICOS
-  body+=secTit('Apéndice B: Resultados Estadísticos');
+
 
   // Tabla NP con grilla Z
   var npRows=buildNPRows(testsNP);
   if(npRows.length){
-    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([_zHdrRow()].concat(npRows),COL_WIDTHS_HDR);
     body+=_wPar('',{before:0,after:80});
   }
@@ -15875,7 +15920,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // TABLA TDAH
   var tdRows=buildSimpleRows(testsTD);
   if(tdRows.length){
-    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(tdRows),COL_CL);
@@ -15885,7 +15930,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // TABLA DOLOR
   var doRows=buildSimpleRows(testsDO);
   if(doRows.length){
-    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(doRows),COL_CL);
@@ -15895,7 +15940,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // TABLA PSICOLOGÍA CLÍNICA
   var clRows=buildSimpleRows(testsCL);
   if(clRows.length){
-    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
+    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(clRows),COL_CL);
@@ -15907,9 +15952,9 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     body+=secTit('Reporte del Acompañante');
     var fam=famResults[famResults.length-1].datos||{};
     // Tabla: Tests | Significativo/No significativo | Síntomas
-    var COL_FAM=[3200,1800,4360];
-    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'F2F2F2',hdrBorder:true});}
-    function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
+    var COL_FAM=[2800,1600,4960];
+    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
+    function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:WC.VERDE_OSC}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
     
     var famRows=[];
     famRows.push(_wRow([famHdrCell('Tests',COL_FAM[0]),famHdrCell('Significativo / No significativo',COL_FAM[1]),famHdrCell('Síntomas',COL_FAM[2])],{hdr:true}));
@@ -15932,7 +15977,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       });
       npiqSint = sintomas.length ? sintomas.join(' · ') : '—';
     }
-    famRows.push(_wRow([famCell('Inventario neuropsiquiátrico NPI-Q',COL_FAM[0],'F2F2F2'),famCell(npiqSig,COL_FAM[1],'F2F2F2',true),famCell(npiqSint,COL_FAM[2],'F2F2F2')]));
+    famRows.push(_wRow([famCell('Inventario neuropsiquiátrico NPI-Q',COL_FAM[0],WC.GRIS_CLR),famCell(npiqSig,COL_FAM[1],WC.GRIS_CLR,true),famCell(npiqSint,COL_FAM[2],WC.GRIS_CLR)]));
     
     // AVD helper
     function avdSintomas(obj, labels){
@@ -15960,7 +16005,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     var avdiVal = fam.avdiTotal!=null?fam.avdiTotal:(fam.avdi_total!=null?fam.avdi_total:null);
     var avdiSig = avdiVal!=null ? (avdiVal<6?'No significativo':'Significativo') : '—';
     var avdiSint = avdSintomas(fam.avdi, AVDI_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Instrumentales',COL_FAM[0],'F2F2F2'),famCell(avdiSig,COL_FAM[1],'F2F2F2',true),famCell(avdiSint,COL_FAM[2],'F2F2F2')]));
+    famRows.push(_wRow([famCell('Escala de AVD Instrumentales',COL_FAM[0],WC.GRIS_CLR),famCell(avdiSig,COL_FAM[1],WC.GRIS_CLR,true),famCell(avdiSint,COL_FAM[2],WC.GRIS_CLR)]));
     
     // AVD Expansivas
     var avdeVal = fam.avdeTotal!=null?fam.avdeTotal:(fam.avde_total!=null?fam.avde_total:null);
@@ -15978,7 +16023,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       AD8_LABELS.forEach(function(it){if(fam.ad8[it.id]==='si')ad8Afect.push(it.label);});
       ad8Sint = ad8Afect.length?ad8Afect.join(' · '):'—';
     }
-    famRows.push(_wRow([famCell('Cuestionario del Informante AD8-ARG',COL_FAM[0],'F2F2F2'),famCell(ad8Sig,COL_FAM[1],'F2F2F2',true),famCell(ad8Sint,COL_FAM[2],'F2F2F2')]));
+    famRows.push(_wRow([famCell('Cuestionario del Informante AD8-ARG',COL_FAM[0],WC.GRIS_CLR),famCell(ad8Sig,COL_FAM[1],WC.GRIS_CLR,true),famCell(ad8Sint,COL_FAM[2],WC.GRIS_CLR)]));
     
     body+=_wTable(famRows,COL_FAM);
     body+=_wPar('N/V = no valorado; N/C = paciente no está en condiciones para responder o ser valorado.',{before:40,after:80});
@@ -16016,180 +16061,14 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     '<w:sectPr>'+
       '<w:headerReference w:type="default" r:id="rId2"/>'+
       '<w:footerReference w:type="default" r:id="rId3"/>'+
-      '<w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>'+
+      '<w:pgSz w:w="11906" w:h="16838"/>'+
       '<w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="709" w:footer="709" w:gutter="0"/>'+
     '</w:sectPr>'+
     '</w:body></w:document>';
 
-  // ── Header (logos) y Footer (pie institucional) ──
-  // Imágenes en base64 — González Palau (izq) y CIATEC (der)
-  var GP_B64 = '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';
-  var CT_B64 = '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';
-
-  // image1.png = GP, image2.png = CT — referenciadas desde header
-  var img1Xml = GP_B64; // PNG bytes como base64
-  var img2Xml = CT_B64;
-
-  // Tamaño logos en EMU (1 cm = 360000 EMU): 2cm alto ≈ 720000, ancho proporcional ~720000
-  var IMG_H = 720000; // 2 cm
-  var IMG_W = 720000; // 2 cm
-
-  // Header XML — tabla 1 fila 3 celdas: logo GP | centro vacío | logo CIATEC
-  // Header: tabla 1 fila, 3 celdas — logo GP izq | espacio | logo CT der
-  // Imágenes via drawingML inline con namespaces completos
-  var headerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:hdr'+
-    ' xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"'+
-    ' xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"'+
-    ' xmlns:o="urn:schemas-microsoft-com:office:office"'+
-    ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'+
-    ' xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'+
-    ' xmlns:v="urn:schemas-microsoft-com:vml"'+
-    ' xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"'+
-    ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'+
-    ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'+
-    ' xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"'+
-    ' xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"'+
-    ' xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"'+
-    ' xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml"'+
-    ' xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"'+
-    ' mc:Ignorable="w14 wp14">'+
-    // Tabla para posicionar logos: izq | centro | der
-    '<w:tbl>'+
-      '<w:tblPr>'+
-        '<w:tblW w:w="13398" w:type="dxa"/>'+
-        '<w:tblBorders>'+
-          '<w:top w:val="none"/><w:left w:val="none"/>'+
-          '<w:bottom w:val="none"/><w:right w:val="none"/>'+
-          '<w:insideH w:val="none"/><w:insideV w:val="none"/>'+
-        '</w:tblBorders>'+
-        '<w:tblLayout w:type="fixed"/>'+
-      '</w:tblPr>'+
-      '<w:tblGrid>'+
-        '<w:gridCol w:w="1800"/>'+
-        '<w:gridCol w:w="5760"/>'+
-        '<w:gridCol w:w="1800"/>'+
-      '</w:tblGrid>'+
-      '<w:tr>'+
-        // Celda izquierda: logo GP
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="1800" w:type="dxa"/></w:tcPr>'+
-          '<w:p>'+
-            '<w:pPr><w:jc w:val="left"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-            '<w:r><w:rPr/>'+
-              '<w:drawing>'+
-                '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
-                  '<wp:extent cx="576000" cy="576000"/>'+
-                  '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
-                  '<wp:docPr id="1" name="LogoGP" descr="Logo González Palau"/>'+
-                  '<wp:cNvGraphicFramePr>'+
-                    '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'+
-                  '</wp:cNvGraphicFramePr>'+
-                  '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
-                    '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                        '<pic:nvPicPr>'+
-                          '<pic:cNvPr id="1" name="LogoGP"/>'+
-                          '<pic:cNvPicPr><a:picLocks noChangeAspect="1" noChangeArrowheads="1"/></pic:cNvPicPr>'+
-                        '</pic:nvPicPr>'+
-                        '<pic:blipFill>'+
-                          '<a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rImgGP">'+
-                            '<a:extLst><a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}"><a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/></a:ext></a:extLst>'+
-                          '</a:blip>'+
-                          '<a:stretch><a:fillRect/></a:stretch>'+
-                        '</pic:blipFill>'+
-                        '<pic:spPr bwMode="auto">'+
-                          '<a:xfrm><a:off x="0" y="0"/><a:ext cx="576000" cy="576000"/></a:xfrm>'+
-                          '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+
-                        '</pic:spPr>'+
-                      '</pic:pic>'+
-                    '</a:graphicData>'+
-                  '</a:graphic>'+
-                '</wp:inline>'+
-              '</w:drawing>'+
-            '</w:r>'+
-          '</w:p>'+
-        '</w:tc>'+
-        // Celda central: vacía
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="5760" w:type="dxa"/></w:tcPr>'+
-          '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>'+
-        '</w:tc>'+
-        // Celda derecha: logo CIATEC
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="1800" w:type="dxa"/></w:tcPr>'+
-          '<w:p>'+
-            '<w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-            '<w:r><w:rPr/>'+
-              '<w:drawing>'+
-                '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
-                  '<wp:extent cx="576000" cy="576000"/>'+
-                  '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
-                  '<wp:docPr id="2" name="LogoCT" descr="Logo CIATEC"/>'+
-                  '<wp:cNvGraphicFramePr>'+
-                    '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'+
-                  '</wp:cNvGraphicFramePr>'+
-                  '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
-                    '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                        '<pic:nvPicPr>'+
-                          '<pic:cNvPr id="2" name="LogoCT"/>'+
-                          '<pic:cNvPicPr><a:picLocks noChangeAspect="1" noChangeArrowheads="1"/></pic:cNvPicPr>'+
-                        '</pic:nvPicPr>'+
-                        '<pic:blipFill>'+
-                          '<a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rImgCT">'+
-                            '<a:extLst><a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}"><a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/></a:ext></a:extLst>'+
-                          '</a:blip>'+
-                          '<a:stretch><a:fillRect/></a:stretch>'+
-                        '</pic:blipFill>'+
-                        '<pic:spPr bwMode="auto">'+
-                          '<a:xfrm><a:off x="0" y="0"/><a:ext cx="576000" cy="576000"/></a:xfrm>'+
-                          '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+
-                        '</pic:spPr>'+
-                      '</pic:pic>'+
-                    '</a:graphicData>'+
-                  '</a:graphic>'+
-                '</wp:inline>'+
-              '</w:drawing>'+
-            '</w:r>'+
-          '</w:p>'+
-        '</w:tc>'+
-      '</w:tr>'+
-    '</w:tbl>'+
-    // Línea separadora
-    '<w:p>'+
-      '<w:pPr><w:spacing w:before="60" w:after="0"/>'+
-      '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="325c28"/></w:pBdr></w:pPr>'+
-    '</w:p>'+
-  '</w:hdr>';
-
-  // Footer XML — pie institucional centrado — texto institucional centrado
-  var footerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
-      // Línea superior del footer
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="0"/>'+
-        '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="325c28"/></w:pBdr></w:pPr>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:b/><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="214b1a"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>CENTRO DE REHABILITACIÓN GONZÁLEZ PALAU - FUNDACIÓN CIATEC</w:t></w:r>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:sz w:val="13"/><w:szCs w:val="13"/><w:color w:val="444444"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>Neuropsicología – Neuro rehabilitación – Psicoterapia</w:t></w:r>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:sz w:val="13"/><w:szCs w:val="13"/><w:color w:val="444444"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>Av. Laplace 5264 – Villa Belgrano, Córdoba – Tel/whatsapp: 3515513257 – E-mail: secretariafgonzalezp@gmail.com</w:t></w:r>'+
-      '</w:p>'+
-    '</w:ftr>';
+  // ── Header y Footer PsicoEscala ──
+  var headerXml = _buildWordHeaderXml();
+  var footerXml = _buildWordFooterXml();
 
   // header/footer rels dentro de word/_rels/document.xml.rels
   var relsXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
@@ -16197,8 +16076,6 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'+
     '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>'+
     '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>'+
-    '<Relationship Id="rImgGP" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/>'+
-    '<Relationship Id="rImgCT" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image2.png"/>'+
     '</Relationships>';
 
   var stylesXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
@@ -16219,7 +16096,6 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
     '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
     '<Default Extension="xml" ContentType="application/xml"/>'+
-    '<Default Extension="png" ContentType="image/png"/>'+
     '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'+
     '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'+
     '<Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>'+
@@ -16230,16 +16106,9 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
 
   var coreXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
     '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">'+
-    '<dc:creator>Erwin Müller</dc:creator><dc:title>Informe Neuropsicológico</dc:title></cp:coreProperties>';
+    '<dc:creator>PsicoEscala</dc:creator><dc:title>Informe Neuropsicológico</dc:title></cp:coreProperties>';
   var appXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Erwin Müller</Application></Properties>';
-
-  // Decodificar base64 → Uint8Array para las imágenes
-  function b64ToBytes(b64) {
-    var bin = atob(b64), arr = new Uint8Array(bin.length);
-    for (var i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
-    return arr;
-  }
+    '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>PsicoEscala</Application></Properties>';
 
   var zipData=_makeZip([
     {name:'[Content_Types].xml',             data:enc.encode(contentTypes)},
@@ -16249,8 +16118,6 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     {name:'word/styles.xml',                 data:enc.encode(stylesXml)},
     {name:'word/header1.xml',                data:enc.encode(headerXml)},
     {name:'word/footer1.xml',                data:enc.encode(footerXml)},
-    {name:'word/media/image1.png',           data:b64ToBytes(GP_B64)},
-    {name:'word/media/image2.png',           data:b64ToBytes(CT_B64)},
     {name:'docProps/app.xml',                data:enc.encode(appXml)},
     {name:'docProps/core.xml',               data:enc.encode(coreXml)},
   ]);
@@ -16267,1111 +16134,6 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   toast('Informe Word generado ✓','success');
 }
 
-// ══════════════════════════════════════════════════════════════════════
-
-// ── CRC32 (requerido por el formato ZIP) ──────────────────────────────
-var _CRC32_TABLE = (function(){
-  var t = new Uint32Array(256);
-  for(var i=0;i<256;i++){var c=i;for(var j=0;j<8;j++)c=c&1?(0xEDB88320^(c>>>1)):c>>>1;t[i]=c;}
-  return t;
-})();
-function _crc32(buf) {
-  var c=0xFFFFFFFF;
-  for(var i=0;i<buf.length;i++) c=_CRC32_TABLE[(c^buf[i])&0xFF]^(c>>>8);
-  return (c^0xFFFFFFFF)>>>0;
-}
-
-// ── Generador de ZIP (método stored, sin compresión) ──────────────────
-function _makeZip(files) {
-  // files: [{name, data: Uint8Array}]
-  var enc = new TextEncoder();
-  var localHeaders = [], centralDir = [], offset = 0;
-  files.forEach(function(f) {
-    var nameBuf = enc.encode(f.name);
-    var data    = f.data instanceof Uint8Array ? f.data : enc.encode(f.data);
-    var crc     = _crc32(data);
-    var size    = data.length;
-    // Local header
-    var lh = new Uint8Array(30 + nameBuf.length);
-    var v = new DataView(lh.buffer);
-    v.setUint32(0, 0x04034b50, true); // sig
-    v.setUint16(4, 20, true);          // version needed
-    v.setUint16(6, 0, true);           // flags
-    v.setUint16(8, 0, true);           // method: stored
-    v.setUint16(10, 0, true); v.setUint16(12, 0, true); // time/date
-    v.setUint32(14, crc,  true);
-    v.setUint32(18, size, true);
-    v.setUint32(22, size, true);
-    v.setUint16(26, nameBuf.length, true);
-    v.setUint16(28, 0, true);
-    lh.set(nameBuf, 30);
-    localHeaders.push({ lh: lh, data: data, nameBuf: nameBuf, crc: crc, size: size, offset: offset });
-    offset += lh.length + data.length;
-    // Central dir entry
-    var cd = new Uint8Array(46 + nameBuf.length);
-    var cv = new DataView(cd.buffer);
-    cv.setUint32(0, 0x02014b50, true);
-    cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
-    cv.setUint16(8, 0, true);  cv.setUint16(10, 0, true);
-    cv.setUint16(12, 0, true); cv.setUint16(14, 0, true);
-    cv.setUint32(16, crc,  true);
-    cv.setUint32(20, size, true);
-    cv.setUint32(24, size, true);
-    cv.setUint16(28, nameBuf.length, true);
-    cv.setUint16(30, 0, true); cv.setUint16(32, 0, true);
-    cv.setUint16(34, 0, true); cv.setUint16(36, 0, true);
-    cv.setUint32(40, 0, true);
-    cv.setUint32(42, localHeaders[localHeaders.length-1].offset, true);
-    cd.set(nameBuf, 46);
-    centralDir.push(cd);
-  });
-  var cdSize   = centralDir.reduce(function(a,b){return a+b.length;},0);
-  var cdOffset = offset;
-  // End of central dir
-  var eocd = new Uint8Array(22);
-  var ev = new DataView(eocd.buffer);
-  ev.setUint32(0, 0x06054b50, true);
-  ev.setUint16(4, 0, true); ev.setUint16(6, 0, true);
-  ev.setUint16(8, files.length, true);
-  ev.setUint16(10, files.length, true);
-  ev.setUint32(12, cdSize,   true);
-  ev.setUint32(16, cdOffset, true);
-  ev.setUint16(20, 0, true);
-  // Concat all
-  var chunks = [];
-  localHeaders.forEach(function(e){ chunks.push(e.lh, e.data); });
-  centralDir.forEach(function(c){ chunks.push(c); });
-  chunks.push(eocd);
-  var total = chunks.reduce(function(a,b){return a+b.length;},0);
-  var out = new Uint8Array(total), pos=0;
-  chunks.forEach(function(c){ out.set(c, pos); pos += c.length; });
-  return out;
-}
-
-// ── Escape XML ────────────────────────────────────────────────────────
-function _xe(s) {
-  if (s === null || s === undefined) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Colores ───────────────────────────────────────────────────────────
-var WC = { VERDE_OSC:'214b1a', VERDE_MED:'325c28', VERDE_CLR:'B8DDB0', GRIS_CLR:'EEEEEE', BLANCO:'FFFFFF' };
-
-// ── Helpers XML docx ──────────────────────────────────────────────────
-function _wRun(txt, opts) {
-  opts = opts || {};
-  var rpr = '<w:rPr>';
-  if (opts.bold)    rpr += '<w:b/>';
-  if (opts.ital)    rpr += '<w:i/>';
-  if (opts.color)   rpr += '<w:color w:val="'+opts.color+'"/>';
-  if (opts.sz)      rpr += '<w:sz w:val="'+opts.sz+'"/><w:szCs w:val="'+opts.sz+'"/>';
-  if (opts.font)    rpr += '<w:rFonts w:ascii="'+opts.font+'" w:hAnsi="'+opts.font+'" w:cs="'+opts.font+'"/>';
-  rpr += '</w:rPr>';
-  return '<w:r>'+rpr+'<w:t xml:space="preserve">'+_xe(txt)+'</w:t></w:r>';
-}
-
-function _wPar(runs, opts) {
-  opts = opts || {};
-  var ppr = '<w:pPr>';
-  if (opts.align)    ppr += '<w:jc w:val="'+opts.align+'"/>';
-  if (opts.before||opts.after) {
-    ppr += '<w:spacing w:before="'+(opts.before||0)+'" w:after="'+(opts.after||80)+'"/>';
-  }
-  if (opts.shading)  ppr += '<w:shd w:val="clear" w:color="auto" w:fill="'+opts.shading+'"/>';
-  if (opts.border_b) ppr += '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="'+opts.border_b+'"/></w:pBdr>';
-  ppr += '</w:pPr>';
-  if (!Array.isArray(runs)) runs = [runs];
-  return '<w:p>'+ppr+runs.join('')+'</w:p>';
-}
-
-function _wCell(content, opts) {
-  opts = opts || {};
-  var tcp = '<w:tcPr>';
-  if (opts.w)    tcp += '<w:tcW w:w="'+opts.w+'" w:type="dxa"/>';
-  if (opts.fill) tcp += '<w:shd w:val="clear" w:color="auto" w:fill="'+opts.fill+'"/>';
-  if (opts.span) tcp += '<w:gridSpan w:val="'+opts.span+'"/>';
-  var bColor = opts.hdrBorder ? '595959' : 'BFBFBF';
-  var bSz    = opts.hdrBorder ? '10' : '6';
-  tcp += '<w:tcBorders>';
-  tcp += '<w:top    w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '<w:bottom w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '<w:left   w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '<w:right  w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '</w:tcBorders>';
-  if (opts.noWrap) tcp += '<w:noWrap/>';
-  tcp += '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:left w:w="30" w:type="dxa"/><w:right w:w="30" w:type="dxa"/></w:tcMar>';
-  tcp += '</w:tcPr>';
-  return '<w:tc>'+tcp+content+'</w:tc>';
-}
-
-function _wRow(cells, opts) {
-  opts = opts || {};
-  var trpr = opts.hdr 
-    ? '<w:trPr><w:tblHeader/><w:cantSplit/></w:trPr>' 
-    : '<w:trPr><w:cantSplit/></w:trPr>';
-  return '<w:tr>'+trpr+cells.join('')+'</w:tr>';
-}
-
-function _wTable(rows, colWidths) {
-  var tblGrid = '<w:tblGrid>'+colWidths.map(function(w){return '<w:gridCol w:w="'+w+'"/>';}).join('')+'</w:tblGrid>';
-  var tblPr = '<w:tblPr>'+
-    '<w:tblW w:w="13398" w:type="dxa"/>'+
-    '<w:tblLayout w:type="fixed"/>'+
-    '<w:tblBorders>'+
-      '<w:top    w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:bottom w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:left   w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:right  w:val="single" w:sz="12" w:color="595959"/>'+
-      '<w:insideH w:val="single" w:sz="6" w:color="BFBFBF"/>'+
-      '<w:insideV w:val="single" w:sz="6" w:color="BFBFBF"/>'+
-    '</w:tblBorders>'+
-  '</w:tblPr>';
-  return '<w:tbl>'+tblPr+tblGrid+rows.join('')+'</w:tbl>';
-}
-
-// ── Grilla Z en Word ──────────────────────────────────────────────────
-// Genera una fila completa: [Variable | PB | M | DS | Z | grilla... | Interpretación]
-// La grilla tiene 13 columnas: -3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3
-// Zona normativa: -1 a +1 (posiciones 4..8 inclusive) → sombreado verde
-var ZCOLS = [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3];
-var ZCOL_W = 290; // 290 DXA ≈ 5.1mm por columna × 13 = 3770 DXA
-
-// anchos de columnas fijas: Variable(2600) | PB(620) | M(620) | DS(620) | Z(620) | 13×grilla(290×13=3770) | Interp(1510) = total 10360
-// Ajustamos a A4: ~9360 DXA (A4 con márgenes 1134 each → content = 11906-2268 = 9638, usamos 9360)
-// Variable(2200) | PB(560) | M(560) | DS(560) | Z(560) | 13×grilla(240×13=3120) | Interp(1800) = 9360
-// Anchos landscape A4 márgenes 720 (15398 DXA):
-// Variable(2200) PB(460) M(460) DS(460) Z(540) 13×grilla(540×13=7020) Interp(1258) = 13398 ~ ok
-var _ZGRILLA_W2 = 540;
-var COL_WIDTHS_HDR = [2200, 460, 460, 460, 540].concat(ZCOLS.map(function(){return _ZGRILLA_W2;})).concat([1258]);
-var _TOTAL_HDR = 13398;
-
-function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
-  var bg = isEven ? 'F2F2F2' : 'FFFFFF';
-
-  if (isSubhdr) {
-    // Fila de subencabezado de dominio (texto centrado, fondo verde claro)
-    var totalCols = COL_WIDTHS_HDR.length;
-    var totalW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0);
-    return _wRow([
-      _wCell(
-        _wPar(_wRun(label,{bold:true,sz:20,color:'000000',font:'Arial'}),
-              {align:'center',before:30,after:30,shading:'D9D9D9'}),
-        {w:totalW, fill:'D9D9D9', span:totalCols}
-      )
-    ]);
-  }
-
-  // Fila de dato
-  var pbStr = pb!==null&&pb!==undefined ? String(pb) : '—';
-  var mStr  = m!==null&&m!==undefined   ? parseFloat(m).toFixed(1) : '—';
-  var dsStr = ds!==null&&ds!==undefined ? parseFloat(ds).toFixed(1) : '—';
-  var zStr  = z!==null&&z!==undefined   ? parseFloat(z).toFixed(1) : '—';
-
-  // Calcular qué columna de la grilla marcar
-  var markedCol = null;
-  if (z!==null&&z!==undefined) {
-    var zClamp = Math.max(-3, Math.min(3, parseFloat(z)));
-    var best = 0, bestDist = Infinity;
-    ZCOLS.forEach(function(v,i){ var d=Math.abs(v-zClamp); if(d<bestDist){bestDist=d;best=i;}});
-    markedCol = best;
-  }
-
-  // Zona normativa: índices donde ZCOLS[i] >= -1 && ZCOLS[i] <= 1
-  var normZone = ZCOLS.map(function(v){return v>=-1&&v<=1;});
-
-  // Color Z
-  var zColor = (z !== null && z !== undefined && parseFloat(z) < 0) ? 'C0392B' : '1a3f7a';
-
-  // Interpretación
-  function zInterp(z) {
-    if (z===null||z===undefined) return nota||'—';
-    var s='';
-    if (z>=2.0)        s='Muy superior';
-    else if (z>=1.5)   s='Superior';
-    else if (z>=1.0)   s='Lím. superior norm.';
-    else if (z>=-0.49) s='Normal';
-    else if (z>=-1.0)  s='Lím. inf. normativo';
-    else if (z>=-1.5)  s='Dificultad leve';
-    else if (z>=-2.0)  s='Dificultad moderada';
-    else               s='Dificultad elevada';
-    return nota ? s+' · '+nota : s;
-  }
-
-  var cells = [];
-  // Variable
-  cells.push(_wCell(_wPar(_wRun(label,{sz:20,bold:false,color:'000000',font:'Arial'}),{before:20,after:20}),{w:COL_WIDTHS_HDR[0],fill:bg}));
-  // PB
-  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[1],fill:bg}));
-  // M
-  cells.push(_wCell(_wPar(_wRun(mStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[2],fill:bg}));
-  // DS
-  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[3],fill:bg}));
-  // Z
-  cells.push(_wCell(_wPar(_wRun(zStr,{sz:20,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[4],fill:bg}));
-  // Grilla Z: 13 celdas
-  ZCOLS.forEach(function(v,i){
-    var isMarked = (markedCol === i);
-    var cellFill = normZone[i] ? 'DAE3F3' : 'FFFFFF';
-    var content = isMarked
-      ? _wPar(_wRun('X',{sz:18,bold:true,font:'Arial',color:'000000'}),{align:'center',before:40,after:40})
-      : _wPar('',{before:40,after:40});
-    cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true}));
-  });
-  // Interpretación
-  var interpTxt = zInterp(z);
-  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:20,bold:false,color:'000000',font:'Arial'}),{before:20,after:20}),{w:COL_WIDTHS_HDR[18],fill:bg}));
-
-  return _wRow(cells);
-}
-
-function _zHdrRow() {
-  // Etiquetas de encabezado de la grilla: enteros con signo, vacío para .5
-  var cells = [];
-  var hdrFill = 'F2F2F2';
-  function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
-  }
-  cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
-  cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
-  cells.push(hc('M',        COL_WIDTHS_HDR[2]));
-  cells.push(hc('DS',       COL_WIDTHS_HDR[3]));
-  cells.push(hc('Z',        COL_WIDTHS_HDR[4]));
-  ZCOLS.forEach(function(v,i){
-    var lbl;
-    if (v % 1 === 0) {
-      lbl = v > 0 ? '+'+v : String(v);
-    } else {
-      // Usar ½ para evitar wrap en PDF
-      var base = Math.trunc(v);
-      lbl = (base > 0 ? '+' : '') + base + '½';
-    }
-    cells.push(hc(lbl, COL_WIDTHS_HDR[5+i]));
-  });
-  cells.push(hc('Interpretación', COL_WIDTHS_HDR[18]));
-  return _wRow(cells, {hdr:true});
-}
-
-// ── Generador principal ───────────────────────────────────────────────
-function generarWordHistorial() {
-  var filtro = document.getElementById('historial-filtro-pac');
-  var pacId  = filtro ? filtro.value : '';
-  var datos  = pacId ? RESULTADOS.filter(function(r){return String(r.paciente_id)===String(pacId);}) : RESULTADOS;
-  if (!datos.length) { toast('No hay evaluaciones para este paciente.','error'); return; }
-
-  var pacInfo  = pacId ? PACIENTES.find(function(p){return p.id===pacId;}) : null;
-  var pacNombre= pacInfo ? pacInfo.nombre : 'Paciente';
-  var pacEdad  = pacInfo && pacInfo.fecha_nacimiento ? calcularEdad(pacInfo.fecha_nacimiento)+' años' : '';
-  var pacFnac  = pacInfo ? (pacInfo.fecha_nacimiento||'') : '';
-  var pacSexo  = pacInfo ? (pacInfo.sexo||'') : '';
-  var pacEscol = pacInfo ? (pacInfo.escolaridad||'') : '';
-  var pacOcup  = pacInfo ? (pacInfo.ocupacion||'') : '';
-  var pacDNI   = pacInfo ? (pacInfo.dni||'') : '';
-
-  var fechas   = datos.map(function(r){return r.fecha;}).filter(Boolean).sort();
-  var fechaEval= fechas.length ? fechas[fechas.length-1] : '';
-
-  var infPromise = (pacId&&SESSION) ?
-    supaFetch('/rest/v1/psico_informes?paciente_id=eq.'+pacId+'&user_id=eq.'+SESSION.user.id+'&select=*','GET',null,SESSION.access_token)
-      .then(function(r){return r.json();}).then(function(d){return(d&&d.length)?d[0]:null;}) :
-    Promise.resolve(null);
-
-  infPromise.then(function(inf){
-    try { _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf||{}); }
-    catch(e){ console.error(e); toast('Error al generar Word: '+e.message,'error'); }
-  }).catch(function(e){ console.error(e); toast('Error al obtener informe','error'); });
-}
-
-function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf) {
-  // ── Clasificar tests (igual que PDF) ──
-  var NP_LIST=['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
-  var CL_LIST=['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
-  var TD_LIST=['ASRS-V1.1','WURS-25','DEX','AQ','AQ-10','EQ','EA','SCQ'];
-  var DO_LIST=['PCS','PBQ','CSQ','BPI'];
-  function tipoTest(t){return NP_LIST.indexOf(t)!==-1?'np':CL_LIST.indexOf(t)!==-1?'cl':TD_LIST.indexOf(t)!==-1?'td':DO_LIST.indexOf(t)!==-1?'do':'cl';}
-  var testsNP    = datos.filter(function(r){return tipoTest(r.test)==='np';});
-  var testsTD    = datos.filter(function(r){return tipoTest(r.test)==='td';});
-  var testsDO    = datos.filter(function(r){return tipoTest(r.test)==='do';});
-  var testsCL    = datos.filter(function(r){return tipoTest(r.test)==='cl' && r.test!=='Cuestionarios Familiares';});
-  var famResults = datos.filter(function(r){return r.test==='Cuestionarios Familiares';});
-
-  // Baremos BEM
-  var bemGrupo=null;
-  if(pacInfo&&pacInfo.fecha_nacimiento){
-    var edad=calcularEdad(pacInfo.fecha_nacimiento);
-    if(edad<=45)bemGrupo=0;else if(edad<=55)bemGrupo=1;
-    else if(edad<=65)bemGrupo=2;else if(edad<=75)bemGrupo=3;
-    else if(edad<=85)bemGrupo=4;else bemGrupo=5;
-  }
-
-  // ── Nombres completos de tests (igual que PDF) ──
-  var NOMBRES_TEST={
-    'MoCA':'Montreal Cognitive Assessment (MoCA)',
-    'ACE-R':'Addenbrooke\'s Cognitive Examination — Revisado (ACE-R)',
-    'WAIS-IV':'Retención de Dígitos, Claves y Sec. Número-Letra — WAIS-IV',
-    'TMT A-B':'Trail Making Test (TMT-A y TMT-B)',
-    'Fluencia Verbal':'Fluencia Verbal Semántica y Fonológica',
-    'Cuestionarios Familiares':'Cuestionarios Familiares (NPI-Q · AVD Básicas · AVD Instrumentales · AVD Expansivas · AD8-ARG)',
-    'BNT-60':'Test de Denominación de Boston — 60 ítems (BNT-60)',
-    'BNT-12':'Test de Denominación de Boston — 12 ítems (BNT-12)',
-    'Rey Verbal':'Test de Aprendizaje Auditivo-Verbal de Rey (RAVLT)',
-        'TAVEC':'Test de Aprendizaje Verbal España-Complutense (TAVEC)',
-    'BEM 144 Signoret':'Batería de Eficacia Mnésica 144 — Signoret (BEM-144)',
-    'WCST-64':'Wisconsin Card Sorting Test — 64 cartas (WCST-64)',
-    'Stroop':'Test de Colores y Palabras Stroop (Golden, 1978)',
-    'Figura Rey':'Figura Compleja de Rey-Osterrieth (ROCF)',
-    'BTA':'Brief Test of Attention (BTA)',
-    'Test del Hotel':'Test del Hotel (Pinasco et al., 2023)',
-    'BADS-Llaves':'BADS · Búsqueda de Llaves (Farías Sarquís et al., 2021)',
-    'BADS-Juicio':'BADS · Juicio Temporal (Farías Sarquís et al., 2021)',
-    'BADS-Zoo':'BADS · Mapa del Zoo (Farías Sarquís et al., 2021)',
-    'SDMT-escrita':'Symbol Digit Modalities Test — Escrita (SDMT)',
-    'SDMT-oral':'Symbol Digit Modalities Test — Oral (SDMT)',
-    'IFS':'INECO Frontal Screening (IFS)',
-    'FAB':'Frontal Assessment Battery (FAB)',
-    'D2':'Test de Atención d2 (Brickenkamp)',
-    'Test del Reloj (Cacho)':'Test del Reloj — Método Cacho et al.',
-    'BDI-II':'Inventario de Depresión de Beck — 2ª Ed. (BDI-II)',
-    'STAI':'Inventario de Ansiedad Estado-Rasgo (STAI)',
-    'PHQ-9':'Cuestionario de Salud del Paciente (PHQ-9)',
-    'GAD-7':'Escala de Trastorno de Ansiedad Generalizada (GAD-7)',
-    'Birleson':'Escala de Depresión en Adolescentes — Birleson (PACES)',
-    'AAA':'Autoreporte de Ansiedad para Adolescentes (AAA)',
-    'SPAI-B':'Inventario de Fobia Social — Versión Breve (SPAI-B)',
-    'CSI':'Inventario de Estrategias de Afrontamiento (CSI)',
-    'SCL-90-R':'Inventario de Síntomas SCL-90-R',
-    'MBI-HSS':'Inventario de Burnout de Maslach (MBI-HSS)',
-    'ASRS-V1.1':'Escala de Autodetección de TDAH en Adultos (ASRS-V1.1)',
-    'WURS-25':'Escala de Wender-Utah — 25 ítems (WURS-25)',
-    'DEX':'Cuestionario Disejecutivo (DEX)',
-    'AQ':'Cociente del Espectro Autista (AQ)',
-    'AQ-10':'AQ-10 · Cribado de rasgos autistas',
-    'EQ':'Coeficiente de Empatía (EQ)',
-    'EA':'Escala Autónoma Asperger / Autismo alto funcionamiento (EA)',
-    'SCQ':'Social Communication Questionnaire — Forma A (SCQ)',
-    'PCS':'Escala de Catastrofización del Dolor (PCS)',
-    'CSQ':'Cuestionario de Estrategias de Afrontamiento al Dolor (CSQ)',
-    'PBQ':'Cuestionario de Conductas de Dolor (PBQ)',
-    'BPI':'Inventario Breve de Dolor (BPI)'
-  };
-  var DOMINIOS_PRUEBAS=[
-    {label:'Screening cognitivo global',           tests:['MoCA','ACE-R']},
-    {label:'Atención y velocidad de procesamiento',tests:['WAIS-IV','TMT A-B','D2','SDMT-escrita','SDMT-oral','BTA']},
-    {label:'Lenguaje',                              tests:['Fluencia Verbal','BNT-60','BNT-12','Token Test']},
-    {label:'Memoria',                               tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
-    {label:'Funciones ejecutivas',                  tests:['WCST-64','IFS','FAB','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
-    {label:'Habilidades visoconstructivas',         tests:['Figura Rey','Test del Reloj (Cacho)']},
-    {label:'TDAH',                                  tests:['ASRS-V1.1','WURS-25','DEX']},
-    {label:'TEA · Espectro autista',                  tests:['AQ','AQ-10','EQ','EA','SCQ']},
-    {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
-    {label:'Evaluación del dolor',                  tests:['PCS','CSQ','PBQ','BPI']},
-    {label:'Cuestionarios familiares',              tests:['Cuestionarios Familiares']},
-  ];
-
-  // ── Construir filas NP ──
-  function buildNPRows(list){
-    if(!list.length)return[];
-    var byTest={};
-    list.forEach(function(r){byTest[r.test]=r;});
-    var DOMS={
-      'COGNITIVO GLOBAL':   ['MoCA','ACE-R','Test del Reloj (Cacho)'],
-      'MEMORIA':            ['Rey Verbal','TAVEC','BEM 144 Signoret'],
-      'ATENCIÓN':           ['D2','WAIS-IV','SDMT-escrita','SDMT-oral','BTA'],
-      'FUNC. EJECUTIVAS':   ['FAB','IFS','TMT A-B','Stroop','BADS-Zoo','BADS-Llaves','BADS-Juicio','Test del Hotel','WCST-64'],
-      'LENGUAJE':           ['Token Test','BNT-60','BNT-12','Fluencia Verbal'],
-      'VISOCONSTRUCTIVO':   ['Figura Rey'],
-    };
-    var rows=[],rowCount=0;
-    function add(label,pb,m,ds,z,nota){
-      rows.push(_zGrillaRows(label,pb,m,ds,z,nota||null,rowCount%2===0,false));
-      rowCount++;
-    }
-    function domHdr(txt){rows.push(_zGrillaRows(txt,null,null,null,null,null,false,true));}
-    Object.keys(DOMS).forEach(function(dom){
-      var tests=DOMS[dom].filter(function(t){return byTest[t];});
-      if(!tests.length)return;
-      domHdr(dom);
-      tests.forEach(function(tn){
-        var r=byTest[tn];var d=r.datos||{};
-        if(tn==='Rey Verbal'&&d.variables&&d.variables.length){
-          d.variables.forEach(function(v){add(v.label,v.bruto,v.m,v.ds,v.z,null);});
-        } else if(tn==='TAVEC'){
-          var gi2tw=d.gi?d.gi-1:null;
-          var tvars=[
-            ['RI-A1 · 1er ensayo',d.v1,gi2tw!==null?TAVEC_BAR.v1[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v1[gi2tw].d:null,d.zA1,null],
-            ['RI-A5 · 5to ensayo',d.v2,gi2tw!==null?TAVEC_BAR.v2[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v2[gi2tw].d:null,d.zA5,null],
-            ['RI-AT · Total 5 ensayos',d.v3,gi2tw!==null?TAVEC_BAR.v3[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v3[gi2tw].d:null,d.zAT,null],
-            ['RI-B · Lista B',d.v4,gi2tw!==null?TAVEC_BAR.v4[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v4[gi2tw].d:null,d.zRIB,null],
-            ['RL-CP · Rec. libre CP',d.v8,gi2tw!==null?TAVEC_BAR.v8[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v8[gi2tw].d:null,d.zRLCP,null],
-            ['RCL-CP · Claves CP',d.v9,gi2tw!==null?TAVEC_BAR.v9[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v9[gi2tw].d:null,d.zRCLCP,null],
-            ['RL-LP · Rec. libre LP',d.v10,gi2tw!==null?TAVEC_BAR.v10[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v10[gi2tw].d:null,d.zRLLP,null],
-            ['RCL-LP · Claves LP',d.v11,gi2tw!==null?TAVEC_BAR.v11[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v11[gi2tw].d:null,d.zRCLLP,null],
-            ['Discrim',d.v25,gi2tw!==null?TAVEC_BAR.v25[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v25[gi2tw].d:null,d.zDiscrim,null]
-          ];
-          tvars.forEach(function(tv){if(tv[1]!==null&&tv[1]!==undefined) add(tv[0],tv[1],tv[2],tv[3],tv[4],null);});
-
-        } else if(tn==='BEM 144 Signoret'){
-          var gi=d.grupo_edad!=null?d.grupo_edad:bemGrupo;
-          var SIG={
-            rli:{M:[9.19,9.07,8.91,9.12,7.91,7.58],DS:[2.12,1.83,1.54,1.33,1.31,0.74],label:'Rec. Lógico Inmediato'},
-            rld:{M:[9.22,8.97,8.83,8.75,7.70,7.25],DS:[2.07,1.90,1.63,1.50,1.22,0.61],label:'Rec. Lógico Diferido'},
-            as: {M:[9.92,9.88,9.27,8.96,7.82,6.80],DS:[1.69,1.04,1.79,1.54,1.62,1.09],label:'Aprendizaje Serial'},
-            rs: {M:[8.97,9.16,8.23,7.89,6.86,5.80],DS:[1.87,1.67,1.83,1.70,1.45,1.09],label:'Recuerdo Serial'},
-            rc: {M:[11.00,11.16,11.20,10.20,10.00,10.00],DS:[1.62,1.39,1.03,2.20,1.79,1.22],label:'Rec. con Claves'},
-            reco:{M:[11.85,11.91,11.70,11.69,11.43,11.00],DS:[0.47,0.29,0.53,0.70,0.81,1.73],label:'Reconocimiento'}
-          };
-          ['rli','rld','as','rs','rc','reco'].forEach(function(k){
-            var pb=d[k]!=null&&d[k]!==''?parseFloat(d[k]):null;
-            if(pb===null)return;
-            var z=gi!==null?parseFloat(((pb-SIG[k].M[gi])/SIG[k].DS[gi]).toFixed(2)):null;
-            add(SIG[k].label,pb,gi!==null?SIG[k].M[gi]:null,gi!==null?SIG[k].DS[gi]:null,z,null);
-          });
-        } else if(tn==='TMT A-B'){
-          add('TMT A (segundos)',d.tmt_a_seg,d.tmt_a_m,d.tmt_a_ds,d.tmt_a_z||r.puntaje_z,null);
-          if(d.tmt_b_seg!=null)add('TMT B (segundos)',d.tmt_b_seg,d.tmt_b_m,d.tmt_b_ds,d.tmt_b_z,null);
-        } else if(tn==='Fluencia Verbal'){
-          if(d.variables&&d.variables.length){d.variables.forEach(function(v){add(v.label,v.bruto,v.m,v.ds,v.z,null);});}
-          else add('Fluencia Verbal',r.puntaje_total,null,null,r.puntaje_z,null);
-        } else if(tn==='WAIS-IV'){
-          if(d.rd_pb!=null)add('WAIS-IV · Ret. Dígitos',d.rd_pb,10,3,d.rd_z,null);
-          if(d.cla_pb!=null)add('WAIS-IV · Claves',d.cla_pb,10,3,d.cla_z,null);
-          if(d.sln_pb!=null)add('WAIS-IV · Sec. Nro-Letra',d.sln_pb,10,3,d.sln_z,null);
-        } else if(tn==='Stroop'){
-          if(d.zP!=null) add('Stroop — Palabra',d.p!=null?d.p:d.pCorr,50,10,d.zP,null);
-          if(d.zC!=null) add('Stroop — Color',d.c!=null?d.c:d.cCorr,50,10,d.zC,null);
-          if(d.zPC!=null)add('Stroop — Palabra/Color',d.pc!=null?d.pc:d.pcCorr,50,10,d.zPC,null);
-          if(d.zInt!=null)add('Stroop — Interferencia',d.interf!=null?parseFloat(d.interf).toFixed(2):null,50,10,d.zInt,null);
-        } else if(tn==='Figura Rey'){
-          if(d.zCopia!=null)add('Fig. Rey — Copia',d.pbCopia,null,null,d.zCopia,null);
-          if(d.zRI!=null)add('Fig. Rey — Rec. Inmediato',d.pbRI,null,null,d.zRI,null);
-        } else if(tn==='BADS-Llaves'){add('BADS — Búsqueda de Llaves',d.pb,d.m,d.ds,d.z,'Pje conv. '+(d.conv!=null?d.conv:'—'));}
-        else if(tn==='BADS-Juicio'){add('BADS — Juicio Temporal',d.conv,d.m,d.ds,d.z,null);}
-        else if(tn==='BADS-Zoo'){if(d.z_bruto!=null)add('BADS — Mapa del Zoo',d.bruto,null,null,d.z_bruto,null);}
-        else if(tn==='WCST-64'){
-          if(d.categorias!=null)add('WCST-64 — Categorías',d.categorias+'/6',d.cat_m,d.cat_ds,d.cat_z,null);
-          if(d.perse_pct!=null)add('WCST-64 — Err. persev. (%)',d.perse_pct+'%',d.perse_m,d.perse_ds,d.perse_z,null);
-        } else if(tn==='D2'){
-          var idx=d.indices||{};
-          if(idx.CON&&idx.CON.z!=null)add('D2 — Concentración (CON)',idx.CON.pb,idx.CON.m,idx.CON.ds,idx.CON.z,null);
-          if(idx.TOT&&idx.TOT.z!=null)add('D2 — Total (TOT)',idx.TOT.pb,idx.TOT.m,idx.TOT.ds,idx.TOT.z,null);
-        } else if(tn==='DEX'){
-          var dv2=d.version==='hetero'?'Heteroadm.':'Autoadm.';
-          add('DEX Total ('+dv2+')',d.total,d.version==='hetero'?20.68:22.25,d.version==='hetero'?14.77:10.10,d.zTotal,'Pje /80');
-        } else if(tn==='BNT-60'||tn==='BNT-12'){var bM=tn==='BNT-12'?11:(d.m!=null?d.m:null);var bDS=tn==='BNT-12'?1.16:(d.ds!=null?d.ds:null);add(tn+(d.educ_label?' ('+d.educ_label+')':''),d.pb||r.puntaje_total,bM,bDS,r.puntaje_z,null);}
-        else if(tn==='Token Test'){add('Token Test',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='IFS'){add('IFS — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='FAB'){add('FAB — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='MoCA'){add('MoCA',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='ACE-R'){add('ACE-R — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='Test del Reloj (Cacho)'){add('Test del Reloj (Cacho)',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='BTA'){add('BTA',d.puntaje,d.m,d.ds,d.z,d.pc?'Pc '+d.pc:null);}
-        else if(tn==='SDMT-escrita'||tn==='SDMT-oral'){add(tn==='SDMT-escrita'?'SDMT (Escrita)':'SDMT (Oral)',d.pb,d.m,d.ds,d.z,null);}
-        else if(tn==='Test del Hotel'){
-          if(d.zTareas!=null)add('Hotel — Tareas',d.intentadas!=null?d.intentadas+'/5':null,d.mTareas,d.dsTareas,d.zTareas,null);
-          if(d.zTiempo!=null)add('Hotel — Desvío tiempo',d.desvioTiempo!=null?d.desvioTiempo+' seg':null,d.mTiempo,d.dsTiempo,d.zTiempo,null);
-          if(d.zBotones!=null)add('Hotel — Desvío botones',d.desvBotones!=null?d.desvBotones+' seg':null,d.mBotones,d.dsBotones,d.zBotones,null);
-        }
-      });
-    });
-    return rows;
-  }
-
-  // ── Tabla simple para CL/TD/DO (Instrumento | Puntaje | Resultado) ──
-  var COL_CL=[3200,1200,4960];
-  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'F2F2F2',hdrBorder:true});}
-  function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
-  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:'000000',font:'Arial'}),{before:25,after:25,shading:'D9D9D9'}),{w:9360,fill:'D9D9D9',span:3})]);}
-  function buildSimpleRows(list){
-    if(!list.length)return[];
-    var rows=[],rc=0;
-    // Normalizar categoría a leyenda estándar
-    function normCat(cat, pb, test){
-      if(!cat||cat==='—') return '—';
-      var c = cat.toLowerCase();
-      var sig = c.includes('significat') || c.includes('positivo') || c.includes('grave') || 
-                c.includes('moderado') || c.includes('severo') || c.includes('burnout') ||
-                c.includes('elevado') || c.includes('probable') || c.includes('alto');
-      var aus = c.includes('sin síntomas') || c.includes('ausencia') || c.includes('mínimo') ||
-                c.includes('no significat') || c.includes('negativo') || c.includes('bajo') ||
-                c.includes('sin indicadores') || c.includes('normal');
-      if(sig) return 'Sintomatología significativa';
-      if(aus) return 'Ausencia de sintomatología';
-      return cat; // dejar el original si no entra en ninguna categoría
-    }
-    list.forEach(function(r){
-      var d=r.datos||{};
-      rows.push(clDomHdr(r.test));
-      function addCL(lbl,pb,res){
-        var bg=rc%2===0?'F2F2F2':'FFFFFF';
-        var resNorm = normCat(res, pb, r.test);
-        rows.push(_wRow([clCell(lbl,COL_CL[0],bg),clCell(String(pb!=null?pb:'—'),COL_CL[1],bg,true),clCell(resNorm||'—',COL_CL[2],bg)]));
-        rc++;
-      }
-      if(r.test==='BDI-II'){addCL('BDI-II — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='STAI'){
-        if(d.estado!=null)addCL('STAI — Estado',d.estado+'/60',d.cat_estado||'—');
-        if(d.rasgo!=null) addCL('STAI — Rasgo', d.rasgo+'/60', d.cat_rasgo||'—');
-      } else if(r.test==='PHQ-9'){addCL('PHQ-9 — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='GAD-7'){addCL('GAD-7 — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='Birleson'){addCL('Birleson (PACES) — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='AAA'){addCL('AAA — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='SPAI-B'){addCL('SPAI-B — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='SCL-90-R'){addCL('SCL-90-R — IGS',d.igs_avg!=null?parseFloat(d.igs_avg).toFixed(2):'—',r.categoria||'—');}
-      else if(r.test==='MBI-HSS'){
-        if(d.CE!=null)addCL('Cansancio Emocional',d.CE,d.CE_cat||'—');
-        if(d.DP!=null)addCL('Despersonalización',d.DP,d.DP_cat||'—');
-        if(d.RP!=null)addCL('Realización Personal',d.RP,d.RP_cat||'—');
-        addCL('Burnout Global','—',r.categoria||'—');
-      } else if(r.test==='CSI'){
-        var csiSubs=['REP','AUC','EEM','PSD','APS','REC','EVP','RES'];
-        var csiLbls={REP:'Resolución de problemas',AUC:'Autocrítica',EEM:'Expresión emocional',PSD:'Pensamiento desiderativo',APS:'Apoyo social',REC:'Reestructuración cognitiva',EVP:'Evitación de problemas',RES:'Retirada social'};
-        csiSubs.forEach(function(sub){var sd=d[sub]||{};addCL('CSI — '+csiLbls[sub],sd.score!=null?sd.score:'—',sd.pc!=null?'Pc '+sd.pc:'—');});
-      } else if(r.test==='ASRS-V1.1'){
-        if(d.parte_a_positivos!=null)addCL('ASRS — Secc. A (Kessler)',d.parte_a_positivos+'/6',d.parte_a_positivos>=4?'Screening positivo':'Screening negativo');
-        if(d.scoreI!=null)addCL('ASRS — Inatención',d.scoreI,d.pcI?'Pc '+d.pcI:'—');
-        if(d.scoreH!=null)addCL('ASRS — Hiper./Impulsividad',d.scoreH,d.pcH?'Pc '+d.pcH:'—');
-        if(d.scoreT!=null||d.total_18!=null)addCL('ASRS — Total',d.scoreT||d.total_18,d.pcT?'Pc '+d.pcT:'—');
-      } else if(r.test==='WURS-25'){addCL('WURS-25 — Total',r.puntaje_total!=null?r.puntaje_total:r.datos&&r.datos.total!=null?r.datos.total:'—',r.categoria||'—');}
-      else if(r.test==='AQ'){addCL('AQ · Cociente del Espectro Autista',r.puntaje_total!=null?r.puntaje_total+'/50':'—',(r.categoria||'—')+(d.fenotipo?' · '+d.fenotipo:''));}
-      else if(r.test==='AQ-10'){addCL('AQ-10 · Cribado autista',r.puntaje_total!=null?r.puntaje_total+'/10':'—',r.categoria||'—');}
-      else if(r.test==='EQ'){addCL('EQ · Coeficiente de Empatía',r.puntaje_total!=null?r.puntaje_total+'/80':'—',r.categoria||'—');}
-      else if(r.test==='EA'){addCL('EA · Escala Autónoma Asperger',d.score!=null?d.score:'—',r.categoria||'—');}
-      else if(r.test==='SCQ'){
-        addCL('SCQ · Total Forma A',d.total!=null?d.total:'—',r.categoria||'—');
-        if(d.dc!=null)addCL('SCQ · DC Comunicación',d.dc,'—');
-        if(d.is!=null)addCL('SCQ · IS Interacción social',d.is,'—');
-        if(d.crr!=null)addCL('SCQ · CRR Cond. repetitivas',d.crr,'—');
-      }
-      else if(r.test==='DEX'){var dv=d.version==='hetero'?'Heteroadm.':'Autoadm.';addCL('DEX Total ('+dv+')',d.total,r.categoria||'—');}
-      else if(r.test==='PCS'){addCL('PCS — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='BPI'){
-        if(d.intensidad!=null)addCL('BPI — Índice de Intensidad',parseFloat(d.intensidad).toFixed(2),'—');
-        if(d.interferencia!=null)addCL('BPI — Índice de Interferencia',parseFloat(d.interferencia).toFixed(2),'—');
-      } else if(r.test==='PBQ'){addCL('PBQ — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='CSQ'){addCL('CSQ — Total',r.puntaje_total,r.categoria||'—');}
-      else{addCL(r.test,r.puntaje_total,r.categoria||'—');}
-    });
-    return rows;
-  }
-
-  // ── Párrafos narrativos ──
-  function parrafos(txt){
-    txt=(txt||'').trim();
-    if(!txt)return[_wPar('',{before:0,after:80})];
-    return txt.split('\n').map(function(l){
-      // Convertir **texto** a runs con negrita
-      var runs='';
-      var regex=/(\*\*([^*]+)\*\*)/g;
-      var last=0, m;
-      while((m=regex.exec(l))!==null){
-        if(m.index>last) runs+=_wRun(l.slice(last,m.index),{sz:20,font:'Arial',color:'000000'});
-        runs+=_wRun(m[2],{sz:20,font:'Arial',color:'000000',bold:true});
-        last=m.index+m[0].length;
-      }
-      if(last<l.length) runs+=_wRun(l.slice(last),{sz:20,font:'Arial',color:'000000'});
-      return '<w:p><w:pPr><w:jc w:val="both"/><w:spacing w:before="0" w:after="80"/></w:pPr>'+runs+'</w:p>';
-    });
-  }
-
-  // ── Tabla datos personales ──
-  function dpRow(lbl,val){
-    return _wRow([
-      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:'000000'}),{before:40,after:40}),{w:2600,fill:'F2F2F2'}),
-      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'000000'}),{before:40,after:40}),{w:6760,fill:'FFFFFF'}),
-    ]);
-  }
-
-  // ── Sección título (línea verde bajo) ──
-  function secTit(txt){
-    return _wPar(_wRun(txt,{bold:true,sz:22,color:'000000',font:'Arial'}),{before:240,after:60,border_b:'595959'});
-  }
-
-  // ── Construir cuerpo ──
-  var body='';
-
-  // 1. TÍTULO
-  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'000000',font:'Arial'}),{align:'center',before:0,after:120});
-
-  // 2. DATOS DEL PACIENTE
-  body+=secTit('1. Datos del Paciente');
-  body+=_wTable([
-    dpRow('Apellido y Nombre', pacNombre),
-    dpRow('Edad',              pacEdad),
-    dpRow('Fecha de Nacimiento', pacFnac),
-    dpRow('Fecha de Evaluación', inf.fecha_evaluacion||fechaEval),
-    dpRow('DNI',               inf.dni||pacDNI||'—'),
-    dpRow('Educación',         pacEscol),
-    dpRow('Ocupación',         inf.ocupacion||pacOcup),
-    dpRow('Procedencia',       inf.procedencia||'—'),
-    dpRow('Sexo',              pacSexo),
-    dpRow('Dominancia Manual', inf.dominancia||'—'),
-    dpRow('Datos de Contacto', inf.contacto||'—'),
-    dpRow('Derivado por',      inf.derivado_por||'—'),
-    dpRow('Evaluado por',      inf.evaluado_por||'—'),
-    dpRow('Ant. Clínicos',     inf.ant_clinicos||'—'),
-    dpRow('Ant. Psiq./Psicol.',inf.ant_psiquiatricos||'—'),
-    dpRow('Ant. Familiares',   inf.ant_familiares||'—'),
-    dpRow('Hábitos Tóxicos',   inf.habitos_toxicos||'—'),
-  ],[2600,6760]);
-  body+=_wPar('',{before:0,after:80});
-
-  // 3. MOTIVO DE CONSULTA
-  if((inf.motivo_consulta||'').trim()){
-    body+=secTit('2. Motivo de Consulta');
-    parrafos(inf.motivo_consulta).forEach(function(p){body+=p;});
-  }
-
-  // 4. DESCRIPCIÓN DE LA CONDUCTA
-  if((inf.descripcion_conducta||'').trim()){
-    body+=secTit('3. Descripción de la Conducta Durante la Evaluación');
-    parrafos(inf.descripcion_conducta).forEach(function(p){body+=p;});
-  }
-
-  // 5. PRUEBAS ADMINISTRADAS
-  var testsTomados=datos.map(function(r){return r.test;});
-  var tieneTests=DOMINIOS_PRUEBAS.some(function(dom){return dom.tests.some(function(t){return testsTomados.indexOf(t)!==-1;});});
-  if(tieneTests){
-    body+=secTit('4. Pruebas Administradas');
-    DOMINIOS_PRUEBAS.forEach(function(dom){
-      var presentes=dom.tests.filter(function(t){return testsTomados.indexOf(t)!==-1;});
-      if(!presentes.length)return;
-      // Subdominio en negrita
-      body+=_wPar(_wRun(dom.label,{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:20});
-      // Lista de tests
-      var listaTexto=presentes.map(function(t){return NOMBRES_TEST[t]||t;}).join(' · ');
-      body+=_wPar(_wRun(listaTexto,{sz:19,font:'Arial',color:'333333'}),{align:'both',before:0,after:60});
-    });
-  }
-
-  // 6. PERFIL COGNITIVO
-  if((inf.perfil_cognitivo||'').trim()){
-    body+=secTit('6. Perfil Cognitivo y Diagnóstico Neuropsicológico Presuntivo');
-    parrafos(inf.perfil_cognitivo).forEach(function(p){body+=p;});
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // 7. CONCLUSIONES
-  if((inf.conclusiones||'').trim()){
-    body+=secTit('7. Conclusiones');
-    parrafos(inf.conclusiones).forEach(function(p){body+=p;});
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // 8. SUGERENCIAS (fijas siempre)
-  body+=secTit('8. Sugerencias');
-  body+='<w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">1.  Sostener consulta con profesional derivante a fines de correlacionar los resultados obtenidos con estudios complementarios (neuroimágenes, laboratorio, entre otros).</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">2.  Mantener chequeo médico general a fin de controlar factores de salud que puedan influir sobre el estado cognitivo (cardiovasculares, niveles de colesterol y triglicéridos, etc.), ya que son factores de riesgo para fluctuaciones cognitivas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">3.  Repetir estudio de valoración neuropsicológica en un plazo de 12 a 18 meses, a los fines de tener un estudio confirmatorio y de seguimiento sobre las variaciones de su estado cognitivo actual.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">4.  Se sugiere iniciar un programa de estimulación cognitiva a fin de evitar consolidación de déficits cognitivos y lograr mayores estrategias de aprendizaje y memoria con alcance ecológico, y de mejoramiento de la funcionalidad instrumental y expansiva.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">5.  Sostener proceso psicoterapéutico y/o psiquiátrico para el abordaje de la sintomatología emocional y el reforzamiento de estrategias de gestión de estrés.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">6.  Realizar y/o sostener consulta con psiquiatría a fin de prevenir y controlar afectividad negativa y labilidad emocional, como el manejo de cambios conductuales incipientes.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">7.  El profesional derivante podrá valorar la pertinencia de sugerir un programa de orientación y acompañamiento a familiares.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="360" w:hanging="360"/><w:spacing w:before="0" w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">8.  Sostener hábitos preventivos del funcionamiento cognitivo según se detallan en el Apéndice A del presente informe.</w:t></w:r></w:p>';
-  body+=_wPar('',{before:0,after:80});
-
-  // 9. APÉNDICE A
-  body+=secTit('Apéndice A: Sugerencias para Mantener su Mente Activa');
-  body+=_wPar(_wRun('Ciertos hábitos han demostrado eficacia en la protección del funcionamiento cognitivo (prevención) y en la disminución del posible impacto de estresores diarios. Siguiendo las evidencias científicas en torno a la protección de la memoria y de las restantes funciones cerebrales, se le sugiere que:',{sz:20,font:'Arial',color:'000000'}),{align:'both',before:0,after:80});
-  body+='<w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Realice ejercicio físico periódicamente. El mismo debe implicar una frecuencia de al menos 3 veces por semana, y una duración de 45 minutos. Puede realizar caminatas, o alguna otra actividad física aeróbica de su agrado. Se sugiere, en caso posible, complementar la actividad aeróbica con actividades de flexibilidad, como yoga, y de resistencia (que impliquen fuerza). Para el inicio del programa de ejercicio debe contar con previa autorización y asesoramiento médico.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Lleve un estilo de vida saludable, intentado no abusar del alcohol y ni del tabaco.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Mantenga una dieta variada, que incluya al menos 5 porciones de frutas y vegetales cada día. Evite el consumo de grasas saturadas o snacks. Beba al menos 1,5 a 2 litros de agua a diario (al menos 6 vasos), fundamental fuente protectora del cerebro.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Evite situaciones de estrés emocional y mantenga actividades ocio recreativas.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Mantenga una amplia gama de intereses y actividades de entretenimiento (ver películas, escuchar música). Retome sus intereses previos que le brindaban satisfacción.</w:t></w:r></w:p><w:p><w:pPr><w:ind w:left="480" w:hanging="240"/><w:spacing w:before="0" w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="000000"/></w:rPr><w:t xml:space="preserve">●  Busque generar momentos de encuentro con sus amistades significativas o familiares, intercambie con ellos temas de su interés.</w:t></w:r></w:p>';
-  body+=_wPar('',{before:0,after:120});
-
-  // 10. APÉNDICE B - RESULTADOS ESTADÍSTICOS
-  body+=secTit('Apéndice B: Resultados Estadísticos');
-
-  // Tabla NP con grilla Z
-  var npRows=buildNPRows(testsNP);
-  if(npRows.length){
-    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
-    body+=_wTable([_zHdrRow()].concat(npRows),COL_WIDTHS_HDR);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // TABLA TDAH
-  var tdRows=buildSimpleRows(testsTD);
-  if(tdRows.length){
-    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(tdRows),COL_CL);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // TABLA DOLOR
-  var doRows=buildSimpleRows(testsDO);
-  if(doRows.length){
-    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(doRows),COL_CL);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // TABLA PSICOLOGÍA CLÍNICA
-  var clRows=buildSimpleRows(testsCL);
-  if(clRows.length){
-    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:'000000'}),{before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(clRows),COL_CL);
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // 10. CUESTIONARIOS FAMILIARES (sección separada con tabla de síntomas)
-  if(famResults.length){
-    body+=secTit('Reporte del Acompañante');
-    var fam=famResults[famResults.length-1].datos||{};
-    // Tabla: Tests | Significativo/No significativo | Síntomas
-    var COL_FAM=[3200,1800,4360];
-    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:'F2F2F2',hdrBorder:true});}
-    function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||'FFFFFF'});}
-    
-    var famRows=[];
-    famRows.push(_wRow([famHdrCell('Tests',COL_FAM[0]),famHdrCell('Significativo / No significativo',COL_FAM[1]),famHdrCell('Síntomas',COL_FAM[2])],{hdr:true}));
-    
-    // NPI-Q
-    var npiqTotal = fam.npiqTotal!=null ? fam.npiqTotal : (fam.npiq_total!=null?fam.npiq_total:0);
-    var npiqSig = npiqTotal>0 ? 'Significativo' : 'No significativo';
-    var npiqSint = '—';
-    var NPIQ_LABELS = {delirios:'Delirios',alucin:'Alucinaciones',agitacion:'Agitación',depresion:'Depresión/Disforia',ansiedad:'Ansiedad',euforia:'Euforia',apatia:'Apatía',desinhib:'Desinhibición',irritab:'Irritabilidad',motora:'Conducta Motora',sueno:'Alt. Sueño',apetito:'Alt. Apetito'};
-    var GRAV_LBL = ['','Leve','Moderado','Severo'];
-    if(fam.npiq&&typeof fam.npiq==='object'){
-      var sintomas=[];
-      Object.keys(fam.npiq).forEach(function(k){
-        var v=fam.npiq[k];
-        if(v&&v>0){
-          var lbl=NPIQ_LABELS[k]||k;
-          var grav=GRAV_LBL[v]||'';
-          sintomas.push(lbl+(grav?' ('+grav+')':''));
-        }
-      });
-      npiqSint = sintomas.length ? sintomas.join(' · ') : '—';
-    }
-    famRows.push(_wRow([famCell('Inventario neuropsiquiátrico NPI-Q',COL_FAM[0],'F2F2F2'),famCell(npiqSig,COL_FAM[1],'F2F2F2',true),famCell(npiqSint,COL_FAM[2],'F2F2F2')]));
-    
-    // AVD helper
-    function avdSintomas(obj, labels){
-      if(!obj||typeof obj!=='object') return '—';
-      var afect=[];
-      labels.forEach(function(it){
-        var v=obj[it.id];
-        if(v!=null&&v!=='independiente'&&v!=='0'&&v!==0&&v!==''){
-          afect.push(it.label+(typeof v==='string'&&v!=='dependiente'?' ('+v+')':''));
-        }
-      });
-      return afect.length?afect.join(' · '):'—';
-    }
-    var AVDB_LABELS=[{id:'identif',label:'Alimentación'},{id:'aseo',label:'Higiene'},{id:'vestirse',label:'Vestimenta'},{id:'continen',label:'Continencia'}];
-    var AVDI_LABELS=[{id:'telefono',label:'Teléfono'},{id:'compras',label:'Compras'},{id:'comida',label:'Comida'},{id:'transp',label:'Transporte'},{id:'medic',label:'Medicación'},{id:'dinero',label:'Dinero'}];
-    var AVDE_LABELS=[{id:'inform',label:'Información'},{id:'social',label:'Social'},{id:'recreat',label:'Recreación'},{id:'autono',label:'Autonomía'},{id:'planes',label:'Planes'},{id:'responsab',label:'Responsab.'},{id:'opinion',label:'Opinión'},{id:'aprende',label:'Aprendizaje'}];
-    
-    // AVD Básicas
-    var avdbVal = fam.avdbTotal!=null?fam.avdbTotal:(fam.avdb_total!=null?fam.avdb_total:null);
-    var avdbSig = avdbVal!=null ? (avdbVal<4?'No significativo':'Significativo') : '—';
-    var avdbSint = avdSintomas(fam.avdb, AVDB_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Básicas',COL_FAM[0]),famCell(avdbSig,COL_FAM[1],'',true),famCell(avdbSint,COL_FAM[2])]));
-    
-    // AVD Instrumentales
-    var avdiVal = fam.avdiTotal!=null?fam.avdiTotal:(fam.avdi_total!=null?fam.avdi_total:null);
-    var avdiSig = avdiVal!=null ? (avdiVal<6?'No significativo':'Significativo') : '—';
-    var avdiSint = avdSintomas(fam.avdi, AVDI_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Instrumentales',COL_FAM[0],'F2F2F2'),famCell(avdiSig,COL_FAM[1],'F2F2F2',true),famCell(avdiSint,COL_FAM[2],'F2F2F2')]));
-    
-    // AVD Expansivas
-    var avdeVal = fam.avdeTotal!=null?fam.avdeTotal:(fam.avde_total!=null?fam.avde_total:null);
-    var avdeSig = avdeVal!=null ? (avdeVal<8?'No significativo':'Significativo') : '—';
-    var avdeSint = avdSintomas(fam.avde, AVDE_LABELS);
-    famRows.push(_wRow([famCell('Escala de AVD Expansivas',COL_FAM[0]),famCell(avdeSig,COL_FAM[1],'',true),famCell(avdeSint,COL_FAM[2])]));
-    
-    // AD8-ARG
-    var AD8_LABELS=[{id:'ad8_1',label:'Cambios en juicio'},{id:'ad8_2',label:'Menor interés en hobbies'},{id:'ad8_3',label:'Repite preguntas'},{id:'ad8_4',label:'Dificultad con dispositivos'},{id:'ad8_5',label:'Olvida mes o año'},{id:'ad8_6',label:'Dificultad con finanzas'},{id:'ad8_7',label:'Olvida citas'},{id:'ad8_8',label:'Problemas de memoria'}];
-    var ad8Val = fam.ad8Total!=null?fam.ad8Total:(fam.ad8_total!=null?fam.ad8_total:null);
-    var ad8Sig = ad8Val!=null ? (ad8Val>=2?'Significativo ('+ad8Val+'/8)':'No significativo ('+ad8Val+'/8)') : '—';
-    var ad8Sint = '—';
-    if(fam.ad8&&typeof fam.ad8==='object'){
-      var ad8Afect=[];
-      AD8_LABELS.forEach(function(it){if(fam.ad8[it.id]==='si')ad8Afect.push(it.label);});
-      ad8Sint = ad8Afect.length?ad8Afect.join(' · '):'—';
-    }
-    famRows.push(_wRow([famCell('Cuestionario del Informante AD8-ARG',COL_FAM[0],'F2F2F2'),famCell(ad8Sig,COL_FAM[1],'F2F2F2',true),famCell(ad8Sint,COL_FAM[2],'F2F2F2')]));
-    
-    body+=_wTable(famRows,COL_FAM);
-    body+=_wPar('N/V = no valorado; N/C = paciente no está en condiciones para responder o ser valorado.',{before:40,after:80});
-    body+=_wPar('',{before:0,after:80});
-  }
-
-  // (Perfil, conclusiones y sugerencias ya están arriba en el orden correcto)
-
-  // 14. FIRMA
-  body+=_wPar('',{before:400,after:0});
-  body+=_wPar(_wRun('___________________________',{sz:20,color:'888888',font:'Arial'}),{before:0,after:40});
-  body+=_wPar(_wRun(inf.evaluado_por||'',{sz:18,font:'Arial',color:'333333'}),{before:0,after:40});
-  body+=_wPar(_wRun(new Date().toLocaleDateString('es-AR'),{sz:17,color:'888888',font:'Arial'}),{before:0,after:80});
-
-  // ── Armar XML docx ──
-  var enc=new TextEncoder();
-  var docXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"'+
-    ' xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"'+
-    ' xmlns:o="urn:schemas-microsoft-com:office:office"'+
-    ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'+
-    ' xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'+
-    ' xmlns:v="urn:schemas-microsoft-com:vml"'+
-    ' xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"'+
-    ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'+
-    ' xmlns:w10="urn:schemas-microsoft-com:office:word"'+
-    ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'+
-    ' xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"'+
-    ' xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"'+
-    ' xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"'+
-    ' xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml"'+
-    ' xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"'+
-    ' mc:Ignorable="w14 wp14">'+
-    '<w:body>'+body+
-    '<w:sectPr>'+
-      '<w:headerReference w:type="default" r:id="rId2"/>'+
-      '<w:footerReference w:type="default" r:id="rId3"/>'+
-      '<w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>'+
-      '<w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720" w:header="709" w:footer="709" w:gutter="0"/>'+
-    '</w:sectPr>'+
-    '</w:body></w:document>';
-
-  // ── Header (logos) y Footer (pie institucional) ──
-  // Imágenes en base64 — González Palau (izq) y CIATEC (der)
-  var GP_B64 = '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';
-  var CT_B64 = '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';
-
-  // image1.png = GP, image2.png = CT — referenciadas desde header
-  var img1Xml = GP_B64; // PNG bytes como base64
-  var img2Xml = CT_B64;
-
-  // Tamaño logos en EMU (1 cm = 360000 EMU): 2cm alto ≈ 720000, ancho proporcional ~720000
-  var IMG_H = 720000; // 2 cm
-  var IMG_W = 720000; // 2 cm
-
-  // Header XML — tabla 1 fila 3 celdas: logo GP | centro vacío | logo CIATEC
-  // Header: tabla 1 fila, 3 celdas — logo GP izq | espacio | logo CT der
-  // Imágenes via drawingML inline con namespaces completos
-  var headerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:hdr'+
-    ' xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"'+
-    ' xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"'+
-    ' xmlns:o="urn:schemas-microsoft-com:office:office"'+
-    ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'+
-    ' xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'+
-    ' xmlns:v="urn:schemas-microsoft-com:vml"'+
-    ' xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"'+
-    ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'+
-    ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'+
-    ' xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"'+
-    ' xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"'+
-    ' xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"'+
-    ' xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml"'+
-    ' xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"'+
-    ' mc:Ignorable="w14 wp14">'+
-    // Tabla para posicionar logos: izq | centro | der
-    '<w:tbl>'+
-      '<w:tblPr>'+
-        '<w:tblW w:w="13398" w:type="dxa"/>'+
-        '<w:tblBorders>'+
-          '<w:top w:val="none"/><w:left w:val="none"/>'+
-          '<w:bottom w:val="none"/><w:right w:val="none"/>'+
-          '<w:insideH w:val="none"/><w:insideV w:val="none"/>'+
-        '</w:tblBorders>'+
-        '<w:tblLayout w:type="fixed"/>'+
-      '</w:tblPr>'+
-      '<w:tblGrid>'+
-        '<w:gridCol w:w="1800"/>'+
-        '<w:gridCol w:w="5760"/>'+
-        '<w:gridCol w:w="1800"/>'+
-      '</w:tblGrid>'+
-      '<w:tr>'+
-        // Celda izquierda: logo GP
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="1800" w:type="dxa"/></w:tcPr>'+
-          '<w:p>'+
-            '<w:pPr><w:jc w:val="left"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-            '<w:r><w:rPr/>'+
-              '<w:drawing>'+
-                '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
-                  '<wp:extent cx="576000" cy="576000"/>'+
-                  '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
-                  '<wp:docPr id="1" name="LogoGP" descr="Logo González Palau"/>'+
-                  '<wp:cNvGraphicFramePr>'+
-                    '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'+
-                  '</wp:cNvGraphicFramePr>'+
-                  '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
-                    '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                        '<pic:nvPicPr>'+
-                          '<pic:cNvPr id="1" name="LogoGP"/>'+
-                          '<pic:cNvPicPr><a:picLocks noChangeAspect="1" noChangeArrowheads="1"/></pic:cNvPicPr>'+
-                        '</pic:nvPicPr>'+
-                        '<pic:blipFill>'+
-                          '<a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rImgGP">'+
-                            '<a:extLst><a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}"><a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/></a:ext></a:extLst>'+
-                          '</a:blip>'+
-                          '<a:stretch><a:fillRect/></a:stretch>'+
-                        '</pic:blipFill>'+
-                        '<pic:spPr bwMode="auto">'+
-                          '<a:xfrm><a:off x="0" y="0"/><a:ext cx="576000" cy="576000"/></a:xfrm>'+
-                          '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+
-                        '</pic:spPr>'+
-                      '</pic:pic>'+
-                    '</a:graphicData>'+
-                  '</a:graphic>'+
-                '</wp:inline>'+
-              '</w:drawing>'+
-            '</w:r>'+
-          '</w:p>'+
-        '</w:tc>'+
-        // Celda central: vacía
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="5760" w:type="dxa"/></w:tcPr>'+
-          '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>'+
-        '</w:tc>'+
-        // Celda derecha: logo CIATEC
-        '<w:tc>'+
-          '<w:tcPr><w:tcW w:w="1800" w:type="dxa"/></w:tcPr>'+
-          '<w:p>'+
-            '<w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-            '<w:r><w:rPr/>'+
-              '<w:drawing>'+
-                '<wp:inline distT="0" distB="0" distL="0" distR="0">'+
-                  '<wp:extent cx="576000" cy="576000"/>'+
-                  '<wp:effectExtent l="0" t="0" r="0" b="0"/>'+
-                  '<wp:docPr id="2" name="LogoCT" descr="Logo CIATEC"/>'+
-                  '<wp:cNvGraphicFramePr>'+
-                    '<a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'+
-                  '</wp:cNvGraphicFramePr>'+
-                  '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'+
-                    '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'+
-                        '<pic:nvPicPr>'+
-                          '<pic:cNvPr id="2" name="LogoCT"/>'+
-                          '<pic:cNvPicPr><a:picLocks noChangeAspect="1" noChangeArrowheads="1"/></pic:cNvPicPr>'+
-                        '</pic:nvPicPr>'+
-                        '<pic:blipFill>'+
-                          '<a:blip xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:embed="rImgCT">'+
-                            '<a:extLst><a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}"><a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/></a:ext></a:extLst>'+
-                          '</a:blip>'+
-                          '<a:stretch><a:fillRect/></a:stretch>'+
-                        '</pic:blipFill>'+
-                        '<pic:spPr bwMode="auto">'+
-                          '<a:xfrm><a:off x="0" y="0"/><a:ext cx="576000" cy="576000"/></a:xfrm>'+
-                          '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+
-                        '</pic:spPr>'+
-                      '</pic:pic>'+
-                    '</a:graphicData>'+
-                  '</a:graphic>'+
-                '</wp:inline>'+
-              '</w:drawing>'+
-            '</w:r>'+
-          '</w:p>'+
-        '</w:tc>'+
-      '</w:tr>'+
-    '</w:tbl>'+
-    // Línea separadora
-    '<w:p>'+
-      '<w:pPr><w:spacing w:before="60" w:after="0"/>'+
-      '<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="325c28"/></w:pBdr></w:pPr>'+
-    '</w:p>'+
-  '</w:hdr>';
-
-  // Footer XML — pie institucional centrado — texto institucional centrado
-  var footerXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
-      // Línea superior del footer
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="0"/>'+
-        '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="325c28"/></w:pBdr></w:pPr>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:b/><w:sz w:val="14"/><w:szCs w:val="14"/><w:color w:val="214b1a"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>CENTRO DE REHABILITACIÓN GONZÁLEZ PALAU - FUNDACIÓN CIATEC</w:t></w:r>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:sz w:val="13"/><w:szCs w:val="13"/><w:color w:val="444444"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>Neuropsicología – Neuro rehabilitación – Psicoterapia</w:t></w:r>'+
-      '</w:p>'+
-      '<w:p>'+
-        '<w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-        '<w:r><w:rPr><w:sz w:val="13"/><w:szCs w:val="13"/><w:color w:val="444444"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-        '<w:t>Av. Laplace 5264 – Villa Belgrano, Córdoba – Tel/whatsapp: 3515513257 – E-mail: secretariafgonzalezp@gmail.com</w:t></w:r>'+
-      '</w:p>'+
-    '</w:ftr>';
-
-  // header/footer rels dentro de word/_rels/document.xml.rels
-  var relsXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
-    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'+
-    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>'+
-    '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>'+
-    '<Relationship Id="rImgGP" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/>'+
-    '<Relationship Id="rImgCT" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image2.png"/>'+
-    '</Relationships>';
-
-  var stylesXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
-    '<w:docDefaults><w:rPrDefault><w:rPr>'+
-    '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>'+
-    '<w:sz w:val="20"/><w:szCs w:val="20"/>'+
-    '</w:rPr></w:rPrDefault></w:docDefaults></w:styles>';
-
-  var topRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
-    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'+
-    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>'+
-    '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>'+
-    '</Relationships>';
-
-  var contentTypes='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
-    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
-    '<Default Extension="xml" ContentType="application/xml"/>'+
-    '<Default Extension="png" ContentType="image/png"/>'+
-    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'+
-    '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'+
-    '<Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>'+
-    '<Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>'+
-    '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'+
-    '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'+
-    '</Types>';
-
-  var coreXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">'+
-    '<dc:creator>Erwin Müller</dc:creator><dc:title>Informe Neuropsicológico</dc:title></cp:coreProperties>';
-  var appXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
-    '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Erwin Müller</Application></Properties>';
-
-  // Decodificar base64 → Uint8Array para las imágenes
-  function b64ToBytes(b64) {
-    var bin = atob(b64), arr = new Uint8Array(bin.length);
-    for (var i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
-    return arr;
-  }
-
-  var zipData=_makeZip([
-    {name:'[Content_Types].xml',             data:enc.encode(contentTypes)},
-    {name:'_rels/.rels',                     data:enc.encode(topRels)},
-    {name:'word/document.xml',               data:enc.encode(docXml)},
-    {name:'word/_rels/document.xml.rels',    data:enc.encode(relsXml)},
-    {name:'word/styles.xml',                 data:enc.encode(stylesXml)},
-    {name:'word/header1.xml',                data:enc.encode(headerXml)},
-    {name:'word/footer1.xml',                data:enc.encode(footerXml)},
-    {name:'word/media/image1.png',           data:b64ToBytes(GP_B64)},
-    {name:'word/media/image2.png',           data:b64ToBytes(CT_B64)},
-    {name:'docProps/app.xml',                data:enc.encode(appXml)},
-    {name:'docProps/core.xml',               data:enc.encode(coreXml)},
-  ]);
-
-  var blob=new Blob([zipData],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;
-  var nombre=pacNombre.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s_-]/g,'').replace(/\s+/g,'_');
-  a.download='Informe_NP_'+nombre+'_'+(fechaEval||'sin_fecha')+'.docx';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},2000);
-  toast('Informe Word generado ✓','success');
-}
 
 // ══ TAVEC · Test de Aprendizaje Verbal España-Complutense ════════════════════
 // Baremos: Benedet & Alejandre (1998) — 7 grupos de edad, N=1015
