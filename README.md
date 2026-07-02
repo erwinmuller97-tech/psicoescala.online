@@ -2,7 +2,7 @@
 
 Plataforma de evaluación psicológica y neuropsicológica.
 
-**Versión actual:** v1.10.81
+**Versión actual:** v1.10.83
 
 ## Tests incluidos (última actualización)
 
