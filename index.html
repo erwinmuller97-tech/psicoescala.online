@@ -411,11 +411,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .sector-icon { font-size: 2rem; margin-bottom: 12px; }
 .sector-titulo { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--accentdk); margin-bottom: 6px; }
 .sector-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-.sector-tests { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-.sector-tag {
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 20px;
-  padding: 3px 10px; font-size: 0.72rem; color: var(--muted); font-weight: 500;
-}
+.sector-card-action { font-size: 0.78rem; font-weight: 600; color: var(--accent); margin-top: 14px; opacity: 0.85; }
+.sector-card:hover .sector-card-action { opacity: 1; }
 
 /* ══ PACIENTES ══ */
 .vista-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
@@ -492,7 +489,19 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 .tests-sector-wrap { display: block; }
 .tests-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.tests-featured-grid .test-icon { display: block; font-size: 1.6rem; margin-bottom: 8px; }
+.np-panel { display: flex; flex-direction: column; gap: 20px; }
+.np-toolbar {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; box-shadow: var(--shadow);
+}
+.np-search-input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 0.9rem; background: var(--surface2); color: var(--text); margin-bottom: 12px;
+  font-family: 'Inter', sans-serif;
+}
+.np-search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(61,122,95,0.1); }
+.np-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.np-meta { font-size: 0.75rem; color: var(--muted); margin-top: 10px; font-weight: 500; }
 .test-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 14px 16px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow);
@@ -856,7 +865,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.83</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.84</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -979,56 +988,26 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div class="sector-card" onclick="irSector('clinica')">
           <div class="sector-icon">🧠</div>
           <div class="sector-titulo">Psicología Clínica</div>
-          <div class="sector-sub">Tests para evaluación del estado emocional, ansiedad y depresión.</div>
-          <div class="sector-tests">
-            <span class="sector-tag">BDI-II</span>
-            <span class="sector-tag">STAI</span>
-            <span class="sector-tag">PHQ-9</span>
-            <span class="sector-tag">GAD-7</span>
-            <span class="sector-tag">Birleson</span>
-            <span class="sector-tag">AAA</span>
-            <span class="sector-tag">SPAI-B</span>
-          </div>
+          <div class="sector-sub">Depresión, ansiedad y estado emocional.</div>
+          <div class="sector-card-action">Ver tests →</div>
         </div>
         <div class="sector-card" onclick="irSector('neuro')">
           <div class="sector-icon">🔬</div>
           <div class="sector-titulo">Neuropsicológicos</div>
-          <div class="sector-sub">Tests para evaluación de memoria, atención y funciones ejecutivas.</div>
-          <div class="sector-tests">
-            <span class="sector-tag">TMT A/B</span>
-            <span class="sector-tag">TAVEC</span>
-            <span class="sector-tag">Figura Compleja de Rey</span>
-            <span class="sector-tag">Stroop</span>
-            <span class="sector-tag">Rey Verbal</span>
-            <span class="sector-tag">Fluencia</span>
-            <span class="sector-tag">MoCA</span>
-            <span class="sector-tag">Mini Mental Parkinson</span>
-            <span class="sector-tag">IFS</span>
-            <span class="sector-tag">WAIS-IV</span>
-            <span class="sector-tag">ACE-R</span>
-            <span class="sector-tag">BNT</span>
-            <span class="sector-tag">WCST-64</span>
-          </div>
+          <div class="sector-sub">Memoria, atención, lenguaje y funciones ejecutivas.</div>
+          <div class="sector-card-action">Ver tests →</div>
         </div>
         <div class="sector-card" onclick="irSector('dolor')">
           <div class="sector-icon">⬡</div>
           <div class="sector-titulo">Dolor</div>
           <div class="sector-sub">Evaluación del dolor crónico y afrontamiento.</div>
-          <div class="sector-tests">
-            <span class="sector-tag">PCS</span>
-            <span class="sector-tag">CSQ</span>
-            <span class="sector-tag">PBQ</span>
-            <span class="sector-tag">BPI</span>
-          </div>
+          <div class="sector-card-action">Ver tests →</div>
         </div>
         <div class="sector-card" onclick="irSector('tdah')">
           <div class="sector-icon">⚡</div>
           <div class="sector-titulo">TDAH</div>
-          <div class="sector-sub">Escalas de evaluación para TDAH en adultos.</div>
-          <div class="sector-tests">
-            <span class="sector-tag">ASRS-V1.1</span>
-            <span class="sector-tag">WURS-25</span>
-          </div>
+          <div class="sector-sub">Escalas para TDAH en adultos.</div>
+          <div class="sector-card-action">Ver tests →</div>
         </div>
       </div>
 
@@ -5830,7 +5809,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.83';
+var APP_VERSION = 'v1.10.84';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7810,6 +7789,7 @@ function irVista(v) {
 var NP_TESTS = [
   // Cognitivo global
   {id:'moca',     n:'MoCA',              d:'Montreal Cognitive Assessment',               t:'Cognitivo global',   dom:'global'},
+  {id:'mmp',      n:'Mini Mental Parkinson', d:'Screening cognitivo en Parkinson · Fernández et al.', t:'Cognitivo global', dom:'global'},
   {id:'acer',     n:'ACE-R',             d:"Addenbrooke's Cognitive Examination",         t:'Cognitivo global',   dom:'global'},
   {id:'reloj',    n:'Test del Reloj',    d:'Cribado cognitivo · Cacho et al. 1999',       t:'Cognitivo global',   dom:'global'},
   // Atención
@@ -7853,25 +7833,6 @@ var NP_ICONS = {
   familiar:   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="#3d7a5f" stroke-width="1.3"/><circle cx="11" cy="4" r="1.8" stroke="#3d7a5f" stroke-width="1.3"/><path d="M1 13c0-2.76 2.24-4 5-4s5 1.24 5 4" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/><path d="M11 7c1.66 0 3 .9 3 3" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>'
 };
 
-var NP_FEATURED = ['tmt', 'tavec', 'fcr', 'stroop', 'mmp', 'moca'];
-var NP_FEATURED_ICONS = { tmt:'🔗', tavec:'📚', fcr:'🔷', stroop:'🎨', mmp:'🧠', moca:'⏱' };
-
-function npFeaturedHtml() {
-  return NP_FEATURED.map(function(id) {
-    var t = null;
-    for (var i = 0; i < NP_TESTS.length; i++) {
-      if (NP_TESTS[i].id === id) { t = NP_TESTS[i]; break; }
-    }
-    if (!t) return '';
-    var ico = NP_FEATURED_ICONS[id] || '🔬';
-    return '<div class="test-card" onclick="irTest(\'' + t.id + '\')">' +
-      '<div class="test-icon">' + ico + '</div>' +
-      '<div class="test-nombre">' + t.n + '</div>' +
-      '<div class="test-desc">' + t.d + '</div>' +
-      '<span class="test-tag">' + t.t + '</span></div>';
-  }).join('');
-}
-
 var _npChipActivo = 'todos';
 function npChip(el, dom) {
   document.querySelectorAll('.np-chip').forEach(function(c){ c.classList.remove('active'); });
@@ -7884,7 +7845,6 @@ function npRender() {
   var q = qEl ? qEl.value.toLowerCase() : '';
   var seen = {};
   var r = NP_TESTS.filter(function(t) {
-    if (NP_FEATURED.indexOf(t.id) >= 0) return false;
     if (seen[t.id]) return false;
     seen[t.id] = true;
     var dok = _npChipActivo === 'todos' || t.dom === _npChipActivo;
@@ -7893,6 +7853,8 @@ function npRender() {
   });
   var grid = document.getElementById('np-grid');
   if (!grid) return;
+  var countEl = document.getElementById('np-count');
+  if (countEl) countEl.textContent = r.length + ' test' + (r.length === 1 ? '' : 's');
   grid.innerHTML = r.map(function(t) {
     var ico = NP_ICONS[t.dom] || '';
     return '<div class="test-card" onclick="irTest(\'' + t.id + '\')">' +
@@ -7902,7 +7864,7 @@ function npRender() {
       '<div class="test-desc">' + t.d + '</div>' +
       '<span class="test-tag">' + t.t + '</span>' +
       '</div>';
-  }).join('') || '<div style="padding:20px;text-align:center;font-size:12px;color:var(--muted);">Sin resultados</div>';
+  }).join('') || '<div class="empty-state" style="padding:32px 16px;grid-column:1/-1;"><div class="empty-icon">🔍</div><div class="empty-txt">No hay tests que coincidan con la búsqueda.</div></div>';
 }
 
 function irSector(s) {
@@ -7977,28 +7939,25 @@ function irSector(s) {
       '</div></div>';
   } else if (s === 'neuro') {
     document.getElementById('sector-titulo').textContent = 'Neuropsicológicos';
+    _npChipActivo = 'todos';
     document.getElementById('tests-grid').innerHTML =
-      '<div style="margin-bottom:18px;">' +
-        '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Tests principales</div>' +
-        '<div class="tests-grid tests-featured-grid" style="margin-bottom:4px;">' + npFeaturedHtml() + '</div>' +
-      '</div>' +
-      '<div style="margin-bottom:12px;">' +
-        '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Todos los tests</div>' +
-        '<input type="text" id="np-q" placeholder="Buscar test..." ' +
-          'style="width:100%;padding:8px 12px;border:0.5px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);margin-bottom:10px;" ' +
-          'oninput="npRender()">' +
-        '<div style="display:flex;flex-wrap:wrap;gap:6px;" id="np-chips">' +
-          '<span class="np-chip active" onclick="npChip(this,\'todos\')">Todos</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'global\')">Cognitivo global</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'atencion\')">Atención</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'memoria\')">Memoria</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'lenguaje\')">Lenguaje</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'visoc\')">Visoconstructivo</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'ejecutivas\')">Ejecutivas</span>' +
-          '<span class="np-chip" onclick="npChip(this,\'familiar\')">Familiar</span>' +
+      '<div class="np-panel">' +
+        '<div class="np-toolbar">' +
+          '<input type="search" id="np-q" class="np-search-input" placeholder="Buscar test por nombre o dominio..." oninput="npRender()">' +
+          '<div class="np-chips" id="np-chips">' +
+            '<span class="np-chip active" onclick="npChip(this,\'todos\')">Todos</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'global\')">Cognitivo global</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'atencion\')">Atención</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'memoria\')">Memoria</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'lenguaje\')">Lenguaje</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'visoc\')">Visoconstructivo</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'ejecutivas\')">Ejecutivas</span>' +
+            '<span class="np-chip" onclick="npChip(this,\'familiar\')">Familiar</span>' +
+          '</div>' +
+          '<div class="np-meta"><span id="np-count"></span></div>' +
         '</div>' +
-      '</div>' +
-      '<div id="np-grid" class="tests-grid"></div>';
+        '<div id="np-grid" class="tests-grid"></div>' +
+      '</div>';
     npRender();
   }
   if (s === 'dolor') {
