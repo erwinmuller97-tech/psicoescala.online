@@ -259,8 +259,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   box-shadow:0 2px 16px rgba(30,56,48,0.2);
 }
 .app-navbar-inner {
-  display:flex; align-items:center; gap:12px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
   padding:0 16px 0 12px; height:60px; max-width:100%;
+}
+.app-navbar-left { display:flex; align-items:center; gap:10px; flex-shrink:0; min-width:0; }
+.app-navbar-center {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding:0 12px; min-width:0;
 }
 .sidebar-toggle {
   display:none; align-items:center; justify-content:center;
@@ -277,34 +282,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .app-navbar-brand { display:flex; align-items:center; gap:10px; flex-shrink:0; cursor:pointer; }
 .app-navbar-brand .logo-mark { width:34px; height:34px; }
 .app-navbar-name { font-family:var(--font-display); font-size:1rem; font-weight:700; color:#fff; letter-spacing:-0.3px; white-space:nowrap; }
-.app-navbar-nav {
-  display:flex; align-items:center; gap:2px; flex:1; overflow-x:auto;
-  scrollbar-width:none; padding:0 8px;
+.app-navbar-nav { display:none; }
+.app-navbar-actions { display:flex; align-items:center; gap:10px; flex-shrink:0; margin-left:auto; }
+.app-navbar-email { font-size:0.72rem; color:rgba(255,255,255,0.45); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; }
+.app-navbar-user { font-size:0.78rem; color:rgba(255,255,255,0.82); font-weight:500; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; }
+@media (min-width:900px) {
+  .app-navbar-email { display:block; }
+  .app-navbar-user { display:block; }
 }
-.app-navbar-nav::-webkit-scrollbar { display:none; }
-.topnav-link {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:8px 12px; border-radius:6px; border:none; background:transparent;
-  color:rgba(255,255,255,0.65); font-family:var(--font-body); font-size:0.8rem; font-weight:500;
-  cursor:pointer; white-space:nowrap; transition:background 0.15s, color 0.15s;
-}
-.topnav-link:hover { background:rgba(255,255,255,0.08); color:#fff; }
-.topnav-link.active { background:rgba(61,122,95,0.45); color:#fff; font-weight:600; }
-.topnav-link:focus-visible { outline:2px solid #3d7a5f; outline-offset:2px; }
-.nav-badge-alert {
-  display:inline-flex; align-items:center; justify-content:center;
-  width:8px; height:8px; border-radius:50%; background:#ef4444;
-  box-shadow:0 0 0 2px #2d4a3e;
-  animation:nav-badge-pulse 1.4s ease-in-out infinite;
-}
-.topnav-link.nav-needs-config {
-  box-shadow:inset 0 0 0 1px #3d7a5f, 0 0 0 2px rgba(61,122,95,0.35);
-  animation:nav-badge-pulse 1.4s ease-in-out infinite;
-}
-@keyframes nav-badge-pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.65; transform:scale(1.15); } }
-.app-navbar-actions { display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.app-navbar-email { font-size:0.7rem; color:rgba(255,255,255,0.45); max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; }
-@media (min-width:1100px) { .app-navbar-email { display:block; } }
 .app-navbar-paciente select {
   min-width:140px; max-width:200px; padding:6px 10px;
   border:1px solid rgba(255,255,255,0.2); border-radius:6px;
@@ -320,62 +305,146 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .app-navbar-salir:hover { background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.35); }
 
 .welcome-banner {
-  background:linear-gradient(135deg, rgba(61,122,95,0.12), rgba(45,74,62,0.06));
-  border:1px solid #c8d8d0; border-left:4px solid #3d7a5f;
-  border-radius:var(--radius); padding:18px 24px; margin-bottom:28px;
-  font-family:var(--font-display); font-size:1.05rem; font-weight:600; color:#2d4a3e; line-height:1.5;
+  background:linear-gradient(135deg, rgba(61,122,95,0.08) 0%, rgba(61,122,95,0.04) 100%);
+  border:1px solid rgba(61,122,95,0.2);
+  border-radius:10px; padding:14px 20px;
+  font-size:0.88rem; color:var(--text);
+  margin-bottom:28px; line-height:1.5;
 }
-.welcome-banner span { color:#3d7a5f; }
+.welcome-banner span { color:#3d7a5f; font-weight:600; }
 
 /* ══ MAIN CONTENT ══ */
 .app-main { display:flex; flex-direction:row; min-height:100vh; padding-top:60px; width:100%; }
 
-/* ── SIDEBAR IZQUIERDO ── */
+/* ── SIDEBAR ── */
 .app-sidebar {
-  width:240px; min-width:240px; flex-shrink:0;
-  background:var(--sidebar);
+  width:220px; min-width:220px; flex-shrink:0;
+  background:#1e3830;
   position:fixed; top:60px; left:0; bottom:0; z-index:190;
   overflow-y:auto; overflow-x:hidden;
   display:flex; flex-direction:column;
-  padding:16px 0 24px;
-  border-right:1px solid rgba(255,255,255,0.08);
+  padding:20px 0 16px;
+  border-right:1px solid rgba(255,255,255,0.06);
   transition:transform 0.25s var(--ease);
 }
-.app-sidebar::-webkit-scrollbar { width:4px; }
-.app-sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:4px; }
-.sidebar-nav-group { padding:0 10px; margin-bottom:4px; }
-.sidebar-nav-label { font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:1.5px; padding:12px 10px 4px; }
+.app-sidebar::-webkit-scrollbar { width:3px; }
+.app-sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.12); border-radius:4px; }
+
+.sidebar-section { padding:0 8px; margin-bottom:4px; }
+.sidebar-label {
+  font-size:0.62rem; font-weight:700; color:rgba(255,255,255,0.28);
+  text-transform:uppercase; letter-spacing:1.8px;
+  padding:10px 10px 6px; user-select:none;
+}
 .sidebar-nav-item {
-  display:flex; align-items:center; gap:9px;
-  padding:9px 12px; border-radius:7px; cursor:pointer;
-  color:rgba(255,255,255,0.65); font-size:0.83rem; font-weight:400;
-  transition:background 0.15s, color 0.15s; margin-bottom:2px;
-  border:none; background:none; width:100%; text-align:left;
-  font-family:var(--font-body);
+  display:flex; align-items:center; gap:10px;
+  width:100%; padding:8px 10px; border-radius:6px;
+  border:none; background:none; cursor:pointer;
+  color:rgba(255,255,255,0.58); font-size:0.82rem;
+  font-family:var(--font-body); font-weight:400;
+  text-align:left; transition:background 0.12s, color 0.12s;
+  margin-bottom:1px; position:relative;
 }
-.sidebar-nav-item:hover { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.95); }
-.sidebar-nav-item.active { background:rgba(255,255,255,0.12); color:#fff; font-weight:500; }
-.sidebar-nav-item .nav-icon { font-size:14px; opacity:0.7; width:18px; text-align:center; flex-shrink:0; }
-.sidebar-divider { height:1px; background:rgba(255,255,255,0.08); margin:10px 14px; }
-.sidebar-bottom { padding:0 10px; margin-top:auto; }
-.sidebar-user-email { font-size:0.72rem; color:rgba(255,255,255,0.35); padding:8px 12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.sidebar-salir { width:100%; padding:9px 12px; background:none; border:1px solid rgba(255,255,255,0.15); border-radius:7px; color:rgba(255,255,255,0.5); font-family:var(--font-body); font-size:0.8rem; cursor:pointer; transition:all 0.15s; }
-.sidebar-salir:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.85); }
-
-.app-content { flex:1; padding:28px 32px 40px; margin-left:240px; min-width:0; max-width:100%; }
-
-.inicio-hero {
-  display:flex; flex-direction:column; align-items:flex-start;
-  padding:8px 0 24px; text-align:left;
+.sidebar-nav-item:hover { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.92); }
+.sidebar-nav-item.active {
+  background:rgba(61,122,95,0.35); color:#fff; font-weight:500;
+  border-left:2px solid #3d7a5f; padding-left:8px;
 }
-.inicio-hero-logo { width:56px; height:56px; margin-bottom:16px; }
-.inicio-hero-title { font-family:var(--font-display); font-size:1.45rem; font-weight:700; color:var(--text); letter-spacing:-0.4px; margin-bottom:6px; }
-.inicio-hero-desc { font-size:0.86rem; color:var(--muted); max-width:520px; line-height:1.65; }
-.inicio-stats { display:flex; gap:28px; margin-top:24px; flex-wrap:wrap; }
-.inicio-stat { text-align:left; min-width:88px; }
-.inicio-stat-n { font-family:var(--font-display); font-size:1.75rem; font-weight:600; color:var(--accentdk); line-height:1.1; }
-.inicio-stat-n.greeting { font-size:1rem; font-weight:600; letter-spacing:-0.2px; }
-.inicio-stat-l { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-top:4px; font-weight:600; }
+.sidebar-nav-item.nav-needs-config {
+  box-shadow:inset 0 0 0 1px rgba(61,122,95,0.5);
+  animation:nav-badge-pulse 1.4s ease-in-out infinite;
+}
+.nav-icon { width:15px; height:15px; flex-shrink:0; opacity:0.75; }
+.sidebar-nav-item.active .nav-icon { opacity:1; }
+.sidebar-nav-item:hover .nav-icon { opacity:0.95; }
+.nav-badge-alert {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:8px; height:8px; border-radius:50%; background:#ef4444;
+  box-shadow:0 0 0 2px #1e3830; margin-left:auto;
+  animation:nav-badge-pulse 1.4s ease-in-out infinite;
+}
+@keyframes nav-badge-pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.65; transform:scale(1.15); } }
+
+.sidebar-divider { height:1px; background:rgba(255,255,255,0.07); margin:10px 12px; }
+.sidebar-footer { padding:8px; margin-top:auto; border-top:1px solid rgba(255,255,255,0.07); }
+.sidebar-user-email {
+  font-size:0.7rem; color:rgba(255,255,255,0.28);
+  padding:6px 10px 8px; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap;
+}
+.sidebar-salir {
+  display:flex; align-items:center; gap:8px;
+  width:100%; padding:8px 10px; border-radius:6px;
+  border:1px solid rgba(255,255,255,0.12); background:none;
+  color:rgba(255,255,255,0.45); font-size:0.8rem;
+  font-family:var(--font-body); cursor:pointer;
+  transition:all 0.15s;
+}
+.sidebar-salir:hover { border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.05); }
+
+.app-content { flex:1; padding:28px 32px 40px; margin-left:220px; min-width:0; max-width:100%; }
+
+/* ── PANEL DE INICIO ── */
+.home-stats-row {
+  display:flex; gap:16px; margin-bottom:32px; flex-wrap:wrap;
+}
+.home-stat-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:16px 24px; min-width:120px;
+}
+.home-stat-num {
+  font-family:var(--font-display); font-size:2rem; font-weight:300;
+  color:#3d7a5f; line-height:1;
+}
+.home-stat-lbl {
+  font-size:0.7rem; color:var(--muted); text-transform:uppercase;
+  letter-spacing:1px; margin-top:4px;
+}
+.home-stat-date .home-stat-num { font-size:1rem; font-weight:500; padding-top:6px; }
+
+.home-section-title {
+  font-size:0.72rem; font-weight:700; color:var(--muted);
+  text-transform:uppercase; letter-spacing:1.5px; margin-bottom:14px;
+}
+.home-sectors-grid {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:14px; margin-bottom:8px;
+}
+.home-sector-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:20px; cursor:pointer;
+  transition:border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.home-sector-card:hover {
+  border-color:#3d7a5f; box-shadow:0 4px 16px rgba(61,122,95,0.12);
+  transform:translateY(-1px);
+}
+.home-sector-header { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.home-sector-icon {
+  width:36px; height:36px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.home-sector-icon svg { width:18px; height:18px; }
+.home-sector-icon--neuro { background:rgba(99,102,241,0.1); color:#6366f1; }
+.home-sector-icon--clinica { background:rgba(239,68,68,0.1); color:#ef4444; }
+.home-sector-icon--dolor { background:rgba(245,158,11,0.1); color:#f59e0b; }
+.home-sector-icon--tdah { background:rgba(59,130,246,0.1); color:#3b82f6; }
+.home-sector-name { font-size:0.95rem; font-weight:600; color:var(--text); }
+.home-sector-desc { font-size:0.8rem; color:var(--muted); line-height:1.5; margin-bottom:12px; }
+.home-sector-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.home-sector-tags span {
+  font-size:0.68rem; background:var(--surface2); color:var(--muted);
+  border:1px solid var(--border); border-radius:4px; padding:2px 7px;
+}
+.home-quick-row { display:flex; gap:10px; flex-wrap:wrap; }
+.home-quick-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 16px; border-radius:8px;
+  border:1px solid var(--border); background:var(--surface);
+  color:var(--text); font-size:0.83rem; font-family:var(--font-body);
+  cursor:pointer; transition:all 0.15s;
+}
+.home-quick-btn:hover { border-color:#3d7a5f; color:#3d7a5f; background:rgba(61,122,95,0.05); }
 
 
 /* ══ VISTAS ══ */
@@ -628,11 +697,11 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   .app-sidebar { transform:translateX(-100%); box-shadow:var(--shadow-lg); }
   .app-sidebar.open { transform:translateX(0); }
   .app-content { margin-left:0; padding:20px 16px 32px; }
-  .app-navbar-nav { display:none; }
-  .app-navbar-email { display:none !important; }
+  .app-navbar-email, .app-navbar-user { display:none !important; }
 }
 @media (max-width: 768px) {
-  .sectores-grid, .tests-grid, .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  .tests-grid, .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  .home-sectors-grid { grid-template-columns: 1fr; }
   .land-nav { padding:0 16px; height:60px; }
   .land-nav-links { display:none; }
   .land-nav, .land-hero, .land-features, .land-cta-section, .land-footer, .land-about, .land-compare, .land-steps, .land-creator { padding-left: 24px; padding-right: 24px; }
@@ -641,7 +710,6 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   .land-footer-grid { grid-template-columns: 1fr; }
   .resultado-detalle { grid-template-columns: 1fr 1fr; }
   .stai-item { flex-direction: column; align-items: flex-start; }
-  .inicio-stats { gap:16px; }
 }
 @media print {
   .app-navbar, .app-sidebar, .sidebar-backdrop, .sidebar-toggle, .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir, .welcome-banner { display: none !important; }
@@ -865,7 +933,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.84</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.85</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -881,27 +949,23 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
   <header class="app-navbar" id="app-navbar">
     <div class="app-navbar-inner">
-      <button type="button" class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
-      <div class="app-navbar-brand" onclick="irVista('inicio')" title="Inicio">
-        <div class="logo-mark" aria-hidden="true"></div>
-        <span class="app-navbar-name">PsicoEscala</span>
+      <div class="app-navbar-left">
+        <button type="button" class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
+        <div class="app-navbar-brand" onclick="irVista('inicio')" title="Inicio">
+          <div class="logo-mark" aria-hidden="true"></div>
+          <span class="app-navbar-name">PsicoEscala</span>
+        </div>
       </div>
-      <nav class="app-navbar-nav" aria-label="Navegación principal">
-        <button type="button" class="topnav-link active" id="tnav-inicio" onclick="irVista('inicio')">Inicio</button>
-        <button type="button" class="topnav-link" id="tnav-config" onclick="irVista('config')">Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config-top" title="Completá matrícula y firma" style="display:none;"></span></button>
-        <button type="button" class="topnav-link" id="tnav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
-        <button type="button" class="topnav-link" id="tnav-neuro" onclick="irSector('neuro')">Neuropsicológicos</button>
-        <button type="button" class="topnav-link" id="tnav-clinica" onclick="irSector('clinica')">Clínica</button>
-        <button type="button" class="topnav-link" id="tnav-historial" onclick="irVista('historial')">Historial</button>
-        <button type="button" class="topnav-link" id="tnav-informe" onclick="irRedaccionInformes()">Informes</button>
-      </nav>
-      <div class="app-navbar-actions">
-        <span class="app-navbar-email" id="topbar-email"></span>
+      <div class="app-navbar-center">
         <div class="app-navbar-paciente empty" id="app-topbar-paciente">
           <select id="topbar-paciente-select" onchange="setPacienteActivo(this.value, true)" aria-label="Paciente activo">
             <option value="">— Paciente —</option>
           </select>
         </div>
+      </div>
+      <div class="app-navbar-actions">
+        <span class="app-navbar-email" id="topbar-email"></span>
+        <span class="app-navbar-user" id="topbar-user-name"></span>
         <button type="button" class="app-navbar-salir" onclick="doLogout()">Salir</button>
       </div>
     </div>
@@ -910,30 +974,63 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="app-main">
     <!-- SIDEBAR IZQUIERDO -->
     <aside class="app-sidebar" id="app-sidebar">
-      <div class="sidebar-nav-group">
-        <div class="sidebar-nav-label">General</div>
-        <button class="sidebar-nav-item active" id="snav-inicio" onclick="navClick(function(){ irVista('inicio'); })"><span class="nav-icon"><i class="fa-solid fa-house"></i></span> Inicio</button>
-        <button class="sidebar-nav-item" id="snav-config" onclick="navClick(function(){ irVista('config'); })"><span class="nav-icon"><i class="fa-solid fa-user-doctor"></i></span> Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span></button>
-        <button class="sidebar-nav-item" id="snav-pacientes" onclick="navClick(function(){ irVista('pacientes'); })"><span class="nav-icon"><i class="fa-solid fa-users"></i></span> Pacientes</button>
+      <div class="sidebar-section">
+        <div class="sidebar-label">General</div>
+        <button class="sidebar-nav-item active" id="snav-inicio" onclick="navClick(function(){ irVista('inicio'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h4a1 1 0 001-1v-3h2v3a1 1 0 001 1h4a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+          Inicio
+        </button>
+        <button class="sidebar-nav-item" id="snav-config" onclick="navClick(function(){ irVista('config'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+          Datos del Profesional
+          <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span>
+        </button>
+        <button class="sidebar-nav-item" id="snav-pacientes" onclick="navClick(function(){ irVista('pacientes'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+          Pacientes
+        </button>
       </div>
+
       <div class="sidebar-divider"></div>
-      <div class="sidebar-nav-group">
-        <div class="sidebar-nav-label">Tests</div>
-        <button class="sidebar-nav-item" id="snav-neuro" onclick="navClick(function(){ irSector('neuro'); })"><span class="nav-icon"><i class="fa-solid fa-brain"></i></span> Neuropsicológicos</button>
-        <button class="sidebar-nav-item" id="snav-clinica" onclick="navClick(function(){ irSector('clinica'); })"><span class="nav-icon"><i class="fa-solid fa-heart-pulse"></i></span> Psicología Clínica</button>
-        <button class="sidebar-nav-item" id="snav-dolor" onclick="navClick(function(){ irSector('dolor'); })"><span class="nav-icon"><i class="fa-solid fa-hand-holding-medical"></i></span> Dolor</button>
-        <button class="sidebar-nav-item" id="snav-tdah" onclick="navClick(function(){ irSector('tdah'); })"><span class="nav-icon"><i class="fa-solid fa-bolt"></i></span> TDAH</button>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Tests</div>
+        <button class="sidebar-nav-item" id="snav-neuro" onclick="navClick(function(){ irSector('neuro'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+          Neuropsicológicos
+        </button>
+        <button class="sidebar-nav-item" id="snav-clinica" onclick="navClick(function(){ irSector('clinica'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+          Psicología Clínica
+        </button>
+        <button class="sidebar-nav-item" id="snav-dolor" onclick="navClick(function(){ irSector('dolor'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
+          Dolor
+        </button>
+        <button class="sidebar-nav-item" id="snav-tdah" onclick="navClick(function(){ irSector('tdah'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>
+          TDAH
+        </button>
       </div>
+
       <div class="sidebar-divider"></div>
-      <div class="sidebar-nav-group">
-        <div class="sidebar-nav-label">Informes</div>
-        <button class="sidebar-nav-item" id="snav-historial" onclick="navClick(function(){ irVista('historial'); })"><span class="nav-icon"><i class="fa-solid fa-clock-rotate-left"></i></span> Historial</button>
-        <button class="sidebar-nav-item" id="snav-informe" onclick="navClick(function(){ irRedaccionInformes(); })"><span class="nav-icon"><i class="fa-solid fa-file-lines"></i></span> Redactar Informe</button>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Informes</div>
+        <button class="sidebar-nav-item" id="snav-historial" onclick="navClick(function(){ irVista('historial'); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h4a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+          Historial
+        </button>
+        <button class="sidebar-nav-item" id="snav-informe" onclick="navClick(function(){ irRedaccionInformes(); })">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+          Redactar Informe
+        </button>
       </div>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-bottom">
+
+      <div class="sidebar-footer">
         <div class="sidebar-user-email" id="sidebar-email"></div>
-        <button class="sidebar-salir" onclick="doLogout()">Cerrar sesión</button>
+        <button class="sidebar-salir" onclick="doLogout()">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width:14px;height:14px;"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+          Cerrar sesión
+        </button>
       </div>
     </aside>
 
@@ -971,50 +1068,95 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <!-- ── INICIO ── -->
     <div class="vista active" id="vista-inicio">
       <div class="welcome-banner" id="welcome-banner">
-        ¡Hola, <span id="welcome-nombre">Profesional</span>! Te damos la bienvenida a PsicoEscala.
+        ¡Hola, <span id="welcome-nombre">Profesional</span>! Bienvenido a PsicoEscala.
       </div>
-      <div class="inicio-hero">
-        <div class="logo-mark inicio-hero-logo" aria-hidden="true"></div>
-        <div class="inicio-hero-title">Panel general</div>
-        <div class="inicio-hero-desc">Administración y puntuación automatizada de tests neuropsicológicos con baremos, perfil Z e informes clínicos.</div>
-        <div class="inicio-stats" id="home-stats">
-          <div class="inicio-stat"><div class="inicio-stat-n" id="stat-pacientes">—</div><div class="inicio-stat-l">Pacientes</div></div>
-          <div class="inicio-stat"><div class="inicio-stat-n" id="stat-evaluaciones">—</div><div class="inicio-stat-l">Evaluaciones</div></div>
-          <div class="inicio-stat"><div class="inicio-stat-n greeting" id="stat-saludo">—</div><div class="inicio-stat-l" id="stat-fecha-lbl">Hoy</div></div>
+
+      <div class="home-stats-row">
+        <div class="home-stat-card">
+          <div class="home-stat-num" id="stat-pacientes">—</div>
+          <div class="home-stat-lbl">Pacientes</div>
+        </div>
+        <div class="home-stat-card">
+          <div class="home-stat-num" id="stat-evaluaciones">—</div>
+          <div class="home-stat-lbl">Evaluaciones</div>
+        </div>
+        <div class="home-stat-card home-stat-date">
+          <div class="home-stat-num" id="stat-saludo">—</div>
+          <div class="home-stat-lbl" id="stat-fecha-lbl">Hoy</div>
         </div>
       </div>
 
-      <div class="sectores-grid">
-        <div class="sector-card" onclick="irSector('clinica')">
-          <div class="sector-icon">🧠</div>
-          <div class="sector-titulo">Psicología Clínica</div>
-          <div class="sector-sub">Depresión, ansiedad y estado emocional.</div>
-          <div class="sector-card-action">Ver tests →</div>
+      <div class="home-section-title">Tests disponibles</div>
+      <div class="home-sectors-grid">
+
+        <div class="home-sector-card" onclick="irSector('neuro')">
+          <div class="home-sector-header">
+            <div class="home-sector-icon home-sector-icon--neuro">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15M14.25 3.104c.251.023.501.05.75.082M19.8 15a2.25 2.25 0 00.659-1.591V6.75M19.8 15l-3.894-3.894M5 14.5L8.894 10.606M5 14.5a2.25 2.25 0 00-.659 1.591V18.75l3.75 1.875M19.8 15l.825 3.675a2.25 2.25 0 01-1.07 2.475L15 24M8.25 21.375l-3.75-1.875A2.25 2.25 0 013 17.25v-1.909M15 24l-3.75-1.875"/></svg>
+            </div>
+            <div class="home-sector-name">Neuropsicológicos</div>
+          </div>
+          <div class="home-sector-desc">Memoria, atención, funciones ejecutivas y lenguaje.</div>
+          <div class="home-sector-tags">
+            <span>TMT</span><span>TAVEC</span><span>MoCA</span><span>ACE-R</span><span>WCST</span><span>+más</span>
+          </div>
         </div>
-        <div class="sector-card" onclick="irSector('neuro')">
-          <div class="sector-icon">🔬</div>
-          <div class="sector-titulo">Neuropsicológicos</div>
-          <div class="sector-sub">Memoria, atención, lenguaje y funciones ejecutivas.</div>
-          <div class="sector-card-action">Ver tests →</div>
+
+        <div class="home-sector-card" onclick="irSector('clinica')">
+          <div class="home-sector-header">
+            <div class="home-sector-icon home-sector-icon--clinica">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+            </div>
+            <div class="home-sector-name">Psicología Clínica</div>
+          </div>
+          <div class="home-sector-desc">Evaluación del estado emocional, ansiedad y depresión.</div>
+          <div class="home-sector-tags">
+            <span>BDI-II</span><span>STAI</span><span>PHQ-9</span><span>GAD-7</span><span>Birleson</span><span>+más</span>
+          </div>
         </div>
-        <div class="sector-card" onclick="irSector('dolor')">
-          <div class="sector-icon">⬡</div>
-          <div class="sector-titulo">Dolor</div>
-          <div class="sector-sub">Evaluación del dolor crónico y afrontamiento.</div>
-          <div class="sector-card-action">Ver tests →</div>
+
+        <div class="home-sector-card" onclick="irSector('dolor')">
+          <div class="home-sector-header">
+            <div class="home-sector-icon home-sector-icon--dolor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+            </div>
+            <div class="home-sector-name">Dolor</div>
+          </div>
+          <div class="home-sector-desc">Evaluación del dolor crónico y estrategias de afrontamiento.</div>
+          <div class="home-sector-tags">
+            <span>PCS</span><span>BPI</span><span>CSQ</span><span>PBQ</span>
+          </div>
         </div>
-        <div class="sector-card" onclick="irSector('tdah')">
-          <div class="sector-icon">⚡</div>
-          <div class="sector-titulo">TDAH</div>
-          <div class="sector-sub">Escalas para TDAH en adultos.</div>
-          <div class="sector-card-action">Ver tests →</div>
+
+        <div class="home-sector-card" onclick="irSector('tdah')">
+          <div class="home-sector-header">
+            <div class="home-sector-icon home-sector-icon--tdah">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+            </div>
+            <div class="home-sector-name">TDAH</div>
+          </div>
+          <div class="home-sector-desc">Escalas de evaluación para TDAH en adultos.</div>
+          <div class="home-sector-tags">
+            <span>ASRS-V1.1</span><span>WURS-25</span><span>DEX</span>
+          </div>
         </div>
+
       </div>
 
-      <div class="card">
-        <div class="card-title">Últimas evaluaciones</div>
-        <div id="ultimas-lista"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-txt">Aún no hay evaluaciones registradas.</div></div></div>
-        <div style="text-align:right;margin-top:12px;"><button class="btn-secondary" onclick="irVista('historial')" style="font-size:0.8rem;">Ver historial completo →</button></div>
+      <div class="home-section-title" style="margin-top:28px;">Accesos rápidos</div>
+      <div class="home-quick-row">
+        <button class="home-quick-btn" onclick="irVista('pacientes')">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width:16px;height:16px;"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z"/></svg>
+          Nuevo paciente
+        </button>
+        <button class="home-quick-btn" onclick="irVista('historial')">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+          Ver historial
+        </button>
+        <button class="home-quick-btn" onclick="irRedaccionInformes()">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width:16px;height:16px;"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+          Redactar informe
+        </button>
       </div>
     </div>
 
@@ -5675,14 +5817,21 @@ function profesionalDatosCompletos() {
 
 function actualizarBadgeConfig() {
   var ok = profesionalDatosCompletos();
-  ['nav-badge-config', 'nav-badge-config-top'].forEach(function(id) {
-    var badge = document.getElementById(id);
-    if (badge) badge.style.display = ok ? 'none' : 'inline-flex';
-  });
-  ['snav-config', 'tnav-config'].forEach(function(id) {
-    var btn = document.getElementById(id);
-    if (btn) btn.classList.toggle('nav-needs-config', !ok);
-  });
+  var badge = document.getElementById('nav-badge-config');
+  if (badge) badge.style.display = ok ? 'none' : 'inline-flex';
+  var btn = document.getElementById('snav-config');
+  if (btn) btn.classList.toggle('nav-needs-config', !ok);
+}
+
+function updateTopbarUser() {
+  var el = document.getElementById('topbar-user-name');
+  if (!el) return;
+  var cfg = getConfigProfesional();
+  var name = cfg.nombre;
+  if (!name && typeof SESSION !== 'undefined' && SESSION && SESSION.user && SESSION.user.email) {
+    name = SESSION.user.email.split('@')[0];
+  }
+  el.textContent = name || '';
 }
 
 function actualizarWelcomeBanner(mostrar) {
@@ -5696,6 +5845,7 @@ function actualizarWelcomeBanner(mostrar) {
   }
   if (!name) name = 'Profesional';
   if (el) el.textContent = name;
+  updateTopbarUser();
   banner.style.display = mostrar ? 'block' : 'none';
 }
 
@@ -5710,13 +5860,10 @@ function irRedaccionInformes() {
 }
 
 function setTopnavActive(id) {
-  document.querySelectorAll('.sidebar-nav-item, .topnav-link').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-nav-item').forEach(function(el) { el.classList.remove('active'); });
   if (!id) return;
   var el = document.getElementById(id);
   if (el) el.classList.add('active');
-  var suffix = id.replace(/^(snav|tnav)-/, '');
-  var alt = document.getElementById(id.indexOf('snav-') === 0 ? 'tnav-' + suffix : 'snav-' + suffix);
-  if (alt) alt.classList.add('active');
 }
 
 function toggleSidebar() {
@@ -5809,7 +5956,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.84';
+var APP_VERSION = 'v1.10.85';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -5915,6 +6062,7 @@ function setUserEmail(email) {
   var topbar = document.getElementById('topbar-email');
   if (sidebar) sidebar.textContent = email || '';
   if (topbar) topbar.textContent = email || '';
+  updateTopbarUser();
 }
 
 // ══ AUTH ═════════════════════════════════════════════════════════════════════
