@@ -2,7 +2,7 @@
 
 Plataforma de evaluación psicológica y neuropsicológica.
 
-**Versión actual:** v1.10.87
+**Versión actual:** v1.10.88
 
 Baremos sincronizados desde la versión González Palau (`psicoescala` repo).
 

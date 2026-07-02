@@ -933,7 +933,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.87</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.88</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -1041,8 +1041,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="vista" id="vista-config">
       <div class="vista-header"><div class="vista-titulo">Datos del Profesional</div></div>
       <div class="card" style="max-width:560px;">
-        <div class="card-title">Datos para el encabezado del informe PDF</div>
-        <p style="font-size:0.84rem;color:var(--muted);margin-bottom:18px;">Estos datos aparecerán en el header y footer de todos los informes PDF generados.</p>
+        <div class="card-title">Datos para el encabezado del informe</div>
+        <p style="font-size:0.84rem;color:var(--muted);margin-bottom:18px;">Estos datos aparecerán en el header y footer de todos los informes PDF y Word generados.</p>
         <div class="form-grid">
           <div class="field" style="grid-column:1/-1"><label>Nombre completo / Título profesional</label>
             <input type="text" id="cfg-nombre" oninput="actualizarPreviewConfig()" placeholder="Ej: Lic. María González · M.P. 12345"></div>
@@ -6027,13 +6027,25 @@ function getProfHeaderHTML() {
   if (cfg.extra)     lines.push('<div style="font-size:10px;color:#4a5e55;">' + cfg.extra + '</div>');
   return lines.length ? lines.join('') : '<div style="font-size:11px;color:#8a9e94;font-style:italic;">Completá tu configuración en ⚙ Configuración</div>';
 }
-function getProfFooterText() {
+function getProfFooterLines() {
   var cfg = getConfigProfesional();
-  var parts = [];
-  if (cfg.nombre)    parts.push(cfg.nombre);
-  if (cfg.matricula) parts.push(cfg.matricula);
-  if (cfg.tel)       parts.push('Tel. ' + cfg.tel);
-  return parts.join(' · ') || 'PsicoEscala';
+  var lines = [];
+  if (cfg.nombre)    lines.push(cfg.nombre);
+  if (cfg.matricula) lines.push(cfg.matricula);
+  if (cfg.direccion) lines.push(cfg.direccion);
+  if (cfg.tel)       lines.push('Tel. ' + cfg.tel);
+  if (cfg.extra)     lines.push(cfg.extra);
+  return lines;
+}
+function getProfFooterText() {
+  return getProfFooterLines().join(' · ') || 'PsicoEscala';
+}
+function getProfFooterHTML() {
+  var lines = getProfFooterLines();
+  if (!lines.length) return '<div style="font-size:8px;color:#8a9e94;font-style:italic;">Completá tu configuración en ⚙ Configuración</div>';
+  return lines.map(function(l, i) {
+    return '<div style="font-size:8px;color:'+(i===0?'#2d4a3e;font-weight:700':'#4a5e55')+';'+(i?'margin-top:1px;':'')+'">'+l+'</div>';
+  }).join('');
 }
 
 function irLogin(){
@@ -6045,7 +6057,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.87';
+var APP_VERSION = 'v1.10.88';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7986,9 +7998,9 @@ function renderCuestionariosFam(d) {
 
     // ── Nota y pie ──
 
-    '<div style="margin-top:8px;border-top:0.5px solid #c8d8d0;padding-top:6px;display:flex;justify-content:space-between;font-family:Arial,sans-serif;font-size:8px;color:#5a6b63;">'+
-    '<div>'+getProfFooterText()+'</div>'+
-    '<div>'+new Date().toLocaleDateString('es-AR')+'</div></div>'+
+    '<div style="margin-top:8px;border-top:0.5px solid #c8d8d0;padding-top:6px;display:flex;justify-content:space-between;align-items:flex-end;font-family:Arial,sans-serif;">'+
+    '<div>'+getProfFooterHTML()+'</div>'+
+    '<div style="font-size:8px;color:#8a9e94;">'+new Date().toLocaleDateString('es-AR')+'</div></div>'+
     '</div></body></html>';
 
   var win = window.open('','_blank','width=1200,height=800');
@@ -15290,17 +15302,26 @@ function _buildWordHeaderXml() {
     '</w:hdr>';
 }
 function _buildWordFooterXml() {
-  var footerTxt = getProfFooterText();
+  var lines = getProfFooterLines();
+  var body = '';
+  if (!lines.length) {
+    body += '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
+      '<w:r><w:rPr><w:sz w:val="13"/><w:i/><w:color w:val="8a9e94"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+      '<w:t>Completá tu configuración en ⚙ Configuración</w:t></w:r></w:p>';
+  } else {
+    lines.forEach(function(line, i) {
+      body += '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="'+(i===lines.length-1?'0':'20')+'"/></w:pPr>'+
+        '<w:r><w:rPr>'+(i===0?'<w:b/>':'')+'<w:sz w:val="'+(i===0?'14':'13')+'"/><w:color w:val="'+(i===0?WC.VERDE_OSC:'4a5e55')+'"/>'+
+        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+        '<w:t>'+_xe(line)+'</w:t></w:r></w:p>';
+    });
+  }
   return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
     '<w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
     '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="0"/>'+
     '<w:pBdr><w:top w:val="single" w:sz="6" w:space="1" w:color="c8d8d0"/></w:pBdr></w:pPr></w:p>'+
-    '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-    '<w:r><w:rPr><w:sz w:val="14"/><w:color w:val="'+WC.VERDE_OSC+'"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-    '<w:t>'+_xe(footerTxt)+'</w:t></w:r></w:p>'+
-    '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-    '<w:r><w:rPr><w:sz w:val="13"/><w:color w:val="8a9e94"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
-    '<w:t>PsicoEscala · psicoescala.online@gmail.com</w:t></w:r></w:p></w:ftr>';
+    body+
+    '</w:ftr>';
 }
 
 // ── Helpers XML docx ──────────────────────────────────────────────────
