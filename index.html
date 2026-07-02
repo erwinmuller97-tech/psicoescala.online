@@ -132,14 +132,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .land-cta-btn:hover { transform:translateY(-2px); }
 
 .land-footer { padding:48px 64px 32px; background:#1e3830; }
-.land-footer-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:40px; }
+.land-footer-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.2fr 1fr; gap:40px; }
 .land-footer-name { font-family:"Plus Jakarta Sans",sans-serif; font-size:1rem; font-weight:700; color:#fff; margin-bottom:10px; }
 .land-footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.45); line-height:1.6; }
 .land-footer h4 { font-family:"Plus Jakarta Sans",sans-serif; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:1.2px; color:rgba(255,255,255,0.5); margin-bottom:12px; }
 .land-footer a { color:#8ec4a8; text-decoration:none; font-size:0.88rem; transition:color 0.15s; }
 .land-footer a:hover { color:#fff; }
-.land-ig-btn { display:inline-flex; align-items:center; gap:10px; padding:10px 18px; border-radius:8px; background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); color:#fff; font-size:0.86rem; font-weight:600; margin-top:8px; transition:transform 0.15s, box-shadow 0.15s; }
-.land-ig-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(131,58,180,0.35); color:#fff; }
 .land-footer-bottom { max-width:1200px; margin:28px auto 0; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:0.75rem; color:rgba(255,255,255,0.35); }
 
 /* Scroll reveal */
@@ -251,6 +249,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 /* ══ APP SHELL ══ */
 #screen-app { display: none; flex-direction: column; min-height: 100vh; }
 #screen-app.active { display: flex; }
+#page-app { width:100%; min-height:100vh; }
 
 /* ══ TOP NAVBAR (APP) ══ */
 .app-navbar {
@@ -260,9 +259,21 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   box-shadow:0 2px 16px rgba(30,56,48,0.2);
 }
 .app-navbar-inner {
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:0 20px; height:60px; max-width:100%;
+  display:flex; align-items:center; gap:12px;
+  padding:0 16px 0 12px; height:60px; max-width:100%;
 }
+.sidebar-toggle {
+  display:none; align-items:center; justify-content:center;
+  width:38px; height:38px; border-radius:8px; border:none;
+  background:rgba(255,255,255,0.08); color:#fff; cursor:pointer; flex-shrink:0;
+  font-size:1rem; transition:background 0.15s;
+}
+.sidebar-toggle:hover { background:rgba(255,255,255,0.15); }
+.sidebar-backdrop {
+  display:none; position:fixed; inset:0; background:rgba(10,22,40,0.45);
+  z-index:180; opacity:0; transition:opacity 0.25s;
+}
+.sidebar-backdrop.open { display:block; opacity:1; }
 .app-navbar-brand { display:flex; align-items:center; gap:10px; flex-shrink:0; cursor:pointer; }
 .app-navbar-brand .logo-mark { width:34px; height:34px; }
 .app-navbar-name { font-family:var(--font-display); font-size:1rem; font-weight:700; color:#fff; letter-spacing:-0.3px; white-space:nowrap; }
@@ -321,13 +332,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 /* ── SIDEBAR IZQUIERDO ── */
 .app-sidebar {
-  width:220px; min-width:220px; flex-shrink:0;
+  width:240px; min-width:240px; flex-shrink:0;
   background:var(--sidebar);
-  position:fixed; top:60px; left:0; bottom:0; z-index:90;
+  position:fixed; top:60px; left:0; bottom:0; z-index:190;
   overflow-y:auto; overflow-x:hidden;
   display:flex; flex-direction:column;
   padding:16px 0 24px;
   border-right:1px solid rgba(255,255,255,0.08);
+  transition:transform 0.25s var(--ease);
 }
 .app-sidebar::-webkit-scrollbar { width:4px; }
 .app-sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:4px; }
@@ -350,7 +362,20 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .sidebar-salir { width:100%; padding:9px 12px; background:none; border:1px solid rgba(255,255,255,0.15); border-radius:7px; color:rgba(255,255,255,0.5); font-family:var(--font-body); font-size:0.8rem; cursor:pointer; transition:all 0.15s; }
 .sidebar-salir:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.85); }
 
-.app-content { flex:1; padding:28px 32px 40px; margin-left:220px; min-width:0; }
+.app-content { flex:1; padding:28px 32px 40px; margin-left:240px; min-width:0; max-width:100%; }
+
+.inicio-hero {
+  display:flex; flex-direction:column; align-items:flex-start;
+  padding:8px 0 24px; text-align:left;
+}
+.inicio-hero-logo { width:56px; height:56px; margin-bottom:16px; }
+.inicio-hero-title { font-family:var(--font-display); font-size:1.45rem; font-weight:700; color:var(--text); letter-spacing:-0.4px; margin-bottom:6px; }
+.inicio-hero-desc { font-size:0.86rem; color:var(--muted); max-width:520px; line-height:1.65; }
+.inicio-stats { display:flex; gap:28px; margin-top:24px; flex-wrap:wrap; }
+.inicio-stat { text-align:left; min-width:88px; }
+.inicio-stat-n { font-family:var(--font-display); font-size:1.75rem; font-weight:600; color:var(--accentdk); line-height:1.1; }
+.inicio-stat-n.greeting { font-size:1rem; font-weight:600; letter-spacing:-0.2px; }
+.inicio-stat-l { font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-top:4px; font-weight:600; }
 
 
 /* ══ VISTAS ══ */
@@ -589,22 +614,30 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .data-table tbody td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
 .data-table tbody tr:hover td { background:var(--brand-50); }
 
+@media (max-width: 1024px) {
+  .sidebar-toggle { display:flex; }
+  .app-sidebar { transform:translateX(-100%); box-shadow:var(--shadow-lg); }
+  .app-sidebar.open { transform:translateX(0); }
+  .app-content { margin-left:0; padding:20px 16px 32px; }
+  .app-navbar-nav { display:none; }
+  .app-navbar-email { display:none !important; }
+}
 @media (max-width: 768px) {
   .sectores-grid, .tests-grid, .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
-  .app-content { padding: 20px 16px; }
-  .app-navbar-inner { padding: 0 12px; height: auto; min-height: 56px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
-  .app-navbar-nav { order: 3; width: 100%; padding: 4px 0 2px; }
+  .land-nav { padding:0 16px; height:60px; }
+  .land-nav-links { display:none; }
   .land-nav, .land-hero, .land-features, .land-cta-section, .land-footer, .land-about, .land-compare, .land-steps, .land-creator { padding-left: 24px; padding-right: 24px; }
   .land-features-grid, .land-compare-grid, .land-steps-grid { grid-template-columns: 1fr; }
   .land-hero, .land-creator-inner { flex-direction: column; }
   .land-footer-grid { grid-template-columns: 1fr; }
-  .topbar { padding: 0 16px; }
   .resultado-detalle { grid-template-columns: 1fr 1fr; }
   .stai-item { flex-direction: column; align-items: flex-start; }
+  .inicio-stats { gap:16px; }
 }
 @media print {
-  .app-navbar, .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir, .welcome-banner { display: none !important; }
-  .app-main { margin-left: 0 !important; }
+  .app-navbar, .app-sidebar, .sidebar-backdrop, .sidebar-toggle, .topbar, .btn-primary, .btn-secondary, .back-btn, .btn-salir, .welcome-banner { display: none !important; }
+  .app-main { margin-left: 0 !important; padding-top:0 !important; }
+  .app-content { margin-left:0 !important; }
   body { background: white; }
   .card, .resultado-box { box-shadow: none; border-color: #ddd; }
 }
@@ -792,7 +825,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <!-- CTA -->
     <section class="land-cta-section reveal" id="contacto">
       <h2 class="land-cta-h2">¿Listo para transformar tu práctica clínica?</h2>
-      <p class="land-cta-sub">Acceso profesional por suscripción. Escribinos o seguinos en redes.</p>
+      <p class="land-cta-sub">Acceso profesional por suscripción. Escribinos para consultas y soporte.</p>
       <button class="land-cta-btn" onclick="irLogin()">Iniciar sesión en PsicoEscala</button>
     </section>
 
@@ -807,10 +840,6 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <h4>Contacto</h4>
           <a href="mailto:psicoescala.online@gmail.com"><i class="fa-regular fa-envelope"></i> psicoescala.online@gmail.com</a>
           <p class="land-footer-copy" style="margin-top:10px;">Consultas, soporte técnico y acceso profesional.</p>
-        </div>
-        <div>
-          <h4>Redes</h4>
-          <a href="https://instagram.com/psicoescala" target="_blank" rel="noopener" class="land-ig-btn"><i class="fa-brands fa-instagram"></i> @psicoescala</a>
         </div>
       </div>
       <div class="land-footer-bottom">
@@ -827,7 +856,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.82</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.83</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -840,18 +869,31 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <!-- ══ APP ══ -->
 <div id="screen-app" class="screen">
 <div id="page-app">
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
   <header class="app-navbar" id="app-navbar">
     <div class="app-navbar-inner">
+      <button type="button" class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Abrir menú"><i class="fa-solid fa-bars"></i></button>
       <div class="app-navbar-brand" onclick="irVista('inicio')" title="Inicio">
         <div class="logo-mark" aria-hidden="true"></div>
         <span class="app-navbar-name">PsicoEscala</span>
       </div>
+      <nav class="app-navbar-nav" aria-label="Navegación principal">
+        <button type="button" class="topnav-link active" id="tnav-inicio" onclick="irVista('inicio')">Inicio</button>
+        <button type="button" class="topnav-link" id="tnav-config" onclick="irVista('config')">Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config-top" title="Completá matrícula y firma" style="display:none;"></span></button>
+        <button type="button" class="topnav-link" id="tnav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
+        <button type="button" class="topnav-link" id="tnav-neuro" onclick="irSector('neuro')">Neuropsicológicos</button>
+        <button type="button" class="topnav-link" id="tnav-clinica" onclick="irSector('clinica')">Clínica</button>
+        <button type="button" class="topnav-link" id="tnav-historial" onclick="irVista('historial')">Historial</button>
+        <button type="button" class="topnav-link" id="tnav-informe" onclick="irRedaccionInformes()">Informes</button>
+      </nav>
       <div class="app-navbar-actions">
+        <span class="app-navbar-email" id="topbar-email"></span>
         <div class="app-navbar-paciente empty" id="app-topbar-paciente">
           <select id="topbar-paciente-select" onchange="setPacienteActivo(this.value, true)" aria-label="Paciente activo">
             <option value="">— Paciente —</option>
           </select>
         </div>
+        <button type="button" class="app-navbar-salir" onclick="doLogout()">Salir</button>
       </div>
     </div>
   </header>
@@ -860,21 +902,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <!-- SIDEBAR IZQUIERDO -->
     <aside class="app-sidebar" id="app-sidebar">
       <div class="sidebar-nav-group">
-        <button class="sidebar-nav-item active" id="snav-inicio" onclick="irVista('inicio')">Inicio</button>
-        <button class="sidebar-nav-item" id="snav-config" onclick="irVista('config')">Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span></button>
-        <button class="sidebar-nav-item" id="snav-pacientes" onclick="irVista('pacientes')">Pacientes</button>
+        <div class="sidebar-nav-label">General</div>
+        <button class="sidebar-nav-item active" id="snav-inicio" onclick="navClick(function(){ irVista('inicio'); })"><span class="nav-icon"><i class="fa-solid fa-house"></i></span> Inicio</button>
+        <button class="sidebar-nav-item" id="snav-config" onclick="navClick(function(){ irVista('config'); })"><span class="nav-icon"><i class="fa-solid fa-user-doctor"></i></span> Datos del Profesional <span class="nav-badge-alert" id="nav-badge-config" title="Completá matrícula y firma" style="display:none;"></span></button>
+        <button class="sidebar-nav-item" id="snav-pacientes" onclick="navClick(function(){ irVista('pacientes'); })"><span class="nav-icon"><i class="fa-solid fa-users"></i></span> Pacientes</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-nav-group">
-        <button class="sidebar-nav-item" id="snav-neuro" onclick="irSector('neuro')">Tests Neuropsicológicos</button>
-        <button class="sidebar-nav-item" id="snav-clinica" onclick="irSector('clinica')">Psicología Clínica</button>
-        <button class="sidebar-nav-item" id="snav-dolor" onclick="irSector('dolor')">Dolor</button>
-        <button class="sidebar-nav-item" id="snav-tdah" onclick="irSector('tdah')">TDAH</button>
+        <div class="sidebar-nav-label">Tests</div>
+        <button class="sidebar-nav-item" id="snav-neuro" onclick="navClick(function(){ irSector('neuro'); })"><span class="nav-icon"><i class="fa-solid fa-brain"></i></span> Neuropsicológicos</button>
+        <button class="sidebar-nav-item" id="snav-clinica" onclick="navClick(function(){ irSector('clinica'); })"><span class="nav-icon"><i class="fa-solid fa-heart-pulse"></i></span> Psicología Clínica</button>
+        <button class="sidebar-nav-item" id="snav-dolor" onclick="navClick(function(){ irSector('dolor'); })"><span class="nav-icon"><i class="fa-solid fa-hand-holding-medical"></i></span> Dolor</button>
+        <button class="sidebar-nav-item" id="snav-tdah" onclick="navClick(function(){ irSector('tdah'); })"><span class="nav-icon"><i class="fa-solid fa-bolt"></i></span> TDAH</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-nav-group">
-        <button class="sidebar-nav-item" id="snav-historial" onclick="irVista('historial')">Historial</button>
-        <button class="sidebar-nav-item" id="snav-informe" onclick="irRedaccionInformes()">Redactar Informe</button>
+        <div class="sidebar-nav-label">Informes</div>
+        <button class="sidebar-nav-item" id="snav-historial" onclick="navClick(function(){ irVista('historial'); })"><span class="nav-icon"><i class="fa-solid fa-clock-rotate-left"></i></span> Historial</button>
+        <button class="sidebar-nav-item" id="snav-informe" onclick="navClick(function(){ irRedaccionInformes(); })"><span class="nav-icon"><i class="fa-solid fa-file-lines"></i></span> Redactar Informe</button>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-bottom">
@@ -919,14 +964,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="welcome-banner" id="welcome-banner">
         ¡Hola, <span id="welcome-nombre">Profesional</span>! Te damos la bienvenida a PsicoEscala.
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:32vh;text-align:center;padding:24px 0 16px;">
-        <div class="logo-mark" style="width:80px;height:80px;margin-bottom:24px;" aria-hidden="true"></div>
-        <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:10px;">Panel general</div>
-        <div style="font-size:0.87rem;color:var(--muted);max-width:440px;line-height:1.75;">Administración y puntuación automatizada de tests neuropsicológicos con baremos, perfil Z e informes clínicos.</div>
-        <div style="display:flex;gap:32px;margin-top:36px;flex-wrap:wrap;justify-content:center;" id="home-stats">
-          <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-pacientes">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Pacientes</div></div>
-          <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-evaluaciones">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Evaluaciones</div></div>
-          <div style="text-align:center;"><div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:300;color:var(--accentdk);" id="stat-saludo">—</div><div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;" id="stat-fecha-lbl">Hoy</div></div>
+      <div class="inicio-hero">
+        <div class="logo-mark inicio-hero-logo" aria-hidden="true"></div>
+        <div class="inicio-hero-title">Panel general</div>
+        <div class="inicio-hero-desc">Administración y puntuación automatizada de tests neuropsicológicos con baremos, perfil Z e informes clínicos.</div>
+        <div class="inicio-stats" id="home-stats">
+          <div class="inicio-stat"><div class="inicio-stat-n" id="stat-pacientes">—</div><div class="inicio-stat-l">Pacientes</div></div>
+          <div class="inicio-stat"><div class="inicio-stat-n" id="stat-evaluaciones">—</div><div class="inicio-stat-l">Evaluaciones</div></div>
+          <div class="inicio-stat"><div class="inicio-stat-n greeting" id="stat-saludo">—</div><div class="inicio-stat-l" id="stat-fecha-lbl">Hoy</div></div>
         </div>
       </div>
 
@@ -5650,12 +5695,15 @@ function profesionalDatosCompletos() {
 }
 
 function actualizarBadgeConfig() {
-  var badge = document.getElementById('nav-badge-config');
-  var btn = document.getElementById('snav-config');
-  if (!badge || !btn) return;
   var ok = profesionalDatosCompletos();
-  badge.style.display = ok ? 'none' : 'inline-flex';
-  btn.classList.toggle('nav-needs-config', !ok);
+  ['nav-badge-config', 'nav-badge-config-top'].forEach(function(id) {
+    var badge = document.getElementById(id);
+    if (badge) badge.style.display = ok ? 'none' : 'inline-flex';
+  });
+  ['snav-config', 'tnav-config'].forEach(function(id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.classList.toggle('nav-needs-config', !ok);
+  });
 }
 
 function actualizarWelcomeBanner(mostrar) {
@@ -5683,11 +5731,33 @@ function irRedaccionInformes() {
 }
 
 function setTopnavActive(id) {
-  document.querySelectorAll('.sidebar-nav-item').forEach(function(el) { el.classList.remove('active'); });
-  if (id) {
-    var el = document.getElementById(id);
-    if (el) el.classList.add('active');
-  }
+  document.querySelectorAll('.sidebar-nav-item, .topnav-link').forEach(function(el) { el.classList.remove('active'); });
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  var suffix = id.replace(/^(snav|tnav)-/, '');
+  var alt = document.getElementById(id.indexOf('snav-') === 0 ? 'tnav-' + suffix : 'snav-' + suffix);
+  if (alt) alt.classList.add('active');
+}
+
+function toggleSidebar() {
+  var sb = document.getElementById('app-sidebar');
+  var bd = document.getElementById('sidebar-backdrop');
+  if (!sb) return;
+  var open = sb.classList.toggle('open');
+  if (bd) bd.classList.toggle('open', open);
+}
+
+function closeSidebar() {
+  var sb = document.getElementById('app-sidebar');
+  var bd = document.getElementById('sidebar-backdrop');
+  if (sb) sb.classList.remove('open');
+  if (bd) bd.classList.remove('open');
+}
+
+function navClick(fn) {
+  if (typeof fn === 'function') fn();
+  if (window.innerWidth <= 1024) closeSidebar();
 }
 
 // ══ CONFIGURACIÓN DEL PROFESIONAL ════════════════════════════════════════════
@@ -5760,7 +5830,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.82';
+var APP_VERSION = 'v1.10.83';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -5862,8 +5932,10 @@ function supaAuth(action, body) {
 }
 
 function setUserEmail(email) {
-  var el = document.getElementById('sidebar-email');
-  if (el) el.textContent = email || '';
+  var sidebar = document.getElementById('sidebar-email');
+  var topbar = document.getElementById('topbar-email');
+  if (sidebar) sidebar.textContent = email || '';
+  if (topbar) topbar.textContent = email || '';
 }
 
 // ══ AUTH ═════════════════════════════════════════════════════════════════════
@@ -10252,7 +10324,7 @@ function actualizarSaludo() {
   var fechaStr = dias[hoy.getDay()] + ' ' + hoy.getDate() + ' ' + meses[hoy.getMonth()];
   var statSaludo = document.getElementById('stat-saludo');
   var statFechaLbl = document.getElementById('stat-fecha-lbl');
-  if(statSaludo) statSaludo.textContent = sal.split(' ')[0];
+  if(statSaludo) statSaludo.textContent = sal;
   if(statFechaLbl) statFechaLbl.textContent = fechaStr;
   var s = document.getElementById('saludo-txt'); if(s) s.textContent = sal + ' 👋';
   var f = document.getElementById('fecha-txt'); if(f) f.textContent = fechaStr;
