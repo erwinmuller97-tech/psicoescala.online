@@ -933,7 +933,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.89</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.90</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -1018,10 +1018,6 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <button class="sidebar-nav-item" id="snav-historial" onclick="navClick(function(){ irVista('historial'); })">
           <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h4a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
           Historial
-        </button>
-        <button class="sidebar-nav-item" id="snav-informe" onclick="navClick(function(){ irRedaccionInformes(); })">
-          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
-          Redactar Informe
         </button>
       </div>
 
@@ -1209,18 +1205,18 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="vista" id="vista-historial">
       <div class="vista-header">
         <div class="vista-titulo">Historial de evaluaciones</div>
-        <button class="btn-primary" onclick="generarPDFHistorial()">📄 Generar informe PDF</button>
-        <button class="btn-secondary" onclick="generarWordHistorial()" style="margin-left:8px;">📝 Generar informe Word</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button id="btn-redactar-informe" onclick="abrirInforme()" class="btn-primary" style="display:none;">✏️ Redactar informe</button>
+          <button class="btn-secondary" onclick="generarPDFHistorial()">📄 Generar informe PDF</button>
+          <button class="btn-secondary" onclick="generarWordHistorial()">📝 Generar informe Word</button>
+        </div>
       </div>
       <div class="card" style="margin-bottom:16px;">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;">
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <label style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;">Filtrar por paciente</label>
-            <select id="historial-filtro-pac" onchange="filtrarHistorial()" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);font-size:0.88rem;color:var(--text);min-width:200px;">
-              <option value="">— Todos los pacientes —</option>
-            </select>
-          </div>
-          <button id="btn-redactar-informe" onclick="abrirInforme()" class="btn-secondary" style="display:none;">✏️ Redactar informe</button>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <label style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;">Filtrar por paciente</label>
+          <select id="historial-filtro-pac" onchange="filtrarHistorial()" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);font-size:0.88rem;color:var(--text);min-width:200px;">
+            <option value="">— Todos los pacientes —</option>
+          </select>
         </div>
       </div>
       <div class="card">
@@ -5945,6 +5941,7 @@ function irRedaccionInformes() {
     irVista('pacientes');
     return;
   }
+  irVista('historial');
   abrirInforme(pacId);
 }
 
@@ -6057,7 +6054,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.89';
+var APP_VERSION = 'v1.10.90';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -6084,6 +6081,345 @@ function getPacienteActivoId() {
   try { return localStorage.getItem('psico_paciente_activo') || ''; } catch(e) { return ''; }
 }
 
+function getPacienteActivo() {
+  var id = getPacienteActivoId();
+  if (!id) return null;
+  return PACIENTES.find(function(p) { return String(p.id) === String(id); }) || null;
+}
+
+function parseAniosEscolaridad(escolaridad) {
+  if (!escolaridad) return null;
+  var s = String(escolaridad).toLowerCase();
+  var m = s.match(/(\d+)\s*a[nñ]os?/);
+  if (m) return parseInt(m[1], 10);
+  m = s.match(/(\d+)/);
+  if (m) {
+    var n = parseInt(m[1], 10);
+    if (n <= 25) return n;
+  }
+  if (/postgrado|maestr|doctorado|posgrado/.test(s)) return 18;
+  if (/universit/.test(s)) return 16;
+  if (/terciar/.test(s)) return 14;
+  if (/secundar/.test(s)) {
+    if (/complet|termin/.test(s)) return 12;
+    if (/incomplet/.test(s)) return 9;
+    return 12;
+  }
+  if (/primar/.test(s)) return 6;
+  if (/analfabet|sin estudios/.test(s)) return 0;
+  return null;
+}
+
+function pacSetVal(id, val) {
+  var el = document.getElementById(id);
+  if (el && val !== null && val !== undefined && val !== '') el.value = val;
+}
+
+function sexoARey(sexo) {
+  if (!sexo) return '';
+  var s = String(sexo).toLowerCase();
+  if (s === 'h' || s === 'm') return s;
+  if (s.indexOf('masc') !== -1 || s === 'hombre' || s === 'varon' || s === 'varón') return 'h';
+  if (s.indexOf('fem') !== -1 || s === 'mujer') return 'm';
+  return '';
+}
+
+function sexoFlv(sexo) {
+  if (!sexo) return '';
+  var s = String(sexo).toLowerCase();
+  if (s.indexOf('masc') !== -1 || s === 'h' || s === 'v') return 'v';
+  if (s.indexOf('fem') !== -1 || s === 'm') return 'm';
+  return '';
+}
+
+function sexoFab(sexo) {
+  if (!sexo) return '';
+  var s = String(sexo).toLowerCase();
+  if (s.indexOf('masc') !== -1) return '0';
+  if (s.indexOf('fem') !== -1) return '1';
+  return '';
+}
+
+function sexoBads(sexo) {
+  if (!sexo) return '';
+  var s = String(sexo).toLowerCase();
+  if (s.indexOf('fem') !== -1) return 'f';
+  if (s.indexOf('masc') !== -1) return 'm';
+  return '';
+}
+
+function grupoRey(edad) {
+  if (edad === null || edad < 16) return '';
+  if (edad <= 19) return '0';
+  if (edad <= 29) return '1';
+  if (edad <= 39) return '2';
+  if (edad <= 49) return '3';
+  if (edad <= 59) return '4';
+  if (edad <= 69) return '5';
+  return '6';
+}
+
+function grupoTmtPe(edad) {
+  if (edad === null || edad < 16) return '';
+  if (edad <= 29) return '0';
+  if (edad <= 49) return '1';
+  if (edad <= 64) return '2';
+  return '3';
+}
+
+function escolTmtPe(anios) {
+  if (anios === null) return '';
+  if (anios <= 6) return 'baja';
+  if (anios <= 10) return 'media';
+  return 'alta';
+}
+
+function grupoFlv(edad) {
+  if (edad === null || edad < 15) return '';
+  if (edad <= 29) return '0';
+  if (edad <= 49) return '1';
+  return '2';
+}
+
+function neFlv(anios) {
+  if (anios === null) return '';
+  return anios >= 12 ? 'alto' : 'bajo';
+}
+
+function grupoStroop(edad) {
+  if (edad === null || edad < 16) return '';
+  if (edad <= 44) return '0';
+  if (edad <= 64) return '1';
+  return '2';
+}
+
+function grupoIfs(edad) {
+  if (edad === null || edad < 20) return '';
+  if (edad <= 34) return '0';
+  if (edad <= 49) return '1';
+  if (edad <= 64) return '2';
+  return '3';
+}
+
+function neIfs(anios) {
+  if (anios === null) return '';
+  if (anios <= 7) return '0';
+  if (anios <= 12) return '1';
+  return '2';
+}
+
+function grupoWcst(edad) {
+  if (edad === null || edad < 18) return '';
+  if (edad < 30) return '0';
+  if (edad >= 80) return '6';
+  return String(1 + Math.floor((edad - 30) / 10));
+}
+
+function neAltoBajo(anios) {
+  if (anios === null) return '';
+  return anios >= 12 ? 'alto' : 'bajo';
+}
+
+function neAcer(anios) {
+  if (anios === null) return '';
+  return anios <= 6 ? 'baja' : 'alta';
+}
+
+function neMoca(anios) {
+  if (anios === null) return '';
+  if (anios <= 6) return 'primaria';
+  if (anios <= 12) return 'media';
+  return 'alta';
+}
+
+function grupoQuinquenal18(edad, maxIdx) {
+  if (edad === null || edad < 18) return '';
+  var idx = Math.floor((edad - 18) / 5);
+  if (idx > maxIdx) return String(maxIdx);
+  return String(idx);
+}
+
+function grupoDecada20(edad) {
+  if (edad === null || edad < 20) return '';
+  if (edad < 30) return '0';
+  if (edad < 40) return '1';
+  if (edad < 50) return '2';
+  return '3';
+}
+
+function grupoHotel(edad) {
+  if (edad === null || edad < 19) return '';
+  if (edad <= 29) return '0';
+  if (edad <= 39) return '1';
+  if (edad <= 49) return '2';
+  return '3';
+}
+
+function grupoSignoret(edad) {
+  if (edad === null) return '';
+  if (edad <= 45) return '0';
+  if (edad <= 55) return '1';
+  if (edad <= 65) return '2';
+  if (edad <= 75) return '3';
+  if (edad <= 85) return '4';
+  return '5';
+}
+
+function grupoTavec(edad) {
+  if (edad === null || edad < 16) return '';
+  if (edad <= 24) return '1';
+  if (edad <= 34) return '2';
+  if (edad <= 44) return '3';
+  if (edad <= 54) return '4';
+  if (edad <= 64) return '5';
+  if (edad <= 74) return '6';
+  return '7';
+}
+
+function grupoSdmtOral(edad) {
+  if (edad === null || edad < 19) return '';
+  if (edad <= 35) return '0';
+  if (edad <= 50) return '1';
+  return '2';
+}
+
+function escolFcrBtaSdmtEscrita(anios) {
+  if (anios === null) return '';
+  return anios > 12 ? '0' : '1';
+}
+
+function escolSdmtOral(anios) {
+  if (anios === null) return '';
+  if (anios <= 11) return '0';
+  if (anios <= 16) return '1';
+  return '2';
+}
+
+function escolFab(anios, texto) {
+  var s = (texto || '').toLowerCase();
+  if (/universit|terciar/.test(s)) return '2';
+  if (/secundar/.test(s)) return '1';
+  if (/primar/.test(s)) return '0';
+  if (anios === null) return '';
+  if (anios >= 14) return '2';
+  if (anios >= 7) return '1';
+  return '0';
+}
+
+function educBads(anios, texto) {
+  var s = (texto || '').toLowerCase();
+  if (/postgrado|maestr|doctorado|posgrado/.test(s)) return '4';
+  if (/universit/.test(s)) return '3';
+  if (/terciar/.test(s)) return '2';
+  if (/secundar/.test(s)) return '1';
+  if (/primar/.test(s)) return '0';
+  if (anios === null) return '';
+  if (anios >= 17) return '4';
+  if (anios >= 14) return '3';
+  if (anios >= 12) return '2';
+  if (anios >= 7) return '1';
+  return '0';
+}
+
+function grupoWaisiv(edad) {
+  if (edad === null || edad < 16) return '';
+  if (edad <= 17) return '0';
+  if (edad <= 19) return '1';
+  if (edad <= 24) return '2';
+  if (edad <= 29) return '3';
+  if (edad <= 34) return '4';
+  if (edad <= 44) return '5';
+  if (edad <= 54) return '6';
+  if (edad <= 64) return '7';
+  if (edad <= 69) return '8';
+  if (edad <= 74) return '9';
+  if (edad <= 79) return '10';
+  if (edad <= 84) return '11';
+  return '12';
+}
+
+function escolBnt60(anios) {
+  if (anios === null) return '';
+  return anios > 12 ? '1' : '0';
+}
+
+function aplicarPacienteActivoATest(testId) {
+  var p = getPacienteActivo();
+  if (!p) return;
+  var edad = p.fecha_nacimiento ? calcularEdad(p.fecha_nacimiento) : null;
+  var anios = parseAniosEscolaridad(p.escolaridad);
+
+  if (testId) pacSetVal(testId + '-paciente', p.id);
+
+  if (edad !== null) {
+    pacSetVal('rey-edad', grupoRey(edad));
+    pacSetVal('tmt-edad', grupoTmtPe(edad));
+    pacSetVal('flv-edad', grupoFlv(edad));
+    pacSetVal('stroop-edad', grupoStroop(edad));
+    pacSetVal('ifs-edad', grupoIfs(edad));
+    pacSetVal('wcst-edad', grupoWcst(edad));
+    pacSetVal('fcr-edad', grupoQuinquenal18(edad, 12));
+    pacSetVal('bta-edad', grupoQuinquenal18(edad, 12));
+    pacSetVal('sdmt-edad-escrita', grupoQuinquenal18(edad, 12));
+    pacSetVal('sdmt-edad-oral', grupoSdmtOral(edad));
+    pacSetVal('llaves-edad', grupoDecada20(edad));
+    pacSetVal('juicio-edad', grupoDecada20(edad));
+    pacSetVal('zoo-edad', grupoDecada20(edad));
+    pacSetVal('hotel-edad', grupoHotel(edad));
+    pacSetVal('signoret-edad', grupoSignoret(edad));
+    pacSetVal('tavec-edad', grupoTavec(edad));
+    pacSetVal('token-edad', edad);
+    pacSetVal('fab-edad', edad);
+    pacSetVal('d2-edad', edad);
+    pacSetVal('waisiv-gi', grupoWaisiv(edad));
+  }
+
+  pacSetVal('rey-sexo', sexoARey(p.sexo));
+  pacSetVal('flv-sexo', sexoFlv(p.sexo));
+  pacSetVal('fab-sexo', sexoFab(p.sexo));
+  pacSetVal('llaves-sexo', sexoBads(p.sexo));
+  pacSetVal('juicio-sexo', sexoBads(p.sexo));
+  pacSetVal('zoo-sexo', sexoBads(p.sexo));
+  pacSetVal('hotel-sexo', sexoBads(p.sexo));
+
+  if (anios !== null) {
+    pacSetVal('tmt-escol', escolTmtPe(anios));
+    pacSetVal('flv-ne', neFlv(anios));
+    pacSetVal('ifs-ne', neIfs(anios));
+    pacSetVal('wcst-ne', neAltoBajo(anios));
+    pacSetVal('acer-ne', neAcer(anios));
+    pacSetVal('moca-ne', neMoca(anios));
+    pacSetVal('fcr-escol', escolFcrBtaSdmtEscrita(anios));
+    pacSetVal('bta-escol', escolFcrBtaSdmtEscrita(anios));
+    pacSetVal('sdmt-escol-escrita', escolFcrBtaSdmtEscrita(anios));
+    pacSetVal('sdmt-escol-oral', escolSdmtOral(anios));
+    pacSetVal('fab-escol', escolFab(anios, p.escolaridad));
+    pacSetVal('token-escol', anios);
+    pacSetVal('bnt60-educ', escolBnt60(anios));
+    var educB = educBads(anios, p.escolaridad);
+    pacSetVal('llaves-educ', educB);
+    pacSetVal('juicio-educ', educB);
+    pacSetVal('zoo-educ', educB);
+  }
+
+  if (testId === 'stroop' && typeof stroopActualizar === 'function') stroopActualizar();
+  if (testId === 'token' && typeof tokenLive === 'function') tokenLive();
+  if (testId === 'waisiv' && typeof waisivActualizar === 'function') waisivActualizar();
+  if (testId === 'bnt' && typeof bntActualizar === 'function') bntActualizar();
+}
+
+function aplicarPacienteActivoATodosTests() {
+  aplicarPacienteActivoATest('');
+}
+
+function actualizarBtnRedactarInforme() {
+  var btn = document.getElementById('btn-redactar-informe');
+  if (!btn) return;
+  var filtro = document.getElementById('historial-filtro-pac');
+  var pacId = getPacienteActivoId() || (filtro && filtro.value) || '';
+  btn.style.display = pacId ? 'inline-flex' : 'none';
+}
+
 function setPacienteActivo(id, notify) {
   PACIENTE_ACTIVO_ID = id ? String(id) : '';
   try {
@@ -6107,6 +6443,8 @@ function setPacienteActivo(id, notify) {
   }
   var lista = document.getElementById('pacientes-lista-contenido');
   if (lista && PACIENTES.length) renderPacientes();
+  aplicarPacienteActivoATodosTests();
+  actualizarBtnRedactarInforme();
   if (notify) {
     if (PACIENTE_ACTIVO_ID) {
       var p = PACIENTES.find(function(x){ return String(x.id) === PACIENTE_ACTIVO_ID; });
@@ -6541,9 +6879,7 @@ function renderHistorial() {
 
 function filtrarHistorial() {
   renderHistorial();
-  var filtro = document.getElementById('historial-filtro-pac');
-  var btn = document.getElementById('btn-redactar-informe');
-  if (btn) btn.style.display = (filtro && filtro.value) ? 'inline-flex' : 'none';
+  actualizarBtnRedactarInforme();
 }
 
 function renderFiltroHistorial() {
@@ -8079,11 +8415,17 @@ function irVista(v) {
   document.querySelectorAll('.vista').forEach(function(el){ el.classList.remove('active'); });
   var el = document.getElementById('vista-' + v);
   if(el) el.classList.add('active');
-  var map = {inicio:'snav-inicio', pacientes:'snav-pacientes', historial:'snav-historial', informe:'snav-informe', config:'snav-config'};
+  var map = {inicio:'snav-inicio', pacientes:'snav-pacientes', historial:'snav-historial', informe:'snav-historial', config:'snav-config'};
   setTopnavActive(map[v] || null);
   actualizarTituloTopbar(v);
   actualizarWelcomeBanner(v === 'inicio');
-  if(v === 'historial') { renderFiltroHistorial(); renderHistorial(); }
+  if(v === 'historial') {
+    renderFiltroHistorial();
+    var filtroHist = document.getElementById('historial-filtro-pac');
+    if (filtroHist && getPacienteActivoId() && !filtroHist.value) filtroHist.value = getPacienteActivoId();
+    renderHistorial();
+    actualizarBtnRedactarInforme();
+  }
 }
 
 var NP_TESTS = [
@@ -8397,6 +8739,7 @@ function irTest(t) {
   if (t === 'juicio') iniciarJuicio();
   if (t === 'zoo') iniciarZoo();
   if (t === 'sdmt') iniciarSDMT();
+  aplicarPacienteActivoATest(t);
 }
 
 function volverSector() {
