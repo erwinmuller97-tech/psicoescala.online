@@ -1073,7 +1073,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.91</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.92</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -1420,38 +1420,17 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <span style="font-size:1rem;">📊</span>
             <div>
               <div class="card-title" style="margin:0;">Perfil Z del paciente — guía de redacción</div>
-              <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">Referencia de puntajes Z con interpretación clínica para residentes</div>
+              <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">Vista rápida de Z-scores por dominio</div>
             </div>
           </div>
           <span id="perfil-z-toggle-icon" style="font-size:1.2rem;color:var(--accent);transition:transform 0.2s;">▼</span>
         </div>
 
         <div id="perfil-z-panel" style="display:none;margin-top:16px;">
-
-          <!-- Leyenda de interpretación -->
-          <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;margin-bottom:14px;">
-            <div style="font-size:0.72rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Criterios de interpretación (puntuación Z)</div>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:6px;font-size:0.75rem;">
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#1a6e3a;background:#d4f0e2;border-radius:4px;padding:1px 4px;">+2 a +3</span><span style="color:var(--text);">Muy superior</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#1a6e3a;background:#d4f0e2;border-radius:4px;padding:1px 4px;">+1.5</span><span style="color:var(--text);">Superior</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#1565c0;background:#d8f0fa;border-radius:4px;padding:1px 4px;">+1</span><span style="color:var(--text);">Límite superior normativo</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#2d4a3e;background:#e8f5f0;border-radius:4px;padding:1px 4px;">−0.5 a +0.5</span><span style="color:var(--text);">Normal</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#7a5c00;background:#fdf0c4;border-radius:4px;padding:1px 4px;">−1</span><span style="color:var(--text);">Límite inferior normativo</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#a04000;background:#fde8d0;border-radius:4px;padding:1px 4px;">−1.5</span><span style="color:var(--text);">Dificultad leve</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#a00000;background:#fad8d8;border-radius:4px;padding:1px 4px;">−2</span><span style="color:var(--text);">Dificultad moderada</span></div>
-              <div style="display:flex;align-items:center;gap:6px;"><span style="width:36px;text-align:center;font-weight:700;color:#7b0000;background:#f5c0c0;border-radius:4px;padding:1px 4px;">−2.5 a −3</span><span style="color:var(--text);">Dificultad elevada</span></div>
-            </div>
-          </div>
-
-          <!-- Tabla de Z -->
           <div id="perfil-z-tabla" style="font-size:0.79rem;">
             <div style="color:var(--muted);font-style:italic;padding:10px 0;">Cargando resultados del paciente...</div>
           </div>
-
-          <!-- Nota para residentes -->
-          <div style="background:#f0f7f4;border:1px solid #c8d8d0;border-radius:6px;padding:10px 14px;margin-top:12px;font-size:0.75rem;color:#2d4a3e;line-height:1.6;">
-            <strong>Nota para residentes:</strong> Los puntajes Z indican cuántas desviaciones estándar se aleja el rendimiento del paciente respecto a la media de su grupo normativo. Un Z entre −1 y +1 abarca el 68% de la población normal. Resultados entre −1 y −1.5 son "límite inferior normativo" — no necesariamente patológicos, pero merecen descripción. Por debajo de −1.5 se habla de "dificultad" con gradación clínica. Siempre integrar con la historia clínica y el contexto.
-          </div>
+        </div>
         </div>
       </div>
 
@@ -6199,7 +6178,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.91';
+var APP_VERSION = 'v1.10.92';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -16894,17 +16873,50 @@ function togglePerfilZ() {
   if (!open) renderPerfilZ();
 }
 
+var TAVEC_VARS_ORDER = [
+  { key:'zA1',     lbl:'RI-A1' },
+  { key:'zA5',     lbl:'RI-A5' },
+  { key:'zAT',     lbl:'RI-AT' },
+  { key:'zRIB',    lbl:'RI-B' },
+  { key:'zRLCP',   lbl:'RL-CP' },
+  { key:'zRCLCP',  lbl:'RCL-CP' },
+  { key:'zRLLP',   lbl:'RL-LP' },
+  { key:'zRCLLP',  lbl:'RCL-LP' },
+  { key:'zP',      lbl:'Perseveraciones', error:true },
+  { key:'zIRL',    lbl:'I-RL', error:true },
+  { key:'zIRCL',   lbl:'I-RCL', error:true },
+  { key:'zRecon',  lbl:'Recon-Ac' },
+  { key:'zFP',     lbl:'FP', error:true },
+  { key:'zDiscrim',lbl:'Discriminabilidad' }
+];
+
+var BEM_VARS_ORDER = [
+  { key:'rli',  lbl:'Recuerdo Lógico Inmediato' },
+  { key:'rld',  lbl:'Recuerdo Lógico Diferido' },
+  { key:'as',   lbl:'Aprendizaje Serial' },
+  { key:'rs',   lbl:'Recuerdo Serial' },
+  { key:'rc',   lbl:'Recuerdo con Claves' },
+  { key:'reco', lbl:'Reconocimiento' }
+];
+
+var BEM_SIG_BARMO = {
+  rli:  { M:[9.19,9.07,8.91,9.12,7.91,7.58], DS:[2.12,1.83,1.54,1.33,1.31,0.74] },
+  rld:  { M:[9.22,8.97,8.83,8.75,7.70,7.25], DS:[2.07,1.90,1.63,1.50,1.22,0.61] },
+  as:   { M:[9.92,9.88,9.27,8.96,7.82,6.80], DS:[1.69,1.04,1.79,1.54,1.62,1.09] },
+  rs:   { M:[8.97,9.16,8.23,7.89,6.86,5.80], DS:[1.87,1.67,1.83,1.70,1.45,1.09] },
+  rc:   { M:[11.00,11.16,11.20,10.20,10.00,10.00], DS:[1.62,1.39,1.03,2.20,1.79,1.22] },
+  reco: { M:[11.85,11.91,11.70,11.69,11.43,11.00], DS:[0.47,0.29,0.53,0.70,0.81,1.73] }
+};
+
 function renderPerfilZ() {
   var tabla = document.getElementById('perfil-z-tabla');
   if (!tabla) return;
 
-  // Obtener paciente activo del informe
   var pacId = window._informePacId || null;
   var resultados = pacId
     ? (RESULTADOS||[]).filter(function(r){ return String(r.paciente_id) === String(pacId); })
     : (RESULTADOS||[]);
 
-  // Filtrar solo tests NP con Z
   var NP_LIST = ['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12',
     'TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret',
     'Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral',
@@ -16920,13 +16932,13 @@ function renderPerfilZ() {
   };
 
   function zColor(z) {
-    if (z === null || z === undefined) return {bg:'transparent',txt:'var(--muted)',lbl:'—'};
-    if (z >= 1.5)  return {bg:'#d8f0fa',txt:'#1565c0',lbl:'Superior'};
-    if (z >= 1.0)  return {bg:'#d8eaff',txt:'#1a4a8a',lbl:'Sobre el promedio'};
-    if (z >= -0.99)return {bg:'#e8f4e0',txt:'#325c28',lbl:'Esperado'};
-    if (z >= -1.49)return {bg:'#fdf0c4',txt:'#7a5c00',lbl:'Límite inferior normativo'};
-    if (z >= -1.99)return {bg:'#fde8d0',txt:'#a04000',lbl:'Dificultad leve'};
-    return             {bg:'#fad8d8',txt:'#a00000',lbl:'Dificultad moderada'};
+    if (z === null || z === undefined) return {bg:'transparent',txt:'var(--muted)'};
+    if (z >= 1.5)  return {bg:'#d8f0fa',txt:'#1565c0'};
+    if (z >= 1.0)  return {bg:'#d8eaff',txt:'#1a4a8a'};
+    if (z >= -0.99)return {bg:'#e8f4e0',txt:'#325c28'};
+    if (z >= -1.49)return {bg:'#fdf0c4',txt:'#7a5c00'};
+    if (z >= -1.99)return {bg:'#fde8d0',txt:'#a04000'};
+    return             {bg:'#fad8d8',txt:'#a00000'};
   }
 
   function fmtZ(z) {
@@ -16934,9 +16946,92 @@ function renderPerfilZ() {
     return (z >= 0 ? '+' : '') + parseFloat(z).toFixed(2);
   }
 
-  // Construir filas por dominio
+  function filaZ(lbl, z) {
+    if (z === null || z === undefined) return '';
+    var c = zColor(z);
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 8px;border-radius:4px;margin-bottom:2px;background:var(--surface);">' +
+      '<span style="font-size:0.78rem;color:var(--text);">' + lbl + '</span>' +
+      '<span style="font-family:monospace;font-weight:700;font-size:0.8rem;color:' + c.txt + ';background:' + c.bg + ';padding:2px 8px;border-radius:4px;min-width:52px;text-align:center;flex-shrink:0;">' + fmtZ(z) + '</span>' +
+      '</div>';
+  }
+
+  function bemZ(d, key) {
+    var pb = d[key];
+    if (pb === null || pb === undefined || pb === '') return null;
+    pb = parseFloat(pb);
+    var gi = d.grupo_edad;
+    if (gi === null || gi === undefined) return null;
+    var bar = BEM_SIG_BARMO[key];
+    if (!bar) return null;
+    return parseFloat(((pb - bar.M[gi]) / bar.DS[gi]).toFixed(2));
+  }
+
+  function extraerFilas(tn, r) {
+    var d = r.datos || {};
+    var filas = [];
+
+    if (tn === 'TMT A-B') {
+      if (d.tmt_a_z != null) filas.push({lbl:'TMT A', z: d.tmt_a_z});
+      if (d.tmt_b_z != null) filas.push({lbl:'TMT B', z: d.tmt_b_z});
+    } else if (tn === 'Stroop') {
+      if (d.zP  != null) filas.push({lbl:'Stroop · Palabras', z: d.zP});
+      if (d.zC  != null) filas.push({lbl:'Stroop · Color', z: d.zC});
+      if (d.zPC != null) filas.push({lbl:'Stroop · Pal/Color', z: d.zPC});
+      if (d.zInt!= null) filas.push({lbl:'Stroop · Interferencia', z: d.zInt});
+    } else if (tn === 'WAIS-IV') {
+      if (d.rd_z  != null) filas.push({lbl:'WAIS · Dígitos', z: d.rd_z});
+      if (d.cla_z != null) filas.push({lbl:'WAIS · Claves', z: d.cla_z});
+      if (d.sln_z != null) filas.push({lbl:'WAIS · Nro-Letra', z: d.sln_z});
+    } else if (tn === 'Fluencia Verbal' && d.variables && d.variables.length) {
+      d.variables.forEach(function(v){ if (v.z != null) filas.push({lbl: v.label, z: v.z}); });
+    } else if (tn === 'Rey Verbal' && d.variables && d.variables.length) {
+      d.variables.forEach(function(v){ if (v.z != null) filas.push({lbl: v.label, z: v.z}); });
+    } else if (tn === 'TAVEC') {
+      TAVEC_VARS_ORDER.forEach(function(v) {
+        var z = d[v.key];
+        if (z === null || z === undefined) return;
+        z = parseFloat(z);
+        if (v.error) z = -z;
+        filas.push({lbl: 'TAVEC · ' + v.lbl, z: z});
+      });
+    } else if (tn === 'D2') {
+      var idx = d.indices || {};
+      if (idx.CON && idx.CON.z != null) filas.push({lbl:'D2 · CON', z: idx.CON.z});
+      if (idx.TOT && idx.TOT.z != null) filas.push({lbl:'D2 · TOT', z: idx.TOT.z});
+    } else if (tn === 'Figura Rey') {
+      if (d.zCopia != null) filas.push({lbl:'Fig. Rey · Copia', z: d.zCopia});
+      if (d.zRI    != null) filas.push({lbl:'Fig. Rey · Recuerdo inmediato (RI)', z: d.zRI});
+      if (d.zRD    != null) filas.push({lbl:'Fig. Rey · Recuerdo diferido (RD)', z: d.zRD});
+    } else if (tn === 'BEM 144 Signoret') {
+      BEM_VARS_ORDER.forEach(function(v) {
+        var z = bemZ(d, v.key);
+        if (z !== null) filas.push({lbl: 'BEM · ' + v.lbl, z: z});
+      });
+    } else if (tn === 'WCST-64') {
+      if (d.cat_z   != null) filas.push({lbl:'WCST · Categorías', z: d.cat_z});
+      if (d.perse_z != null) filas.push({lbl:'WCST · Perseveraciones', z: d.perse_z});
+    } else if (tn === 'Test del Hotel') {
+      if (d.zTareas   != null) filas.push({lbl:'Hotel · Tareas', z: d.zTareas});
+      if (d.zTiempo   != null) filas.push({lbl:'Hotel · Desvío tiempo', z: d.zTiempo});
+      if (d.zBotones  != null) filas.push({lbl:'Hotel · Desvío botones', z: d.zBotones});
+    } else if (tn === 'BTA') {
+      if (d.z != null) filas.push({lbl:'BTA', z: d.z});
+    } else if (tn === 'SDMT-escrita' || tn === 'SDMT-oral') {
+      if (d.z != null) filas.push({lbl: tn === 'SDMT-escrita' ? 'SDMT · Escrita' : 'SDMT · Oral', z: d.z});
+    } else if (tn === 'BADS-Llaves') {
+      if (d.z != null) filas.push({lbl:'BADS · Llaves', z: d.z});
+    } else if (tn === 'BADS-Juicio') {
+      if (d.z != null) filas.push({lbl:'BADS · Juicio temporal', z: d.z});
+    } else if (tn === 'BADS-Zoo') {
+      if (d.z_bruto != null) filas.push({lbl:'BADS · Mapa del Zoo', z: d.z_bruto});
+    } else {
+      if (r.puntaje_z != null) filas.push({lbl: tn, z: r.puntaje_z});
+    }
+    return filas;
+  }
+
   var byTest = {};
-  resultados.forEach(function(r){ if(NP_LIST.indexOf(r.test) >= 0) byTest[r.test] = r; });
+  resultados.forEach(function(r){ if (NP_LIST.indexOf(r.test) >= 0) byTest[r.test] = r; });
 
   var html = '';
   var hayDatos = false;
@@ -16945,67 +17040,21 @@ function renderPerfilZ() {
     var tests = DOMINIOS[dom].filter(function(t){ return byTest[t]; });
     if (!tests.length) return;
 
-    html += '<div style="margin-bottom:10px;">';
-    html += '<div style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;background:var(--surface2);border-radius:4px;margin-bottom:4px;">' + dom + '</div>';
-
+    var domHtml = '';
     tests.forEach(function(tn) {
-      var r = byTest[tn];
-      var d = r.datos || {};
-      var filas = [];
-
-      // Extraer variables con Z según test
-      if (tn === 'TMT A-B') {
-        if (d.tmt_a_z != null) filas.push({lbl:'TMT A', z: d.tmt_a_z});
-        if (d.tmt_b_z != null) filas.push({lbl:'TMT B', z: d.tmt_b_z});
-      } else if (tn === 'Stroop') {
-        if (d.zP  != null) filas.push({lbl:'Stroop Palabras', z: d.zP});
-        if (d.zC  != null) filas.push({lbl:'Stroop Color', z: d.zC});
-        if (d.zPC != null) filas.push({lbl:'Stroop Pal/Color', z: d.zPC});
-        if (d.zInt!= null) filas.push({lbl:'Stroop Interferencia', z: d.zInt});
-      } else if (tn === 'WAIS-IV') {
-        if (d.rd_z  != null) filas.push({lbl:'WAIS · Dígitos', z: d.rd_z});
-        if (d.cla_z != null) filas.push({lbl:'WAIS · Claves', z: d.cla_z});
-        if (d.sln_z != null) filas.push({lbl:'WAIS · Nro-Letra', z: d.sln_z});
-      } else if (tn === 'Fluencia Verbal' && d.variables && d.variables.length) {
-        d.variables.forEach(function(v){ filas.push({lbl: v.label, z: v.z}); });
-      } else if (tn === 'Rey Verbal' && d.variables && d.variables.length) {
-        d.variables.forEach(function(v){ filas.push({lbl: v.label, z: v.z}); });
-      } else if (tn === 'TAVEC') {
-        if (d.zAT    != null) filas.push({lbl:'TAVEC RI-AT', z: d.zAT});
-        if (d.zRLLP  != null) filas.push({lbl:'TAVEC RL-LP', z: d.zRLLP});
-        if (d.zRCLLP != null) filas.push({lbl:'TAVEC RCL-LP', z: d.zRCLLP});
-        if (d.zDiscrim!=null) filas.push({lbl:'TAVEC Discrim', z: d.zDiscrim});
-      } else if (tn === 'D2') {
-        var idx = d.indices || {};
-        if (idx.CON && idx.CON.z != null) filas.push({lbl:'D2 CON', z: idx.CON.z});
-        if (idx.TOT && idx.TOT.z != null) filas.push({lbl:'D2 TOT', z: idx.TOT.z});
-      } else if (tn === 'Figura Rey') {
-        if (d.zCopia != null) filas.push({lbl:'Rey Copia', z: d.zCopia});
-        if (d.zRI    != null) filas.push({lbl:'Rey Rec. Inm.', z: d.zRI});
-      } else if (tn === 'BEM 144 Signoret') {
-        ['rli','rld','as','rs','rc','reco'].forEach(function(k){
-          var lbs = {rli:'BEM Rec.Lóg.Inm',rld:'BEM Rec.Lóg.Dif',as:'BEM Aprendizaje',rs:'BEM Rec.Serial',rc:'BEM Rec.Claves',reco:'BEM Reconocimiento'};
-          if (d[k] != null) filas.push({lbl: lbs[k], z: null});
-        });
-        filas = []; // se omite si no hay Z calculado
-        if (r.puntaje_z != null) filas.push({lbl: tn, z: r.puntaje_z});
-      } else {
-        if (r.puntaje_z != null) filas.push({lbl: tn, z: r.puntaje_z});
-      }
-
+      var filas = extraerFilas(tn, byTest[tn]);
       filas.forEach(function(fila) {
-        if (fila.z === null || fila.z === undefined) return;
-        hayDatos = true;
-        var c = zColor(fila.z);
-        html += '<div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:5px 8px;border-radius:5px;margin-bottom:2px;background:var(--surface);">';
-        html += '<span style="font-size:0.78rem;color:var(--text);">' + fila.lbl + '</span>';
-        html += '<span style="font-family:monospace;font-weight:700;font-size:0.82rem;color:' + c.txt + ';background:' + c.bg + ';padding:1px 8px;border-radius:4px;min-width:48px;text-align:center;">' + fmtZ(fila.z) + '</span>';
-        html += '<span style="font-size:0.72rem;color:' + c.txt + ';background:' + c.bg + ';padding:1px 8px;border-radius:4px;min-width:160px;text-align:center;">' + c.lbl + '</span>';
-        html += '</div>';
+        var row = filaZ(fila.lbl, fila.z);
+        if (row) { domHtml += row; hayDatos = true; }
       });
     });
 
-    html += '</div>';
+    if (domHtml) {
+      html += '<div style="margin-bottom:10px;">';
+      html += '<div style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;background:var(--surface2);border-radius:4px;margin-bottom:4px;">' + dom + '</div>';
+      html += domHtml;
+      html += '</div>';
+    }
   });
 
   if (!hayDatos) {
