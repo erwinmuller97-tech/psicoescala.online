@@ -933,7 +933,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.88</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.89</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6057,7 +6057,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.88';
+var APP_VERSION = 'v1.10.89';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -6095,6 +6095,15 @@ function setPacienteActivo(id, notify) {
   if (document.getElementById('historial-filtro-pac')) {
     document.getElementById('historial-filtro-pac').value = PACIENTE_ACTIVO_ID;
     if (document.getElementById('vista-historial').classList.contains('active')) filtrarHistorial();
+  }
+  var vistaInf = document.getElementById('vista-informe');
+  if (vistaInf && vistaInf.classList.contains('active') && PACIENTE_ACTIVO_ID) {
+    INFORME_PAC_ID = PACIENTE_ACTIVO_ID;
+    window._informePacId = PACIENTE_ACTIVO_ID;
+    var pacInf = PACIENTES.find(function(x) { return String(x.id) === PACIENTE_ACTIVO_ID; });
+    var nomEl = document.getElementById('informe-pac-nombre');
+    if (nomEl) nomEl.textContent = pacInf ? pacInf.nombre : '—';
+    cargarInforme(PACIENTE_ACTIVO_ID);
   }
   var lista = document.getElementById('pacientes-lista-contenido');
   if (lista && PACIENTES.length) renderPacientes();
@@ -6695,7 +6704,7 @@ function generarPDFHistorial() {
   var pacSexo   = pacInfo ? (pacInfo.sexo || '') : '';
   var pacEscol  = pacInfo ? (pacInfo.escolaridad || '') : '';
 
-  var infPromise = pacId ? obtenerInformePaciente(pacId) : Promise.resolve(null);
+  var infPromise = pacId ? obtenerInformePaciente(pacId, true) : Promise.resolve(null);
   infPromise.then(function(inf) {
     _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacSexo, pacEscol, inf);
   });
@@ -13596,7 +13605,7 @@ function aplicarInformeAlFormulario(inf) {
   }
 }
 
-function obtenerInformePaciente(pacId) {
+function obtenerInformePaciente(pacId, preferFormulario) {
   if (!SESSION || !pacId) return Promise.resolve({});
   return supaFetch('/rest/v1/psico_informes?paciente_id=eq.' + pacId + '&user_id=eq.' + SESSION.user.id + '&select=*', 'GET', null, SESSION.access_token)
     .then(function(r) { return r.json().then(function(data) { return { ok: r.ok, data: data }; }); })
@@ -13606,9 +13615,11 @@ function obtenerInformePaciente(pacId) {
         var cached = localStorage.getItem(informeCacheKey(pacId));
         if (cached) inf = Object.assign({}, inf, JSON.parse(cached));
       } catch (e) {}
-      var vistaInf = document.getElementById('vista-informe');
-      if (String(pacId) === String(INFORME_PAC_ID) && vistaInf && vistaInf.classList.contains('active')) {
-        inf = Object.assign({}, inf, leerInformeDesdeFormulario());
+      if (preferFormulario) {
+        var vistaInf = document.getElementById('vista-informe');
+        if (String(pacId) === String(INFORME_PAC_ID) && vistaInf && vistaInf.classList.contains('active')) {
+          inf = Object.assign({}, inf, leerInformeDesdeFormulario());
+        }
       }
       return inf;
     })
@@ -13617,7 +13628,7 @@ function obtenerInformePaciente(pacId) {
         var cached = localStorage.getItem(informeCacheKey(pacId));
         if (cached) return JSON.parse(cached);
       } catch (e) {}
-      if (String(pacId) === String(INFORME_PAC_ID)) return leerInformeDesdeFormulario();
+      if (preferFormulario && String(pacId) === String(INFORME_PAC_ID)) return leerInformeDesdeFormulario();
       return {};
     });
 }
@@ -13637,9 +13648,8 @@ function abrirInforme(pacIdOverride) {
   if (icon) icon.style.transform = 'rotate(0deg)';
   var pac = PACIENTES.find(function(p) { return String(p.id) === pacId; });
   document.getElementById('informe-pac-nombre').textContent = pac ? pac.nombre : '—';
-  aplicarInformeAlFormulario({});
-  cargarInforme(pacId);
   irVista('informe');
+  cargarInforme(pacId);
 }
 
 function cargarInforme(pacId) {
