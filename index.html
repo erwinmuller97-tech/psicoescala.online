@@ -1073,7 +1073,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.92</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.93</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6098,7 +6098,8 @@ function navClick(fn) {
 // ══ CONFIGURACIÓN DEL PROFESIONAL ════════════════════════════════════════════
 function cargarConfigProfesional() {
   try {
-    var cfg = JSON.parse(localStorage.getItem('psico_config_prof') || '{}');
+    var key = 'psico_config_prof' + (SESSION && SESSION.user ? '_' + SESSION.user.id : '');
+    var cfg = JSON.parse(localStorage.getItem(key) || '{}');
     if (cfg.nombre)    document.getElementById('cfg-nombre').value    = cfg.nombre;
     if (cfg.matricula) document.getElementById('cfg-matricula').value = cfg.matricula;
     if (cfg.tel)       document.getElementById('cfg-tel').value       = cfg.tel;
@@ -6116,7 +6117,10 @@ function guardarConfigProfesional() {
     direccion: document.getElementById('cfg-direccion').value.trim(),
     extra:     document.getElementById('cfg-extra').value.trim()
   };
-  try { localStorage.setItem('psico_config_prof', JSON.stringify(cfg)); } catch(e) {}
+  try {
+    var key = 'psico_config_prof' + (SESSION && SESSION.user ? '_' + SESSION.user.id : '');
+    localStorage.setItem(key, JSON.stringify(cfg));
+  } catch(e) {}
   actualizarPreviewConfig();
   actualizarBadgeConfig();
   actualizarWelcomeBanner(document.getElementById('vista-inicio') && document.getElementById('vista-inicio').classList.contains('active'));
@@ -6135,7 +6139,10 @@ function actualizarPreviewConfig() {
   el.innerHTML = lines.length ? lines.join('<br>') : '<em style="color:var(--muted)">Completá los campos para ver la vista previa</em>';
 }
 function getConfigProfesional() {
-  try { return JSON.parse(localStorage.getItem('psico_config_prof') || '{}'); } catch(e) { return {}; }
+  try {
+    var key = 'psico_config_prof' + (SESSION && SESSION.user ? '_' + SESSION.user.id : '');
+    return JSON.parse(localStorage.getItem(key) || '{}');
+  } catch(e) { return {}; }
 }
 function getProfHeaderHTML() {
   var cfg = getConfigProfesional();
@@ -6177,7 +6184,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.92';
+var APP_VERSION = 'v1.10.93';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
