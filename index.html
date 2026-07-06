@@ -769,6 +769,24 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .asrs-opt input[type=radio] { accent-color: var(--accent); width: 14px; height: 14px; }
 .asrs-item-body { display: flex; flex-direction: column; }
 
+/* ══ DIVA-5 ══ */
+.diva5-crit { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 14px 16px; margin-bottom: 12px; }
+.diva5-crit-num { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.diva5-crit-q { font-size: 0.9rem; color: var(--text); margin-bottom: 10px; line-height: 1.45; }
+.diva5-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+@media (max-width: 768px) { .diva5-cols { grid-template-columns: 1fr; } }
+.diva5-col-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.diva5-chk { display: flex; align-items: flex-start; gap: 7px; font-size: 0.82rem; color: var(--text); margin-bottom: 5px; cursor: pointer; line-height: 1.35; }
+.diva5-chk input[type=checkbox] { accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+.diva5-sn { display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+.diva5-sn-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.diva5-sn-lbl { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.diva5-parte-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+.diva5-area { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed var(--border); }
+.diva5-area:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.diva5-area-title { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.diva5-nota { width: 100%; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 0.82rem; resize: vertical; }
+
 /* ══ SCL-90 items ══ */
 .scl-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border); gap: 12px; font-size: 0.87rem; }
 .scl-item:nth-child(even) { background: var(--surface2); }
@@ -1073,7 +1091,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.93</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.94</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -1273,7 +1291,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           </div>
           <div class="home-sector-desc">TDAH y TEA · Escalas de evaluación en adultos y espectro autista.</div>
           <div class="home-sector-tags">
-            <span>ASRS-V1.1</span><span>WURS-25</span><span>DEX</span><span>AQ</span><span>EQ</span><span>SCQ</span>
+            <span>ASRS-V1.1</span><span>WURS-25</span><span>DEX</span><span>DIVA-5</span><span>AQ</span><span>EQ</span><span>SCQ</span>
           </div>
         </div>
 
@@ -5452,6 +5470,41 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
     </div>
 
+    <!-- ── TEST DIVA-5 ── -->
+    <div class="vista" id="vista-diva5">
+      <div class="back-btn" onclick="volverSector()">← Volver</div>
+      <div class="vista-header"><div class="vista-titulo">DIVA-5 · Entrevista Diagnóstica del TDAH en adultos</div></div>
+      <div id="diva5-form">
+        <div class="card">
+          <div class="card-titulo">Datos del paciente</div>
+          <div class="form-grid">
+            <div class="field"><label>Paciente *</label><select id="diva5-paciente"><option value="">— Seleccionar paciente —</option></select></div>
+            <div class="field"><label>Fecha</label><input type="date" id="diva5-fecha"></div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;line-height:1.5;">
+            Entrevista estructurada basada en criterios DSM-5 (Kooij &amp; Francken, 2010). Para cada síntoma, marque ejemplos y responda Sí/No en adulto e infancia.
+          </p>
+        </div>
+        <div id="diva5-parte1"></div>
+        <div id="diva5-parte2"></div>
+        <div id="diva5-parte3"></div>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="limpiarDIVA5()">🗑 Limpiar</button>
+          <button class="btn-primary" onclick="calcularDIVA5()">Calcular resultado →</button>
+        </div>
+      </div>
+      <div id="diva5-resultado" style="display:none;">
+        <div class="resultado-box">
+          <div class="resultado-detalle" id="diva5-detalle"></div>
+          <div class="interp-box"><div class="interp-titulo">📋 Interpretación clínica</div><div class="interp-texto" id="diva5-interp"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="document.getElementById('diva5-resultado').style.display='none';document.getElementById('diva5-form').style.display='block';">← Modificar</button>
+          <button class="btn-primary" onclick="guardarDIVA5()">💾 Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+
 <!-- ══ CUESTIONARIOS TEA / NEURODESARROLLO ══ -->
 <div class="vista" id="vista-aq">
   <div class="back-btn" onclick="volverSector()">← Volver</div>
@@ -6184,7 +6237,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.93';
+var APP_VERSION = 'v1.10.94';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -6892,7 +6945,7 @@ function llenarSelectPacientes() {
   actualizarTopbarPaciente();
   ['bdi-paciente','stai-paciente','rey-paciente','tmt-paciente','flv-paciente',
    'phq-paciente','gad-paciente','spaib-paciente','moca-paciente','ifs-paciente',
-   'bnt-paciente','token-paciente','waisiv-paciente','acer-paciente','wcst-paciente','scl90-paciente','signoret-paciente','asrs-paciente','wurs-paciente','dex-paciente','aq-paciente','aq10-paciente','eq-paciente','ea-paciente','scq-paciente','reloj-paciente','mbi-paciente',
+   'bnt-paciente','token-paciente','waisiv-paciente','acer-paciente','wcst-paciente','scl90-paciente','signoret-paciente','asrs-paciente','wurs-paciente','dex-paciente','diva5-paciente','aq-paciente','aq10-paciente','eq-paciente','ea-paciente','scq-paciente','reloj-paciente','mbi-paciente',
    'pcs-paciente','csq-paciente','pbq-paciente','bpi-paciente','stroop-paciente','csi-paciente','fcr-paciente','sdmt-paciente','bta-paciente','hotel-paciente','d2-paciente','fab-paciente','llaves-paciente','juicio-paciente','zoo-paciente','tavec-paciente','familiar-paciente'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) {
@@ -7261,7 +7314,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
   // ── Clasificación de tests ──
   var NP = ['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','Mini Mental Parkinson','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
   var CL = ['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
-  var TD = ['ASRS-V1.1','WURS-25','DEX','AQ','AQ-10','EQ','EA','SCQ'];
+  var TD = ['ASRS-V1.1','WURS-25','DEX','DIVA-5','AQ','AQ-10','EQ','EA','SCQ'];
   var DO = ['PCS','PBQ','CSQ','BPI'];
   function tipo(t){ return NP.indexOf(t)!==-1?'np': CL.indexOf(t)!==-1?'cl': TD.indexOf(t)!==-1?'td': DO.indexOf(t)!==-1?'do':'cl'; }
 
@@ -7765,6 +7818,15 @@ function renderCuestionariosFam(d) {
           rows += filaTabla('DEX — Desorg./Apatía', d.desorg, 8.60, 5.79, d.zDesorg, r.fecha, 'Ítems 1,4,6,7,8,10,11,17,18,19');
           rows += filaTabla('DEX — Desinhi./Impuls.', d.desinhi, 9.69, 5.19, d.zDesinhi, r.fecha, 'Ítems 2,3,5,9,12,13,14,15,16,20');
           rows += filaTabla('DEX Total', d.total, d.version==='hetero'?20.68:22.25, d.version==='hetero'?14.77:10.10, d.zTotal, r.fecha, 'Puntaje /80');
+
+        } else if (testNombre === 'DIVA-5') {
+          var dvT = d.totales || {};
+          var dvA = dvT.A || {}, dvHI = dvT.HI || {};
+          rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">DIVA-5 · Entrevista Diagnóstica del TDAH en adultos · Kooij & Francken (2010)</td></tr>';
+          rows += filaTabla('DIVA-5 — Inatención (adulto)', (dvA.adulto!=null?dvA.adulto:'—')+'/9', null, null, null, r.fecha, d.presentacion||r.categoria||'');
+          rows += filaTabla('DIVA-5 — Inatención (infancia)', (dvA.infancia!=null?dvA.infancia:'—')+'/9', null, null, null, r.fecha);
+          rows += filaTabla('DIVA-5 — H/I (adulto)', (dvHI.adulto!=null?dvHI.adulto:'—')+'/9', null, null, null, r.fecha);
+          rows += filaTabla('DIVA-5 — H/I (infancia)', (dvHI.infancia!=null?dvHI.infancia:'—')+'/9', null, null, null, r.fecha);
 
         } else if (testNombre === 'WCST-64') {
           rows += '<tr><td colspan="19" style="padding:4px 10px;font-size:8.5px;font-weight:700;color:#1e3830;background:#dceee8;border-left:3px solid #2d4a3e;border-bottom:0.5px solid #a8c4a0;">WCST-64 · Wisconsin Card Sorting Test</td></tr>';
@@ -8289,6 +8351,23 @@ function renderCuestionariosFam(d) {
         return;
       }
 
+      // ── DIVA-5 ──
+      if (r.test === 'DIVA-5') {
+        var dv = d.totales || {};
+        var dA = dv.A || {}, dHI = dv.HI || {};
+        html += clHeader('DIVA-5 · Entrevista Diagnóstica del TDAH en adultos · Kooij & Francken (2010)');
+        html += '<table style="width:100%;border-collapse:collapse;margin-bottom:4px;"><thead><tr>'+
+          '<th style="'+thDark+'min-width:200px;">Dominio</th>'+
+          '<th style="'+thDarkC+'">Adulto</th>'+
+          '<th style="'+thDarkC+'">Infancia</th>'+
+          '<th style="'+thDark+'">Interpretación</th></tr></thead><tbody>';
+        html += '<tr style="background:'+rowBg(0)+'"><td style="'+tdR+'">Inatención (A)</td><td style="'+tdRC+'">'+(dA.adulto!=null?dA.adulto:'—')+'/9</td><td style="'+tdRC+'">'+(dA.infancia!=null?dA.infancia:'—')+'/9</td><td style="'+tdRI+'">'+(dA.adulto>=5?'Significativo (≥5)':'No significativo')+' · Infancia: '+(dA.infancia>=3||dHI.infancia>=3?'≥3 síntomas':'<3')+'</td></tr>';
+        html += '<tr style="background:'+rowBg(1)+'"><td style="'+tdR+'">Hiperactividad-Impulsividad (H/I)</td><td style="'+tdRC+'">'+(dHI.adulto!=null?dHI.adulto:'—')+'/9</td><td style="'+tdRC+'">'+(dHI.infancia!=null?dHI.infancia:'—')+'/9</td><td style="'+tdRI+'">'+(dHI.adulto>=5?'Significativo (≥5)':'No significativo')+'</td></tr>';
+        html += '<tr style="background:#f0f0f0;"><td style="'+tdR+'font-weight:700;">Presentación clínica DSM-5</td><td style="'+tdRC+'" colspan="2">—</td><td style="'+tdRI+'font-weight:600;">'+(d.presentacion||r.categoria||'—')+'</td></tr>';
+        html += '</tbody></table>';
+        return;
+      }
+
       // ── Resto de tests clínicos (BDI, PHQ-9, GAD-7, SPAI-B, WURS-25) ──
       var corte = CORTES[r.test];
       var pb = r.puntaje_total != null ? r.puntaje_total : '—';
@@ -8433,6 +8512,8 @@ function renderCuestionariosFam(d) {
         'MBI-HSS':            'Inventario de Burnout de Maslach (MBI-HSS)',
         'ASRS-V1.1':          'Escala de Autodetección de TDAH en Adultos (ASRS-V1.1)',
         'WURS-25':            'Escala de Wender-Utah — Versión 25 ítems (WURS-25)',
+        'DEX':                'Cuestionario Disejecutivo (DEX)',
+        'DIVA-5':             'DIVA-5 · Entrevista Diagnóstica del TDAH en adultos',
         'PCS':                'Escala de Catastrofización del Dolor (PCS)',
         'CSQ':                'Cuestionario de Estrategias de Afrontamiento al Dolor (CSQ)',
         'PBQ':                'Cuestionario de Conductas de Dolor (PBQ)',
@@ -8446,7 +8527,7 @@ function renderCuestionariosFam(d) {
         {label:'Funciones ejecutivas',             tests:['WCST-64','IFS','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
         {label:'Evaluación cognitiva global',      tests:['Test del Reloj (Cacho)']},
         {label:'Psicología clínica',               tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS']},
-        {label:'TDAH',                             tests:['ASRS-V1.1','WURS-25']},
+        {label:'TDAH',                             tests:['ASRS-V1.1','WURS-25','DEX','DIVA-5']},
         {label:'Evaluación del dolor',                tests:['PCS','CSQ','PBQ','BPI']}
       ];
       var testsTomados = datos.map(function(r){return r.test;});
@@ -8807,6 +8888,12 @@ function irSector(s) {
         '<div class="test-desc">Cuestionario Disejecutivo · Síntomas del síndrome disejecutivo · Autoadministrado o informante</div>'+
         '<span class="test-tag">Wilson et al. 1999 · Querejeta et al. 2015 · Argentina</span>'+
       '</div>' +
+      '<div class="test-card" onclick="irTest(\'diva5\')">'+
+        '<div class="test-icon">📋</div>'+
+        '<div class="test-nombre">DIVA-5</div>'+
+        '<div class="test-desc">Entrevista Diagnóstica del TDAH en adultos · Criterios DSM-5 · Inatención, H/I y disfunción</div>'+
+        '<span class="test-tag">Kooij &amp; Francken 2010 · DIVA Foundation</span>'+
+      '</div>' +
       '<div style="grid-column:1/-1;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:14px 0 2px;padding-left:4px;">TEA · Espectro autista</div>' +
       '<div class="test-card" onclick="irTest(\'aq\')">' +
         '<div class="test-icon">🧩</div>' +
@@ -8871,6 +8958,7 @@ function irTest(t) {
   if (t === 'asrs') iniciarAsrs();
   if (t === 'wurs') iniciarWurs();
   if (t === 'dex') iniciarDEX();
+  if (t === 'diva5') iniciarDIVA5();
   if (t === 'aq') iniciarAQ();
   if (t === 'aq10') iniciarAQ10();
   if (t === 'eq') iniciarEQ();
@@ -15957,7 +16045,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // ── Clasificar tests (igual que PDF) ──
   var NP_LIST=['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
   var CL_LIST=['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
-  var TD_LIST=['ASRS-V1.1','WURS-25','DEX','AQ','AQ-10','EQ','EA','SCQ'];
+  var TD_LIST=['ASRS-V1.1','WURS-25','DEX','DIVA-5','AQ','AQ-10','EQ','EA','SCQ'];
   var DO_LIST=['PCS','PBQ','CSQ','BPI'];
   function tipoTest(t){return NP_LIST.indexOf(t)!==-1?'np':CL_LIST.indexOf(t)!==-1?'cl':TD_LIST.indexOf(t)!==-1?'td':DO_LIST.indexOf(t)!==-1?'do':'cl';}
   var testsNP    = datos.filter(function(r){return tipoTest(r.test)==='np';});
@@ -16015,6 +16103,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     'ASRS-V1.1':'Escala de Autodetección de TDAH en Adultos (ASRS-V1.1)',
     'WURS-25':'Escala de Wender-Utah — 25 ítems (WURS-25)',
     'DEX':'Cuestionario Disejecutivo (DEX)',
+    'DIVA-5':'DIVA-5 · Entrevista Diagnóstica del TDAH en adultos',
     'AQ':'Cociente del Espectro Autista (AQ)',
     'AQ-10':'AQ-10 · Cribado de rasgos autistas',
     'EQ':'Coeficiente de Empatía (EQ)',
@@ -16032,7 +16121,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     {label:'Memoria',                               tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
     {label:'Funciones ejecutivas',                  tests:['WCST-64','IFS','FAB','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
     {label:'Habilidades visoconstructivas',         tests:['Figura Rey','Test del Reloj (Cacho)']},
-    {label:'TDAH',                                  tests:['ASRS-V1.1','WURS-25','DEX']},
+    {label:'TDAH',                                  tests:['ASRS-V1.1','WURS-25','DEX','DIVA-5']},
     {label:'TEA · Espectro autista',                  tests:['AQ','AQ-10','EQ','EA','SCQ']},
     {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
     {label:'Evaluación del dolor',                  tests:['PCS','CSQ','PBQ','BPI']},
@@ -16214,6 +16303,12 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         if(d.crr!=null)addCL('SCQ · CRR Cond. repetitivas',d.crr,'—');
       }
       else if(r.test==='DEX'){var dv=d.version==='hetero'?'Heteroadm.':'Autoadm.';addCL('DEX Total ('+dv+')',d.total,r.categoria||'—');}
+      else if(r.test==='DIVA-5'){
+        var t=d.totales||{};
+        if(t.A){addCL('DIVA-5 — Inatención adulto',(t.A.adulto!=null?t.A.adulto:'—')+'/9','—');addCL('DIVA-5 — Inatención infancia',(t.A.infancia!=null?t.A.infancia:'—')+'/9','—');}
+        if(t.HI){addCL('DIVA-5 — H/I adulto',(t.HI.adulto!=null?t.HI.adulto:'—')+'/9','—');addCL('DIVA-5 — H/I infancia',(t.HI.infancia!=null?t.HI.infancia:'—')+'/9','—');}
+        addCL('DIVA-5 — Presentación clínica','—',d.presentacion||r.categoria||'—');
+      }
       else if(r.test==='PCS'){addCL('PCS — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='BPI'){
         if(d.intensidad!=null)addCL('BPI — Índice de Intensidad',parseFloat(d.intensidad).toFixed(2),'—');
@@ -17220,6 +17315,9 @@ function guardarFamiliar() {
   }).catch(function(){ toast('Error al guardar','error'); });
 }
 
+</script>
+<script src="diva5-module.js"></script>
+<script>
 window.addEventListener('DOMContentLoaded', function() {
   initPhiLogos();
   initScrollReveal();
