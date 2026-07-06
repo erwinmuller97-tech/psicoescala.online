@@ -6985,7 +6985,7 @@ function renderHistorial() {
     '</tr></thead><tbody>' +
     datos.map(function(r) {
       var nomPac = r.psico_pacientes ? r.psico_pacientes.nombre : '—';
-      var zColor = r.puntaje_z===null ? 'var(--muted)' : r.puntaje_z >= -1.0 ? 'var(--green)' : r.puntaje_z >= -1.5 ? 'var(--yellow)' : r.puntaje_z >= -2.0 ? 'var(--orange)' : 'var(--red)';
+      var zColor = r.puntaje_z===null ? 'var(--muted)' : escalaReferenciaColor(r.puntaje_z);
       return '<tr style="border-bottom:1px solid var(--border);">' +
         '<td style="padding:10px 12px;font-size:0.84rem;">' + nomPac + '</td>' +
         '<td style="padding:10px 12px;font-size:0.84rem;font-weight:600;color:var(--accentdk);">' + r.test + '</td>' +
@@ -7027,14 +7027,66 @@ function renderFiltroHistorial() {
   });
 }
 
+/** Escala de referencia neuropsicológica (Z / T / Percentil) — González Palau */
+function escalaReferenciaZ(z) {
+  if (z === null || z === undefined || isNaN(z)) return '—';
+  if (z >= 1.5)   return 'Superior';
+  if (z >= -0.5)  return 'Normal';
+  if (z >= -0.99) return 'Límite inferior normativo';
+  if (z >= -1.49) return 'Dificultad leve';
+  if (z >= -1.99) return 'Dificultad moderada';
+  return 'Dificultad elevada';
+}
+function escalaReferenciaColor(z) {
+  if (z === null || z === undefined || isNaN(z)) return '#888780';
+  if (z >= 1.5)   return '#1D9E75';
+  if (z >= -0.5)  return '#3d7a5f';
+  if (z >= -0.99) return '#888780';
+  if (z >= -1.49) return '#BA7517';
+  if (z >= -1.99) return '#D85A30';
+  return '#E24B4A';
+}
+function escalaReferenciaBadge(z) {
+  if (z === null || z === undefined || isNaN(z)) return 'bg-nd';
+  if (z >= -0.5)  return 'bg-minima';
+  if (z >= -0.99) return 'bg-limite';
+  if (z >= -1.49) return 'bg-leve';
+  if (z >= -1.99) return 'bg-moderada';
+  return 'bg-grave';
+}
+function escalaReferenciaMeta(z) {
+  return { label: escalaReferenciaZ(z), color: escalaReferenciaColor(z), badge: escalaReferenciaBadge(z), clf: escalaReferenciaZ(z) };
+}
+function escalaReferenciaPercentil(pc) {
+  if (pc === null || pc === undefined || isNaN(pc)) return '—';
+  if (pc >= 93) return 'Superior';
+  if (pc >= 31) return 'Normal';
+  if (pc >= 16) return 'Límite inferior normativo';
+  if (pc >= 7)  return 'Dificultad leve';
+  if (pc >= 2)  return 'Dificultad moderada';
+  return 'Dificultad elevada';
+}
+function escalaReferenciaPercentilColor(pc) {
+  if (pc === null || pc === undefined || isNaN(pc)) return '#888780';
+  if (pc >= 93) return '#1D9E75';
+  if (pc >= 31) return '#3d7a5f';
+  if (pc >= 16) return '#888780';
+  if (pc >= 7)  return '#BA7517';
+  if (pc >= 2)  return '#D85A30';
+  return '#E24B4A';
+}
+function escalaReferenciaT(t) {
+  if (t === null || t === undefined || isNaN(t)) return '—';
+  if (t >= 65) return 'Superior';
+  if (t >= 40) return 'Normal';
+  if (t >= 35) return 'Límite inferior normativo';
+  if (t >= 33) return 'Dificultad leve';
+  if (t >= 30) return 'Dificultad moderada';
+  return 'Dificultad elevada';
+}
+
 function zInterpPDF(z) {
-  if (z === null || z === undefined) return { label: '—', color: '#888780' };
-  if (z >= 1.0)   return { label: 'Superior',            color: '#1D9E75' };
-  if (z >= 0)     return { label: 'Normal alto',          color: '#3d7a5f' };
-  if (z >= -0.99) return { label: 'Normal bajo',          color: '#888780' };
-  if (z >= -1.49) return { label: 'Dificultad leve',      color: '#BA7517' };
-  if (z >= -1.99) return { label: 'Dificultad moderada',  color: '#D85A30' };
-  return           { label: 'Dificultad severa',          color: '#E24B4A' };
+  return { label: escalaReferenciaZ(z), color: escalaReferenciaColor(z) };
 }
 
 function zBarHTML(z) {
@@ -7229,31 +7281,13 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
     if(CL_ORDEN.indexOf(r.test)===-1) testsCl.push(r);
   });
 
-  var conAlter  = datos.filter(function(r){ return r.puntaje_z!==null && r.puntaje_z < -1.5; }).length;
-  var conRiesgo = datos.filter(function(r){ return r.puntaje_z!==null && r.puntaje_z>=-1.5 && r.puntaje_z<-1.0; }).length;
-  var conNormal = datos.filter(function(r){ return r.puntaje_z!==null && r.puntaje_z>=-1.0; }).length;
+  var conAlter  = datos.filter(function(r){ return r.puntaje_z!==null && r.puntaje_z < -0.99; }).length;
+  var conRiesgo = datos.filter(function(r){ return r.puntaje_z!==null && r.puntaje_z>=-0.99 && r.puntaje_z<-0.5; }).length;
+  var conNormal = datos.filter(function(r){ return r.puntaje_z!==null && r.puntaje_z>=-0.5; }).length;
 
   // ── Helpers ──
-  function zColor(z) {
-    if (z===null||z===undefined) return '#888780';
-    if (z>=1.0)   return '#1D9E75';
-    if (z>=0)     return '#3d7a5f';
-    if (z>=-0.99) return '#888780';
-    if (z>=-1.49) return '#BA7517';
-    if (z>=-1.99) return '#D85A30';
-    return '#E24B4A';
-  }
-  function zLabel(z) {
-    if (z===null||z===undefined) return '—';
-    if (z>=2.0)   return 'Muy superior';
-    if (z>=1.5)   return 'Superior';
-    if (z>=1.0)   return 'Límite superior normativo';
-    if (z>=-0.49) return 'Normal';
-    if (z>=-1.0)  return 'Límite inferior normativo';
-    if (z>=-1.5)  return 'Dificultad leve';
-    if (z>=-2.0)  return 'Dificultad moderada';
-    return 'Dificultad elevada';
-  }
+  function zColor(z) { return escalaReferenciaColor(z); }
+  function zLabel(z) { return escalaReferenciaZ(z); }
   function zToT(z)  { return z!==null ? Math.round(50+10*z) : null; }
   function zToPct(z){
     if(z===null) return null;
@@ -7296,17 +7330,6 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
 
   // ── Fila de tabla neuropsicológica ──
   // cols: Variable | PB | PT | M | DT | Z | -3..+3 grilla | Interpretación
-  function zLabel(z) {
-    if (z === null || z === undefined) return '—';
-    if (z >= 2.0)   return 'Muy superior';
-    if (z >= 1.5)   return 'Superior';
-    if (z >= 1.0)   return 'Límite superior normativo';
-    if (z >= -0.49) return 'Normal';
-    if (z >= -1.0)  return 'Límite inferior normativo';
-    if (z >= -1.5)  return 'Dificultad leve';
-    if (z >= -2.0)  return 'Dificultad moderada';
-    return 'Dificultad elevada';
-  }
 
   function filaTabla(label, pb, m, ds, z, fecha, nota, isEven) {
     filaTabla._n = filaTabla._n || 0;
@@ -9581,13 +9604,15 @@ function calcularRey() {
     var z = (bruto - b.m) / b.d;
     zVals[v.key] = z;
 
-    var clf, col;
-    if (z >= -1.0)      { clf = 'Normal';     col = 'var(--green)';  cN++; }
-    else if (z >= -1.5) { clf = 'Leve ↓';     col = 'var(--yellow)'; cL++; }
-    else if (z >= -2.0) { clf = 'Moderado ↓'; col = 'var(--orange)'; cM++; }
-    else                { clf = 'Bajo ↓';     col = 'var(--red)';    cB++; }
+    var meta = escalaReferenciaMeta(z);
+    var clf = meta.label;
+    var col = meta.color;
+    if (z >= -0.5) cN++;
+    else if (z >= -0.99) cL++;
+    else if (z >= -1.99) cM++;
+    else cB++;
 
-    var badgeClass = z >= -1.0 ? 'badge-normal' : z >= -1.5 ? 'badge-leve' : z >= -2.0 ? 'badge-moderado' : 'badge-bajo';
+    var badgeClass = meta.badge;
 
     html += '<tr style="border-bottom:1px solid var(--border);">' +
       '<td style="padding:8px 12px;font-size:0.84rem;font-weight:500;">' + v.label + '</td>' +
@@ -9655,7 +9680,7 @@ function guardarResultadoRey() {
       if(v.key==='sum') zSum=z;
     });
   }
-  var catRey = zSum===null ? 'Ver detalle' : (zSum>=-1.0?'Normal':zSum>=-1.5?'Leve ↓':zSum>=-2.0?'Moderado ↓':'Bajo ↓');
+  var catRey = zSum===null ? 'Ver detalle' : escalaReferenciaZ(zSum);
   var body = {
     user_id: SESSION.user.id, paciente_id: pacId, test: 'Rey Verbal',
     fecha: fecha, puntaje_total: sum ? parseInt(sum) : null,
@@ -9759,11 +9784,8 @@ function buscarPercentilTMT(tabla, bruto) {
 }
 
 function clasificarTMT(z) {
-  // Z INVERTIDO: negativo = más lento = déficit (igual que el resto de los tests)
-  if (z >= -1.0)       return {clf:'Normal',          col:'var(--green)',  badge:'bg-minima'};
-  else if (z >= -1.5)  return {clf:'Leve ↓',          col:'var(--yellow)', badge:'bg-leve'};
-  else if (z >= -2.0)  return {clf:'Moderado ↓',      col:'var(--orange)', badge:'bg-moderada'};
-  else                 return {clf:'Bajo ↓ (déficit)', col:'var(--red)',    badge:'bg-grave'};
+  var m = escalaReferenciaMeta(z);
+  return { clf: m.label, col: m.color, badge: m.badge };
 }
 
 function iniciarTMT() {
@@ -9826,14 +9848,16 @@ function calcularTMT() {
       '<div style="font-size:0.76rem;color:var(--muted);margin-top:8px;">M=' + mdsA.m + ' · DS=' + mdsA.ds + '</div>' +
       '</div>';
 
-    if (zA >= -1.0)
-      interpA = 'TMT-A: El tiempo de ejecución (' + brutoA + ' seg, PC=' + pcA + ') se encuentra dentro de los parámetros esperados para su grupo. No se observan indicadores de compromiso en la velocidad de procesamiento ni en la atención sostenida.';
-    else if (zA >= -1.5)
-      interpA = 'TMT-A: El tiempo de ejecución (' + brutoA + ' seg, PC=' + pcA + ') es levemente más lento de lo esperado, sugiriendo un posible compromiso leve en la velocidad de procesamiento o la atención sostenida.';
-    else if (zA >= -2.0)
-      interpA = 'TMT-A: Se observa un tiempo de ejecución moderadamente elevado (' + brutoA + ' seg, PC=' + pcA + '), indicando dificultades en la velocidad de procesamiento y/o la atención sostenida.';
+    if (zA >= -0.5)
+      interpA = 'TMT-A: El tiempo de ejecución (' + brutoA + ' seg, PC=' + pcA + ', Z=' + (zA>=0?'+':'') + zA.toFixed(2) + ') se encuentra dentro de los parámetros esperados para su grupo (' + clfA.clf + '). No se observan indicadores de compromiso en la velocidad de procesamiento ni en la atención sostenida.';
+    else if (zA >= -0.99)
+      interpA = 'TMT-A: El tiempo de ejecución (' + brutoA + ' seg, PC=' + pcA + ', Z=' + zA.toFixed(2) + ') se ubica en el límite inferior normativo, sugiriendo vigilancia en la velocidad de procesamiento o la atención sostenida.';
+    else if (zA >= -1.49)
+      interpA = 'TMT-A: El tiempo de ejecución (' + brutoA + ' seg, PC=' + pcA + ', Z=' + zA.toFixed(2) + ') es levemente más lento de lo esperado (dificultad leve), sugiriendo un posible compromiso en la velocidad de procesamiento o la atención sostenida.';
+    else if (zA >= -1.99)
+      interpA = 'TMT-A: Se observa un tiempo de ejecución moderadamente elevado (' + brutoA + ' seg, PC=' + pcA + ', Z=' + zA.toFixed(2) + '), indicando dificultad moderada en la velocidad de procesamiento y/o la atención sostenida.';
     else
-      interpA = 'TMT-A: El tiempo de ejecución es significativamente alto (' + brutoA + ' seg, PC=' + pcA + '), indicando un déficit marcado en la velocidad de procesamiento y la atención sostenida.';
+      interpA = 'TMT-A: El tiempo de ejecución es significativamente alto (' + brutoA + ' seg, PC=' + pcA + ', Z=' + zA.toFixed(2) + '), indicando dificultad elevada en la velocidad de procesamiento y la atención sostenida.';
   }
 
   // ── TMT-B ──
@@ -9860,14 +9884,16 @@ function calcularTMT() {
       '<div style="font-size:0.76rem;color:var(--muted);margin-top:8px;">M=' + mdsB.m + ' · DS=' + mdsB.ds + '</div>' +
       '</div>';
 
-    if (zB >= -1.0)
-      interpB = 'TMT-B: El tiempo de ejecución (' + brutoB + ' seg, PC=' + pcB + ') es normal para su grupo. No se evidencian compromisos en la atención alternante ni en la flexibilidad cognitiva.';
-    else if (zB >= -1.5)
-      interpB = 'TMT-B: El tiempo es levemente más lento de lo esperado (' + brutoB + ' seg, PC=' + pcB + '), sugiriendo una posible dificultad leve en la atención alternante y/o la flexibilidad cognitiva.';
-    else if (zB >= -2.0)
-      interpB = 'TMT-B: Se observa lentitud moderada en la ejecución (' + brutoB + ' seg, PC=' + pcB + '), indicando compromisos en la flexibilidad cognitiva y la atención alternante.';
+    if (zB >= -0.5)
+      interpB = 'TMT-B: El tiempo de ejecución (' + brutoB + ' seg, PC=' + pcB + ', Z=' + (zB>=0?'+':'') + zB.toFixed(2) + ') es normal para su grupo (' + clfB.clf + '). No se evidencian compromisos en la atención alternante ni en la flexibilidad cognitiva.';
+    else if (zB >= -0.99)
+      interpB = 'TMT-B: El tiempo se ubica en el límite inferior normativo (' + brutoB + ' seg, PC=' + pcB + ', Z=' + zB.toFixed(2) + '), sugiriendo vigilancia en la atención alternante y/o la flexibilidad cognitiva.';
+    else if (zB >= -1.49)
+      interpB = 'TMT-B: El tiempo es levemente más lento de lo esperado (' + brutoB + ' seg, PC=' + pcB + ', Z=' + zB.toFixed(2) + '), sugiriendo dificultad leve en la atención alternante y/o la flexibilidad cognitiva.';
+    else if (zB >= -1.99)
+      interpB = 'TMT-B: Se observa lentitud moderada en la ejecución (' + brutoB + ' seg, PC=' + pcB + ', Z=' + zB.toFixed(2) + '), indicando dificultad moderada en la flexibilidad cognitiva y la atención alternante.';
     else
-      interpB = 'TMT-B: El tiempo de ejecución es significativamente elevado (' + brutoB + ' seg, PC=' + pcB + '), sugiriendo un déficit marcado en la atención alternante, la flexibilidad cognitiva y/o las funciones ejecutivas.';
+      interpB = 'TMT-B: El tiempo de ejecución es significativamente elevado (' + brutoB + ' seg, PC=' + pcB + ', Z=' + zB.toFixed(2) + '), sugiriendo dificultad elevada en la atención alternante, la flexibilidad cognitiva y/o las funciones ejecutivas.';
   }
 
   document.getElementById('tmt-res-cards').innerHTML = cards;
@@ -9890,7 +9916,6 @@ function guardarResultadoTMT() {
   var escol = document.getElementById('tmt-escol').value;
   var edadI = document.getElementById('tmt-edad').value;
   if (!pacId) { toast('Seleccioná un paciente primero'); return; }
-  var cat = 'A:' + (tA||'—') + 's / B:' + (tB||'—') + 's';
   var datosObj = { tmt_a_seg: tA ? parseFloat(tA) : null, tmt_b_seg: tB ? parseFloat(tB) : null };
   // Calcular Z si hay baremos disponibles
   if (escol && edadI !== '') {
@@ -9907,6 +9932,7 @@ function guardarResultadoTMT() {
     }
   }
   var zPrincipal = datosObj.tmt_b_z !== undefined ? datosObj.tmt_b_z : (datosObj.tmt_a_z !== undefined ? datosObj.tmt_a_z : null);
+  var cat = zPrincipal !== null ? escalaReferenciaZ(zPrincipal) : ('A:' + (tA||'—') + 's / B:' + (tB||'—') + 's');
   var body = { user_id: SESSION.user.id, paciente_id: pacId, test: 'TMT A-B', fecha: fecha,
     puntaje_total: null, categoria: cat,
     puntaje_z: zPrincipal,
@@ -10028,11 +10054,10 @@ function calcularFLV() {
     var bar   = FLV_BAR[v.key][sexo][ne][gi];
     var z     = (bruto - bar.m) / bar.ds;
 
-    var clf, col, badge;
-    if (z >= -1.0)      { clf='Normal';     col='var(--green)';  badge='bg-minima'; }
-    else if (z >= -1.5) { clf='Leve ↓';     col='var(--yellow)'; badge='bg-leve'; }
-    else if (z >= -2.0) { clf='Moderado ↓'; col='var(--orange)'; badge='bg-moderada'; }
-    else                { clf='Bajo ↓';     col='var(--red)';    badge='bg-grave'; }
+    var meta = escalaReferenciaMeta(z);
+    var clf = meta.label;
+    var col = meta.color;
+    var badge = meta.badge;
 
     if (v.tipo === 'Semántica')  zSem.push({label:v.label, z:z});
     if (v.tipo === 'Fonológica') zFon.push({label:v.label, z:z});
@@ -10097,7 +10122,7 @@ function guardarResultadoFLV() {
     });
   }
   var zPrincipal = zAll.length ? parseFloat((zAll.reduce(function(a,b){return a+b;},0)/zAll.length).toFixed(2)) : null;
-  var cat = zAll.length ? (zPrincipal >= -1.0 ? 'Normal' : zPrincipal >= -1.5 ? 'Leve ↓' : zPrincipal >= -2.0 ? 'Moderado ↓' : 'Bajo ↓') : 'Ver detalle';
+  var cat = zAll.length ? escalaReferenciaZ(zPrincipal) : 'Ver detalle';
   var body = { user_id: SESSION.user.id, paciente_id: pacId, test: 'Fluencia Verbal', fecha: fecha,
     puntaje_total: null, categoria: cat,
     puntaje_z: zPrincipal,
@@ -10588,9 +10613,11 @@ function calcularMoCA(){
   if(ne==='primaria'){corteNormal=18;corteLabel='≥18 (escolaridad primaria o menos)';}
   else if(ne==='media'){corteNormal=22;corteLabel='≥22 (secundaria incompleta)';}
   else{corteNormal=26;corteLabel='≥26 (secundaria completa o más)';}
+  var mocaM=26.1, mocaDS=2.8;
+  var mocaZ=parseFloat(((total-mocaM)/mocaDS).toFixed(2));
+  var cat=escalaReferenciaZ(mocaZ);
   var normal=total>=corteNormal;
-  var cat=normal?'Normal':'Por debajo del punto de corte';
-  var badge=normal?'bg-minima':'bg-grave';
+  var badge=escalaReferenciaBadge(mocaZ);
   var dominiosHtml=campos.map(function(c){
     var v=vals[c.id];var pct=Math.round((v/c.max)*100);
     var col=pct>=70?'var(--green)':pct>=50?'var(--yellow)':'var(--red)';
@@ -10598,14 +10625,15 @@ function calcularMoCA(){
   }).join('');
   var interp='<p>Puntaje total: <strong>'+total+'/30</strong>'+(correccion?' (incluye +1 por corrección educativa)':'')+'.</p>';
   interp+='<p>Punto de corte para normalidad: '+corteLabel+'.</p>';
-  if(normal) interp+='<p>El puntaje se encuentra <strong>dentro del rango normal</strong>. No se observa deterioro cognitivo significativo.</p>';
-  else interp+='<p>El puntaje se encuentra <strong>por debajo del punto de corte normativo</strong>. Se recomienda evaluación neuropsicológica completa.</p>';
+  interp+='<p>Clasificación según escala de referencia (Z='+((total-mocaM)/mocaDS).toFixed(2)+'): <strong>'+cat+'</strong>.</p>';
+  if(normal) interp+='<p>El puntaje bruto se encuentra <strong>dentro del rango de corte clínico</strong>. No se observa deterioro cognitivo significativo según el baremo MoCA.</p>';
+  else interp+='<p>El puntaje bruto se encuentra <strong>por debajo del punto de corte normativo MoCA</strong>. Se recomienda evaluación neuropsicológica completa.</p>';
   var domBajos=campos.filter(function(c){return vals[c.id]<Math.floor(c.max*0.5);}).map(function(c){return c.label;});
   if(domBajos.length) interp+='<p>Dominios con desempeño reducido (< 50%): '+domBajos.join(', ')+'.</p>';
   interp+='<p><em>Fuente: Nasreddine et al. (2005); Loureiro et al. (2023), Rosario, Argentina. Interpretación orientativa.</em></p>';
   document.getElementById('moca-pts-total').textContent=total;
   document.getElementById('moca-cat').textContent=cat;
-  document.getElementById('moca-badge').textContent=normal?'Normal':'Alterado';
+  document.getElementById('moca-badge').textContent=cat;
   document.getElementById('moca-badge').className='badge-grande '+badge;
   document.getElementById('moca-dominios').innerHTML=dominiosHtml;
   document.getElementById('moca-interp').innerHTML=interp;
@@ -10786,15 +10814,7 @@ function calcularWCST() {
 
   var edadLabels = ['18–29','30–39','40–49','50–59','60–69','70–79','80–89'];
 
-  function zLab(z) {
-    if (z===null) return '—';
-    if (z >= 1.5)   return 'Superior';
-    if (z >= -0.5)  return 'Normal';
-    if (z >= -0.99) return 'Límite inferior normativo';
-    if (z >= -1.49) return 'Dificultad leve';
-    if (z >= -1.99) return 'Dificultad moderada';
-    return 'Dificultad elevada';
-  }
+  function zLab(z) { return escalaReferenciaZ(z); }
 
   var detalleHtml = '';
   if (cat !== '')      detalleHtml += '<div class="detalle-item"><div class="detalle-num">'+(parseFloat(cat))+'/6</div><div class="detalle-lbl">Categorías<br>completadas</div></div>';
@@ -10840,7 +10860,7 @@ function guardarResultadoWCST() {
     test: 'WCST-64', fecha: fecha,
     puntaje_total: d.categorias,
     puntaje_z: d.cat_z,
-    categoria: d.cat_z !== null ? (d.cat_z >= -0.5 ? 'Normal' : d.cat_z >= -1.49 ? 'Dificultad leve' : 'Dificultad moderada/elevada') : null,
+    categoria: d.cat_z !== null ? escalaReferenciaZ(d.cat_z) : null,
     datos: d
   }, SESSION.access_token).then(function(){
     cargarResultados();
@@ -10932,15 +10952,8 @@ function calcularFAB() {
 
   var z = parseFloat(((total - bar.M) / bar.DS).toFixed(2));
 
-  var interp;
-  if (z >= 1.0)        interp = 'Superior';
-  else if (z >= -0.5)  interp = 'Normal';
-  else if (z >= -1.0)  interp = 'Límite inferior normativo';
-  else if (z >= -1.5)  interp = 'Dificultad leve';
-  else if (z >= -2.0)  interp = 'Dificultad moderada';
-  else                 interp = 'Dificultad severa';
-
-  var color = z >= -0.5 ? '#639922' : z >= -1.0 ? '#888780' : z >= -1.5 ? '#BA7517' : z >= -2.0 ? '#D85A30' : '#E24B4A';
+  var interp = escalaReferenciaZ(z);
+  var color = escalaReferenciaColor(z);
 
   // Tabla de subtests
   var html = '<table style="width:100%;border-collapse:collapse;font-size:0.84rem;margin-bottom:12px;">' +
@@ -10993,7 +11006,7 @@ function guardarFAB() {
     user_id: SESSION.user.id, paciente_id: pacId,
     test: 'FAB', fecha: fecha,
     puntaje_total: d.total, puntaje_z: d.z,
-    categoria: d.interp, datos: d
+    categoria: escalaReferenciaZ(d.z), datos: d
   }, SESSION.access_token).then(function(){
     window._fabData = null;
     cargarResultados(); toast('✓ Resultado guardado','success');
@@ -11019,10 +11032,10 @@ function calcularIFS(){
   IFS_SUBTESTS.forEach(function(s){var v=document.getElementById(s.id).value;if(v===''){todos=false;}else{vals[s.id]=parseInt(v);total+=vals[s.id];}});
   if(!todos&&!confirm('Hay subtests sin completar. ¿Continuar de todos modos?'))return;
   var z=(total-bar.M)/bar.DS;
+  var cat=escalaReferenciaZ(z);
   var corte=Math.round(bar.M-1.5*bar.DS);
   var normal=total>=corte;
-  var cat=normal?'Normal':'Por debajo del punto de corte';
-  var badge=normal?'bg-minima':'bg-grave';
+  var badge=escalaReferenciaBadge(z);
   var imt=(vals['ifs-digitos']!==undefined&&vals['ifs-corsi']!==undefined)?(vals['ifs-digitos']+vals['ifs-corsi']):'—';
   var subtestsHtml=IFS_SUBTESTS.map(function(s){
     if(vals[s.id]===undefined)return'';
@@ -11042,7 +11055,7 @@ function calcularIFS(){
   interp+='<p><em>Baremos: Sierra Sanjurjo et al. (2018) Applied Neuropsychology: Adult; Torralva et al. (2009). Interpretación orientativa.</em></p>';
   document.getElementById('ifs-pts-total').textContent=total;
   document.getElementById('ifs-cat').textContent=cat;
-  document.getElementById('ifs-badge').textContent=normal?'Normal':'Alterado';
+  document.getElementById('ifs-badge').textContent=cat;
   document.getElementById('ifs-badge').className='badge-grande '+badge;
   document.getElementById('ifs-subtests').innerHTML=subtestsHtml;
   document.getElementById('ifs-interp').innerHTML=interp;
@@ -11061,6 +11074,7 @@ function guardarResultadoIFS(){
   var total=parseInt(document.getElementById('ifs-pts-total').textContent);
   var cat=document.getElementById('ifs-cat').textContent;
   var z=parseFloat(((total-bar.M)/bar.DS).toFixed(2));
+  cat = escalaReferenciaZ(z);
   var datosObj={total:total,m:bar.M,ds:bar.DS,ne:ne,edad_grupo:gi,subtests:{}};
   IFS_SUBTESTS.forEach(function(s){
     var v=document.getElementById(s.id).value;
@@ -11468,15 +11482,7 @@ var LLAVES_BAR = {
   ]
 };
 
-function badsZLabel(z) {
-  if (z === null) return '—';
-  if (z >= 1.5)   return 'Superior';
-  if (z >= -0.5)  return 'Normal';
-  if (z >= -0.99) return 'Límite inferior normativo';
-  if (z >= -1.49) return 'Dificultad leve';
-  if (z >= -1.99) return 'Dificultad moderada';
-  return 'Dificultad elevada';
-}
+function badsZLabel(z) { return escalaReferenciaZ(z); }
 
 function badsGetBar(tabla, sexo, gi, ei) {
   var s = tabla[sexo];
@@ -12128,15 +12134,7 @@ function hotelUpdateBotonesTotal() {
   el.textContent = (d1 + d2) + ' seg';
 }
 
-function hotelZLabel(z) {
-  if (z === null) return '—';
-  if (z >= 1.5)   return 'Superior';
-  if (z >= -0.5)  return 'Normal';
-  if (z >= -0.99) return 'Límite inferior normativo';
-  if (z >= -1.49) return 'Dificultad leve';
-  if (z >= -1.99) return 'Dificultad moderada';
-  return 'Dificultad elevada';
-}
+function hotelZLabel(z) { return escalaReferenciaZ(z); }
 
 function iniciarHotel() {
   document.getElementById('hotel-fecha').value = new Date().toISOString().split('T')[0];
@@ -12319,17 +12317,7 @@ function btaBuscarPc(pb, gi, ei) {
   return 95;
 }
 
-function btaZLabel(z) {
-  if (z === null || z === undefined) return '—';
-  if (z >= 1.5)   return 'Superior';
-  if (z >= -0.5)  return 'Normal';
-  if (z >= -0.99) return 'Límite inferior normativo';
-  if (z >= -1.49) return 'Dificultad leve';
-  if (z >= -1.99) return 'Dificultad moderada';
-  return 'Dificultad severa';
-}
-
-function btaPcToZ(pc) {
+function btaZLabel(z) { return escalaReferenciaZ(z); }
   // Conversión percentil → Z aproximado
   var tabla = {1:-2.33,2:-2.05,3:-1.88,4:-1.75,5:-1.65,7:-1.48,10:-1.28,
     15:-1.04,16:-0.99,20:-0.84,25:-0.67,30:-0.52,35:-0.39,40:-0.25,
@@ -12378,26 +12366,9 @@ function d2CalcZ(bruto, bar) {
   return parseFloat(z.toFixed(2));
 }
 
-function d2ZLabel(z) {
-  if (z === null || z === undefined) return '—';
-  if (z >= 1.5)   return 'Superior';
-  if (z >= 0.5)   return 'Normal alto';
-  if (z >= -0.5)  return 'Normal';
-  if (z >= -0.99) return 'Límite inferior normativo';
-  if (z >= -1.49) return 'Dificultad leve';
-  if (z >= -1.99) return 'Dificultad moderada';
-  return 'Dificultad severa';
-}
+function d2ZLabel(z) { return escalaReferenciaZ(z); }
 
-function d2ZColor(z) {
-  if (z === null) return '#888';
-  if (z >= 0.5)   return '#639922';
-  if (z >= -0.5)  return 'var(--muted)';
-  if (z >= -0.99) return '#888780';
-  if (z >= -1.49) return '#BA7517';
-  if (z >= -1.99) return '#D85A30';
-  return '#E24B4A';
-}
+function d2ZColor(z) { return escalaReferenciaColor(z); }
 
 function d2Live() {
   var tr  = parseFloat(document.getElementById('d2-tr').value);
@@ -13727,24 +13698,9 @@ function tokenPC_AjusteEscol(nssa, escol) {
 }
 
 // ── Etiquetas comunes ──
-function tokenPELabel(pe) {
-  if (pe>=16) return 'Superior';
-  if (pe>=13) return 'Normal alto';
-  if (pe>=8)  return 'Normal';
-  if (pe>=6)  return 'Límite inferior normativo';
-  if (pe>=4)  return 'Dificultad leve';
-  if (pe>=2)  return 'Dificultad moderada';
-  return 'Dificultad severa';
-}
+function tokenPELabel(pe) { return escalaReferenciaPercentil(pe); }
 
-function tokenPEColor(pe) {
-  if (pe>=13) return '#639922';
-  if (pe>=8)  return '#444';
-  if (pe>=6)  return '#888780';
-  if (pe>=4)  return '#BA7517';
-  if (pe>=2)  return '#D85A30';
-  return '#E24B4A';
-}
+function tokenPEColor(pe) { return escalaReferenciaPercentilColor(pe); }
 
 function tokenCategoriaBruto(pb) {
   if (pb>=29) return 'Normal';
@@ -13957,7 +13913,7 @@ function guardarBNT() {
     pb=parseFloat(pbVal);
     var yhat=49.122+(4.780*parseInt(educ));
     z=parseFloat(((pb-yhat)/5.184).toFixed(2));
-    cat=z>=-1.0?'Normal':z>=-1.5?'Leve ↓':z>=-2.0?'Moderado ↓':'Bajo ↓';
+    cat=escalaReferenciaZ(z);
     testNombre='BNT-60';
     dat={pb:pb,educ:parseInt(educ),educ_label:parseInt(educ)?'>12 años':'≤12 años',yhat:parseFloat(yhat.toFixed(2)),z:z,baremo:'Olabarrieta-Landa et al. 2015 — Argentina'};
   } else {
@@ -14846,7 +14802,7 @@ function calcularStroop() {
   var zInt = parseFloat(((ptInt - 50) / 10).toFixed(2));
 
   var edadLabels = ['16–44 años','45–64 años','65–80 años'];
-  function zLbl(z) { return z>=1.5?'Superior':z>=1.0?'Sobre el promedio':z>=-0.99?'Esperado':z>=-1.49?'Lím. inf. normativo':z>=-1.99?'Dificultad leve':'Dificultad moderada'; }
+  function zLbl(z) { return escalaReferenciaZ(z); }
 
   var detalleHtml =
     '<div class="detalle-item"><div class="detalle-num">'+(zP>=0?'+':'')+zP+'</div><div class="detalle-lbl">Z Palabras (P='+p+', corr.='+pCorr+', PT='+ptP+')</div></div>'+
@@ -14888,7 +14844,7 @@ function guardarStroop() {
     test: 'Stroop', fecha: fecha,
     puntaje_total: d.pc,
     puntaje_z: d.zInt,
-    categoria: d.zInt >= -0.5 ? 'Sin interferencia significativa' : d.zInt >= -1.49 ? 'Interferencia leve' : d.zInt >= -1.99 ? 'Interferencia moderada' : 'Interferencia severa',
+    categoria: escalaReferenciaZ(d.zInt),
     datos: {
       p:d.p, c:d.c, pc:d.pc,
       pCorr:d.pCorr, cCorr:d.cCorr, pcCorr:d.pcCorr,
@@ -15223,15 +15179,7 @@ function fcrPcToZ(pc) {
   return table[pc] !== undefined ? table[pc] : null;
 }
 
-function fcrZLabel(z) {
-  if (z === null) return '—';
-  if (z >= 1.5)   return 'Superior';
-  if (z >= -0.5)  return 'Normal';
-  if (z >= -0.99) return 'Límite inferior normativo';
-  if (z >= -1.49) return 'Dificultad leve';
-  if (z >= -1.99) return 'Dificultad moderada';
-  return 'Dificultad elevada';
-}
+function fcrZLabel(z) { return escalaReferenciaZ(z); }
 
 function fcrActualizar() {
   var copia = parseFloat(document.getElementById('fcr-copia').value);
@@ -15382,15 +15330,6 @@ function btaPcToZ(pc) {
   return t[pc] !== undefined ? t[pc] : null;
 }
 
-function btaZLabel(z) {
-  if (z === null) return '—';
-  if (z >= 1.5)   return 'Superior';
-  if (z >= -0.5)  return 'Normal';
-  if (z >= -0.99) return 'Límite inferior normativo';
-  if (z >= -1.49) return 'Dificultad leve';
-  if (z >= -1.99) return 'Dificultad moderada';
-  return 'Dificultad elevada';
-}
 
 function iniciarBTA() {
   document.getElementById('bta-fecha').value = new Date().toISOString().split('T')[0];
@@ -15534,15 +15473,7 @@ function sdmtPcToZ(pc) {
   return t[pc]!==undefined?t[pc]:null;
 }
 
-function sdmtZLabel(z) {
-  if (z===null) return '—';
-  if (z>=1.5)   return 'Superior';
-  if (z>=-0.5)  return 'Normal';
-  if (z>=-0.99) return 'Límite inferior normativo';
-  if (z>=-1.49) return 'Dificultad leve';
-  if (z>=-1.99) return 'Dificultad moderada';
-  return 'Dificultad elevada';
-}
+function sdmtZLabel(z) { return escalaReferenciaZ(z); }
 
 function sdmtSetVersion(v) {
   var esEscrita = v === 'escrita';
@@ -15933,15 +15864,7 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   // Interpretación
   function zInterp(z) {
     if (z===null||z===undefined) return nota||'—';
-    var s='';
-    if (z>=2.0)        s='Muy superior';
-    else if (z>=1.5)   s='Superior';
-    else if (z>=1.0)   s='Lím. superior norm.';
-    else if (z>=-0.49) s='Normal';
-    else if (z>=-1.0)  s='Lím. inf. normativo';
-    else if (z>=-1.5)  s='Dificultad leve';
-    else if (z>=-2.0)  s='Dificultad moderada';
-    else               s='Dificultad elevada';
+    var s = escalaReferenciaZ(z);
     return nota ? s+' · '+nota : s;
   }
 
@@ -16728,13 +16651,11 @@ function calcularTavec() {
   }
   function zLbl(z, esError) {
     if (z === null) return '—';
-    if (esError) { return z<=0.5?'Esperado':z<=1.0?'Leve ↑':z<=1.5?'Moderado ↑':'Alto ↑'; }
-    return z>=-1.0?'Esperado':z>=-1.5?'Lím. inferior':z>=-2.0?'Dificultad leve':'Dificultad moderada';
+    return escalaReferenciaZ(z);
   }
   function zColor(z, esError) {
     if (z === null) return 'var(--muted)';
-    if (esError) return z>1.5?'var(--red)':z>0.5?'var(--yellow)':'var(--accentlt)';
-    return z<-2?'var(--red)':z<-1.5?'var(--orange)':z<-1?'var(--yellow)':'var(--accentlt)';
+    return escalaReferenciaColor(z);
   }
 
   var zAT     = getZ('v3');
@@ -16779,7 +16700,7 @@ function calcularTavec() {
       '<td style="text-align:center;padding:8px;font-size:0.78rem;color:var(--muted);">' + (bar ? bar.m.toFixed(2) : '—') + '</td>' +
       '<td style="text-align:center;padding:8px;font-size:0.78rem;color:var(--muted);">' + (bar ? bar.d.toFixed(2) : '—') + '</td>' +
       '<td style="text-align:center;padding:8px;font-family:monospace;font-weight:700;color:' + col + ';">' + zDisp + '</td>' +
-      '<td style="text-align:center;padding:8px;"><span style="background:' + (lbl==='Esperado'?'#d4f0e2':lbl.indexOf('Leve')>=0||lbl.indexOf('Lím.')>=0?'#fdf0c4':lbl.indexOf('Mod')>=0||lbl.indexOf('Alto')>=0?'#fde8d0':'#fad8d8') + ';border-radius:12px;padding:3px 10px;font-size:0.71rem;font-weight:700;">' + lbl + '</span></td>' +
+      '<td style="text-align:center;padding:8px;"><span style="background:' + escalaReferenciaColor(z) + '22;color:' + escalaReferenciaColor(z) + ';border-radius:12px;padding:3px 10px;font-size:0.71rem;font-weight:700;">' + lbl + '</span></td>' +
       '</tr>';
   });
   html += '</tbody></table>';
@@ -16850,7 +16771,7 @@ function guardarTavec() {
     test: 'TAVEC', fecha: fecha,
     puntaje_total: d.v3,
     puntaje_z: d.zAT,
-    categoria: d.zAT === null ? 'Sin datos' : d.zAT >= -1.0 ? 'Esperado' : d.zAT >= -1.5 ? 'Lím. inferior' : d.zAT >= -2.0 ? 'Dificultad leve' : 'Dificultad moderada',
+    categoria: d.zAT === null ? 'Sin datos' : escalaReferenciaZ(d.zAT),
     datos: {
       gi: d.gi, grupoLabel: grupoLabels[d.gi],
       v1:d.v1, v2:d.v2, v3:d.v3, v4:d.v4,
@@ -16939,12 +16860,13 @@ function renderPerfilZ() {
 
   function zColor(z) {
     if (z === null || z === undefined) return {bg:'transparent',txt:'var(--muted)'};
-    if (z >= 1.5)  return {bg:'#d8f0fa',txt:'#1565c0'};
-    if (z >= 1.0)  return {bg:'#d8eaff',txt:'#1a4a8a'};
-    if (z >= -0.99)return {bg:'#e8f4e0',txt:'#325c28'};
-    if (z >= -1.49)return {bg:'#fdf0c4',txt:'#7a5c00'};
-    if (z >= -1.99)return {bg:'#fde8d0',txt:'#a04000'};
-    return             {bg:'#fad8d8',txt:'#a00000'};
+    var c = escalaReferenciaColor(z);
+    if (z >= 1.5)   return {bg:'#d8f0fa',txt:c};
+    if (z >= -0.5)  return {bg:'#e8f4e0',txt:c};
+    if (z >= -0.99) return {bg:'#f0f0ec',txt:c};
+    if (z >= -1.49) return {bg:'#fdf0c4',txt:c};
+    if (z >= -1.99) return {bg:'#fde8d0',txt:c};
+    return             {bg:'#fad8d8',txt:c};
   }
 
   function fmtZ(z) {
