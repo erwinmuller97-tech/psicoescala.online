@@ -543,12 +543,13 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 .paciente-item {
   background: var(--surface2); border: 1px solid var(--border); border-radius: 9px;
   padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; row-gap: 10px;
   cursor: pointer; transition: all 0.15s;
 }
 .paciente-item:hover { border-color: var(--accentlt); background: #f0f7f4; }
 .pac-nombre { font-weight: 500; color: var(--text); }
 .pac-meta { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
-.pac-acciones { display: flex; gap: 8px; }
+.pac-acciones { display: flex; gap: 8px; flex-wrap: wrap; row-gap: 8px; }
 .btn-xs {
   padding: 5px 12px; border-radius: 5px; font-size: 0.75rem; font-weight: 600;
   cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: opacity 0.15s;
