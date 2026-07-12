@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PsicoEscala — Cuestionarios del Acompañante</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --brand-900: #1e3830;
+  --brand-800: #2d4a3e;
+  --brand-700: #1e3830;
+  --brand-600: #3d7a5f;
+  --brand-400: #5a9e7a;
+  --brand-200: #c8d8d0;
+  --brand-100: #f0f7f4;
+  --bg:        #f5f7f5;
+  --surface:   #ffffff;
+  --surface2:  #eef2f7;
+  --border:    #c8d8d0;
+  --border2:   #a8bdb2;
+  --accent:    var(--brand-600);
+  --accentdk:  var(--brand-700);
+  --accentlt:  var(--brand-400);
+  --text:      #1a2420;
+  --muted:     #5c6b7f;
+  --red:       #dc2626;
+  --radius:    10px;
+  --shadow:    0 1px 3px rgba(45,74,62,0.06), 0 4px 14px rgba(45,74,62,0.06);
+  --shadow-lg: 0 16px 40px rgba(45,74,62,0.12);
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+.familiar-wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+.familiar-header { text-align: center; padding: 8px 0 20px; }
+.logo-mark { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; margin: 0 auto 10px; }
+.logo-mark svg { display: block; width: 100%; height: 100%; }
+.familiar-appname { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--accentdk); letter-spacing: -0.2px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+.card-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--accentdk); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.card-title::before { content: ''; width: 3px; height: 15px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
+.card-hint { font-size: 0.79rem; color: var(--muted); margin-bottom: 14px; line-height: 1.55; }
+
+.welcome-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accentdk); margin-bottom: 8px; }
+.welcome-text { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+.fam-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+@media (min-width: 480px) { .fam-grid { grid-template-columns: 1fr 1fr; } }
+.fam-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.fam-item-label { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.fam-item-opts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fam-item-opts label { display: flex; align-items: center; gap: 4px; font-size: 0.78rem; cursor: pointer; }
+.fam-item-opts select { font-size: 0.78rem; padding: 2px 6px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); }
+
+.btn-primary {
+  padding: 12px 24px; background: linear-gradient(135deg, var(--accentdk), var(--accent));
+  border: none; border-radius: 7px; color: white; font-family: var(--font-body);
+  font-size: 0.92rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(61,122,95,0.25);
+  transition: opacity 0.2s, transform 0.1s; width: 100%;
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-row { margin-top: 8px; }
+
+.error-box { text-align: center; padding: 20px 10px; }
+.error-box .title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--red); margin-bottom: 8px; }
+.error-box .msg { color: var(--muted); font-size: 0.9rem; }
+
+.success-box { text-align: center; padding: 20px 10px; }
+.success-box .title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--accentdk); margin-bottom: 10px; }
+.success-box .msg { color: var(--muted); font-size: 0.9rem; }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 12px); z-index: 1000;
+  padding: 12px 18px; border-radius: var(--radius); font-size: 0.86rem; font-weight: 500;
+  background: var(--brand-900); color: #fff; border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-lg); opacity: 0; transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+  pointer-events: none; max-width: min(360px, calc(100vw - 32px)); text-align: center;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.error { background: #450a0a; border-color: rgba(252,165,165,0.2); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
+
+var PHI_LOGO_SVG = '<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+  '<line x1="24" y1="4" x2="24" y2="44" stroke="#2d4a3e" stroke-width="1.4" stroke-linecap="round"/>' +
+  '<ellipse cx="24" cy="26" rx="11" ry="14" fill="none" stroke="#2d4a3e" stroke-width="2"/>' +
+  '<path d="M24 9 L27.5 13.5 L24 18 L20.5 13.5 Z" fill="none" stroke="#3d7a5f" stroke-width="1.2" stroke-linejoin="round"/>' +
+  '<path d="M24 33 L20.5 37.5 L24 42 L27.5 37.5 Z" fill="#3d7a5f" opacity="0.9"/>' +
+  '<path d="M13 19 Q7 13 5 9" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<path d="M35 19 Q41 13 43 9" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<path d="M13 33 Q6 37 4 41" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<path d="M35 33 Q42 37 44 41" fill="none" stroke="#2d4a3e" stroke-width="0.95" opacity="0.8"/>' +
+  '<circle cx="5" cy="9" r="2.2" fill="#3d7a5f"/><circle cx="43" cy="9" r="2.2" fill="#3d7a5f"/>' +
+  '<circle cx="4" cy="41" r="1.8" fill="#3d7a5f"/><circle cx="44" cy="41" r="1.8" fill="#3d7a5f"/>' +
+  '<line x1="13" y1="19" x2="17" y2="22" stroke="#3d7a5f" stroke-width="0.55" opacity="0.55"/>' +
+  '<line x1="35" y1="19" x2="31" y2="22" stroke="#3d7a5f" stroke-width="0.55" opacity="0.55"/>' +
+  '</svg>';
+
+var FAM_NPIQ = [
+  {id:'delirios', label:'Delirios'},
+  {id:'alucin',   label:'Alucinaciones'},
+  {id:'agitacion',label:'Agitación / Agresión'},
+  {id:'depresion',label:'Depresión / Disforia'},
+  {id:'ansiedad', label:'Ansiedad'},
+  {id:'euforia',  label:'Euforia / Elación'},
+  {id:'apatia',   label:'Apatía / Indiferencia'},
+  {id:'desinhib', label:'Desinhibición'},
+  {id:'irritab',  label:'Irritabilidad / Labilidad'},
+  {id:'motora',   label:'Conducta Motora Anormal'},
+  {id:'sueno',    label:'Cambios en el Sueño'},
+  {id:'apetito',  label:'Cambios en el Apetito'}
+];
+var FAM_AD8 = [
+  {id:'ad8_1', label:'Cambios en el juicio o decisiones'},
+  {id:'ad8_2', label:'Menor interés en hobbies o actividades'},
+  {id:'ad8_3', label:'Repite preguntas, historias o frases'},
+  {id:'ad8_4', label:'Dificultad con aparatos o dispositivos'},
+  {id:'ad8_5', label:'Olvida el mes o el año'},
+  {id:'ad8_6', label:'Dificultad para finanzas complejas'},
+  {id:'ad8_7', label:'Olvida citas o compromisos'},
+  {id:'ad8_8', label:'Problemas de memoria o razonamiento'},
+];
+var FAM_AVDB = [
+  {id:'identif',  label:'Alimentación'},
+  {id:'aseo',     label:'Higiene personal'},
+  {id:'vestirse', label:'Vestirse / Desvestirse'},
+  {id:'continen', label:'Continencia esfínteres'},
+];
+var FAM_AVDI = [
+  {id:'telefono', label:'Uso del teléfono'},
+  {id:'compras',  label:'Compras'},
+  {id:'comida',   label:'Preparar comida'},
+  {id:'transp',   label:'Transporte / movilidad'},
+  {id:'medic',    label:'Medicación'},
+  {id:'dinero',   label:'Manejo del dinero'},
+];
+var FAM_AVDE = [
+  {id:'inform',    label:'Acceso a información'},
+  {id:'social',    label:'Contacto social'},
+  {id:'recreat',   label:'Actividades recreativas'},
+  {id:'autono',    label:'Autonomía'},
+  {id:'planes',    label:'Planes de futuro'},
+  {id:'responsab', label:'Responsabilidades'},
+  {id:'opinion',   label:'Expresión de opinión'},
+  {id:'aprende',   label:'Aprendizaje de cosas nuevas'},
+];
+
+var PACIENTE_ID = null;
+
+function toast(msg, tipo) {
+  var el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'toast' + (tipo === 'error' ? ' error' : '');
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(function(){ el.classList.remove('show'); }, 3000);
+}
+
+function initLogo() {
+  document.querySelectorAll('.logo-mark').forEach(function(el) {
+    if (!el.querySelector('svg')) el.innerHTML = PHI_LOGO_SVG;
+  });
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderError() {
+  document.getElementById('app').innerHTML =
+    '<div class="familiar-wrap">' +
+    '<div class="familiar-header"><div class="logo-mark"></div><div class="familiar-appname">PsicoEscala</div></div>' +
+    '<div class="card"><div class="error-box">' +
+    '<div class="title">Link inválido</div>' +
+    '<div class="msg">Solicitá un nuevo link al profesional.</div>' +
+    '</div></div></div>';
+  initLogo();
+}
+
+function renderForm() {
+  var html = '<div class="familiar-wrap">';
+  html += '<div class="familiar-header"><div class="logo-mark"></div><div class="familiar-appname">PsicoEscala</div></div>';
+
+  html += '<div class="card">' +
+    '<div class="welcome-title">Cuestionarios del acompañante</div>' +
+    '<div class="welcome-text">Por favor completá los siguientes cuestionarios sobre el paciente que acompañás.</div>' +
+    '</div>';
+
+  html += '<div class="card"><div class="card-title">NPI-Q · Inventario Neuropsiquiátrico</div>' +
+    '<p class="card-hint">Para cada síntoma indicá si <strong>está presente</strong> y, si lo está, la <strong>gravedad</strong> (1=Leve · 2=Moderado · 3=Severo).</p>' +
+    '<div class="fam-grid" id="npiq-grid"></div></div>';
+
+  html += '<div class="card"><div class="card-title">AD8-ARG · Cuestionario del Informante</div>' +
+    '<p class="card-hint">Indicá si hubo <strong>cambio</strong> en los últimos años en cada área (Sí / No / No sé).</p>' +
+    '<div class="fam-grid" id="ad8-grid"></div>' +
+    '<div id="ad8-total-box" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.85rem;font-weight:600;"></div></div>';
+
+  html += '<div class="card"><div class="card-title">AVD Básicas</div>' +
+    '<p class="card-hint">Indicá el nivel de <strong>independencia</strong>: 1=Independiente · 2=Necesita ayuda · 3=Dependiente.</p>' +
+    '<div class="fam-grid" id="avdb-grid"></div></div>';
+
+  html += '<div class="card"><div class="card-title">AVD Instrumentales</div>' +
+    '<p class="card-hint">Indicá el nivel de <strong>independencia</strong>: 1=Independiente · 2=Necesita ayuda · 3=Dependiente.</p>' +
+    '<div class="fam-grid" id="avdi-grid"></div></div>';
+
+  html += '<div class="card"><div class="card-title">AVD Expansivas</div>' +
+    '<p class="card-hint">Indicá el nivel de <strong>independencia</strong>: 1=Independiente · 2=Necesita ayuda · 3=Dependiente.</p>' +
+    '<div class="fam-grid" id="avde-grid"></div></div>';
+
+  html += '<div class="btn-row"><button class="btn-primary" id="btn-enviar">Enviar respuestas</button></div>';
+  html += '</div>';
+
+  document.getElementById('app').innerHTML = html;
+  initLogo();
+  _renderFamiliarGrids();
+  document.getElementById('btn-enviar').addEventListener('click', enviarFamiliar);
+}
+
+function renderSuccess() {
+  document.getElementById('app').innerHTML =
+    '<div class="familiar-wrap">' +
+    '<div class="familiar-header"><div class="logo-mark"></div><div class="familiar-appname">PsicoEscala</div></div>' +
+    '<div class="card"><div class="success-box">' +
+    '<div class="title">✓ Respuestas enviadas correctamente</div>' +
+    '<div class="msg">Podés cerrar esta página.</div>' +
+    '</div></div></div>';
+  initLogo();
+}
+
+function _renderFamiliarGrids() {
+  var npiqG = document.getElementById('npiq-grid');
+  npiqG.innerHTML = '';
+  FAM_NPIQ.forEach(function(item) {
+    var d = document.createElement('div');
+    d.className = 'fam-item';
+    d.innerHTML = '<div class="fam-item-label">'+item.label+'</div>'+
+      '<div class="fam-item-opts">'+
+      '<label><input type="checkbox" id="npiq-'+item.id+'-pres" onchange="npiqChk(\''+item.id+'\')"> Presente</label>'+
+      '<select id="npiq-'+item.id+'-grav" disabled>'+
+        '<option value="0">— gravedad —</option>'+
+        '<option value="1">1 · Leve</option>'+
+        '<option value="2">2 · Moderado</option>'+
+        '<option value="3">3 · Severo</option>'+
+      '</select>'+
+      '</div>';
+    npiqG.appendChild(d);
+  });
+
+  var ad8G = document.getElementById('ad8-grid');
+  ad8G.innerHTML = '';
+  FAM_AD8.forEach(function(item) {
+    var d = document.createElement('div');
+    d.className = 'fam-item';
+    d.innerHTML = '<div class="fam-item-label">'+item.label+'</div>'+
+      '<div class="fam-item-opts">'+
+      ['si','no','nose'].map(function(v,i){
+        var lbl = ['Sí','No','No sé'][i];
+        return '<label><input type="radio" name="ad8-'+item.id+'" value="'+v+'" onchange="ad8Calc()"> '+lbl+'</label>';
+      }).join('')+
+      '</div>';
+    ad8G.appendChild(d);
+  });
+
+  function renderAvd(items, containerId) {
+    var g = document.getElementById(containerId);
+    g.innerHTML = '';
+    items.forEach(function(item) {
+      var d = document.createElement('div');
+      d.className = 'fam-item';
+      d.innerHTML = '<div class="fam-item-label">'+item.label+'</div>'+
+        '<div class="fam-item-opts">'+
+        [[1,'Independiente'],[2,'Necesita ayuda'],[3,'Dependiente']].map(function(pair){
+          return '<label><input type="radio" name="'+containerId+'-'+item.id+'" value="'+pair[0]+'"> '+pair[1]+'</label>';
+        }).join('')+
+        '</div>';
+      g.appendChild(d);
+    });
+  }
+  renderAvd(FAM_AVDB, 'avdb-grid');
+  renderAvd(FAM_AVDI, 'avdi-grid');
+  renderAvd(FAM_AVDE, 'avde-grid');
+}
+
+function npiqChk(id) {
+  var pres = document.getElementById('npiq-'+id+'-pres');
+  var grav = document.getElementById('npiq-'+id+'-grav');
+  grav.disabled = !pres.checked;
+  if (!pres.checked) grav.value = '0';
+}
+
+function ad8Calc() {
+  var total = FAM_AD8.filter(function(item){
+    var sel = document.querySelector('input[name="ad8-'+item.id+'"]:checked');
+    return sel && sel.value === 'si';
+  }).length;
+  var box = document.getElementById('ad8-total-box');
+  box.style.display = 'block';
+  var sig = total >= 2;
+  box.style.background = sig ? '#fad8d8' : '#d4f0e2';
+  box.style.color = sig ? '#a00000' : '#1a6e3a';
+  box.style.border = '1px solid ' + (sig ? '#e6b0b0' : '#9fd4b8');
+  box.textContent = 'Total AD8-ARG: ' + total + '/8 — ' + (sig ? 'Significativo (≥ 2 · posible deterioro cognitivo)' : 'Sin significancia clínica (< 2)');
+}
+
+function _getFamData() {
+  var npiq = {};
+  FAM_NPIQ.forEach(function(item){
+    var pres = document.getElementById('npiq-'+item.id+'-pres');
+    var grav = document.getElementById('npiq-'+item.id+'-grav');
+    npiq[item.id] = (pres && pres.checked) ? parseInt(grav.value)||1 : 0;
+  });
+  var npiqTotal = Object.values(npiq).reduce(function(a,b){return a+(b>0?1:0);},0);
+  var hayNpiq = npiqTotal > 0;
+
+  var ad8 = {};
+  var ad8Total = 0;
+  FAM_AD8.forEach(function(item){
+    var sel = document.querySelector('input[name="ad8-'+item.id+'"]:checked');
+    ad8[item.id] = sel ? sel.value : null;
+    if (sel && sel.value === 'si') ad8Total++;
+  });
+  var hayAD8 = FAM_AD8.some(function(item){ return ad8[item.id] !== null; });
+
+  function getAvd(items, prefix) {
+    var avd = {}, total = 0, hay = false;
+    items.forEach(function(item){
+      var sel = document.querySelector('input[name="'+prefix+'-'+item.id+'"]:checked');
+      avd[item.id] = sel ? parseInt(sel.value) : null;
+      if (sel) { hay = true; total += parseInt(sel.value); }
+    });
+    return {data: avd, total: total, hay: hay};
+  }
+  var avdb = getAvd(FAM_AVDB, 'avdb-grid');
+  var avdi = getAvd(FAM_AVDI, 'avdi-grid');
+  var avde = getAvd(FAM_AVDE, 'avde-grid');
+
+  return {
+    npiq: hayNpiq ? npiq : null,
+    npiqTotal: npiqTotal,
+    ad8: hayAD8 ? ad8 : null,
+    ad8Total: ad8Total,
+    avdb: avdb.hay ? avdb.data : null,
+    avdbTotal: avdb.total,
+    avdi: avdi.hay ? avdi.data : null,
+    avdiTotal: avdi.total,
+    avde: avde.hay ? avde.data : null,
+    avdeTotal: avde.total
+  };
+}
+
+function enviarFamiliar() {
+  var d = _getFamData();
+  if (!d.npiq && !d.ad8 && !d.avdb && !d.avdi && !d.avde) {
+    toast('Completá al menos un cuestionario antes de enviar.', 'error');
+    return;
+  }
+  var resumen = [];
+  if (d.npiq) resumen.push('NPI-Q: '+ d.npiqTotal +' síntomas');
+  if (d.ad8)  resumen.push('AD8: '+ d.ad8Total +'/8');
+  if (d.avdb) resumen.push('AVD Básicas: '+ d.avdbTotal);
+  if (d.avdi) resumen.push('AVD Instr.: '+ d.avdiTotal);
+  if (d.avde) resumen.push('AVD Expan.: '+ d.avdeTotal);
+
+  var btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  fetch(SUPA_URL + '/rest/v1/psico_resultados', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      paciente_id: PACIENTE_ID,
+      test: 'Cuestionarios Familiares',
+      fecha: new Date().toISOString().split('T')[0],
+      puntaje_total: d.ad8Total,
+      puntaje_z: null,
+      categoria: resumen.join(' · '),
+      datos: d
+    })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('save failed');
+    renderSuccess();
+  }).catch(function() {
+    toast('Hubo un error al enviar. Intentá nuevamente.', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Enviar respuestas';
+  });
+}
+
+(function init() {
+  var params = new URLSearchParams(location.search);
+  PACIENTE_ID = params.get('paciente');
+  if (!PACIENTE_ID) { renderError(); return; }
+  renderForm();
+})();
+</script>
+</body>
+</html>
