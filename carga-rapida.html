@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Carga rápida — PsicoEscala</title>
+<meta name="theme-color" content="#3d7a5f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Carga rápida">
+<link rel="manifest" href="manifest-carga-rapida.json">
+<link rel="apple-touch-icon" href="icon-carga-rapida.svg">
+<link rel="icon" href="icon-carga-rapida.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-600:#3d7a5f; --brand-700:#1e3830; --brand-400:#5a9e7a; --brand-200:#c8d8d0; --brand-100:#f0f7f4;
+    --bg:#f5f7f5; --surface:#ffffff; --border:#c8d8d0; --text:#1a2420; --muted:#5c6b7f;
+    --accent:#3d7a5f; --accentdk:#1e3830; --red:#dc2626; --green:#0d9488;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom);}
+  input,select,button{font-family:inherit;}
+  .screen{display:none;min-height:100vh;flex-direction:column;}
+  .screen.active{display:flex;}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--accentdk);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;padding-top:calc(14px + env(safe-area-inset-top));}
+  .topbar-title{font-weight:700;font-size:1rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .topbar-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;padding:8px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;}
+
+  /* Login */
+  #screen-login{align-items:center;justify-content:center;padding:24px;}
+  .login-box{width:100%;max-width:360px;background:var(--surface);border-radius:16px;padding:32px 26px;box-shadow:0 8px 30px rgba(30,56,48,0.12);}
+  .login-logo{width:56px;height:56px;border-radius:14px;margin:0 auto 16px;display:block;}
+  .login-title{text-align:center;font-weight:800;font-size:1.2rem;color:var(--accentdk);margin-bottom:2px;}
+  .login-sub{text-align:center;font-size:0.82rem;color:var(--muted);margin-bottom:22px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:5px;}
+  .field input, .field select{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:1rem;background:#fff;color:var(--text);}
+  .field input:focus, .field select:focus{outline:none;border-color:var(--accent);}
+  .btn-primary{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:0.98rem;font-weight:700;cursor:pointer;}
+  .btn-primary:active{background:var(--accentdk);}
+  .btn-secondary{padding:10px 16px;background:transparent;color:var(--accent);border:1.5px solid var(--accent);border-radius:10px;font-size:0.88rem;font-weight:600;}
+  .login-error{background:#fef2f2;color:var(--red);border:1px solid #fecaca;border-radius:8px;padding:10px 12px;font-size:0.8rem;margin-bottom:14px;display:none;}
+
+  /* Pacientes */
+  #screen-pacientes .content{padding:14px 16px;flex:1;}
+  .search-box{margin-bottom:12px;}
+  .search-box input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.95rem;background:#fff;}
+  .paciente-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+  .paciente-item .nombre{font-weight:600;font-size:0.94rem;}
+  .paciente-item .flecha{color:var(--accent);font-size:1.1rem;}
+  .empty-txt{text-align:center;color:var(--muted);font-size:0.85rem;padding:30px 10px;}
+
+  /* Grid de carga */
+  #screen-grid .content{padding:12px 14px 100px;flex:1;}
+  .paciente-banner{background:var(--brand-100);border:1px solid var(--brand-200);border-radius:10px;padding:10px 14px;font-size:0.82rem;color:var(--accentdk);font-weight:600;margin-bottom:14px;}
+  .domain{margin-bottom:10px;}
+  .domain-head{background:var(--accentdk);color:#fff;padding:10px 14px;border-radius:10px 10px 0 0;font-size:0.78rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+  .domain-body{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;padding:6px 4px;}
+  .test-card{padding:12px 10px;border-bottom:1px solid var(--border);}
+  .test-card:last-child{border-bottom:none;}
+  .test-name{font-weight:700;font-size:0.88rem;color:var(--text);margin-bottom:2px;}
+  .test-meta{font-size:0.72rem;color:var(--muted);margin-bottom:10px;}
+  .test-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .f-item label{display:block;font-size:0.68rem;color:var(--muted);margin-bottom:4px;line-height:1.2;min-height:2.1em;}
+  .f-item input, .f-item select{width:100%;padding:11px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;text-align:center;background:#fbfdfc;}
+  .f-item input:not(:placeholder-shown), .f-item select.filled{border-color:var(--brand-400);background:#fff;}
+  .f-item input:focus, .f-item select:focus{outline:none;border-color:var(--accent);background:#fff;}
+
+  .savebar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(30,56,48,0.08);z-index:15;}
+  .savebar-info{font-size:0.72rem;color:var(--muted);text-align:center;margin-top:6px;}
+
+  .toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-20px);background:var(--accentdk);color:#fff;padding:12px 20px;border-radius:10px;font-size:0.85rem;font-weight:600;opacity:0;transition:all 0.25s;z-index:100;max-width:90%;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.2);}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.error{background:var(--red);}
+
+  .install-hint{font-size:0.72rem;color:var(--muted);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="screen active" id="screen-login">
+  <div class="login-box">
+    <svg class="login-logo" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#3d7a5f"/><g fill="none" stroke="#f0f7f4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><rect x="46" y="34" width="100" height="124" rx="10"/><line x1="64" y1="62" x2="128" y2="62"/><line x1="64" y1="86" x2="128" y2="86"/><line x1="64" y1="110" x2="104" y2="110"/></g><circle cx="132" cy="132" r="34" fill="#f0f7f4"/><g stroke="#3d7a5f" stroke-width="8" stroke-linecap="round"><line x1="132" y1="116" x2="132" y2="148"/><line x1="116" y1="132" x2="148" y2="132"/></g></svg>
+    <div class="login-title">Carga rápida</div>
+    <div class="login-sub">PsicoEscala · puntajes brutos</div>
+    <div class="login-error" id="login-error"></div>
+    <div class="field"><label>Email</label><input type="email" id="login-email" autocomplete="username" inputmode="email"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="login-pass" autocomplete="current-password"></div>
+    <button class="btn-primary" id="btn-login">Entrar</button>
+  </div>
+</div>
+
+<!-- PACIENTES -->
+<div class="screen" id="screen-pacientes">
+  <div class="topbar">
+    <div class="topbar-title">Seleccionar paciente</div>
+    <button class="topbar-btn" id="btn-logout-pac">Salir</button>
+  </div>
+  <div class="content">
+    <div class="search-box"><input type="text" id="pac-search" placeholder="Buscar paciente por nombre…"></div>
+    <div id="pac-lista"></div>
+  </div>
+</div>
+
+<!-- GRID DE CARGA -->
+<div class="screen" id="screen-grid">
+  <div class="topbar">
+    <button class="topbar-btn" id="btn-cambiar-paciente">‹ Pacientes</button>
+    <div class="topbar-title" id="grid-paciente-nombre">Paciente</div>
+  </div>
+  <div class="content">
+    <div class="paciente-banner">Completá solo los tests que evaluaste. Los campos vacíos se ignoran.</div>
+    <div id="dominios-container"></div>
+  </div>
+  <div class="savebar">
+    <button class="btn-primary" id="btn-guardar">Guardar puntajes brutos</button>
+    <div class="savebar-info">Quedan marcados como <strong>pendientes de cálculo</strong> — completá el Z en la PC.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ CONFIG SUPABASE (mismas credenciales que index.html) ══════════════════
+var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
+
+var SESSION = null;
+var PACIENTES = [];
+var PACIENTE_ACTIVO = null;
+
+function supaFetch(path, method, body, token, extraHeaders){
+  var headers = { 'Content-Type':'application/json', 'apikey': SUPA_KEY };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  if (method !== 'GET' && method !== 'DELETE') headers['Prefer'] = 'return=representation';
+  if (extraHeaders) Object.keys(extraHeaders).forEach(function(k){ headers[k]=extraHeaders[k]; });
+  return fetch(SUPA_URL + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined });
+}
+function supaAuth(action, body){
+  return fetch(SUPA_URL + '/auth/v1/' + action, {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'apikey': SUPA_KEY, 'Authorization':'Bearer ' + SUPA_KEY },
+    body: JSON.stringify(body)
+  }).then(function(r){
+    return r.json().then(function(data){
+      if (!r.ok && data && !data.error) data.error = data.msg || data.message || ('HTTP ' + r.status);
+      return data;
+    });
+  });
+}
+
+function toast(msg, tipo){
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (tipo === 'error' ? ' error' : '') + ' show';
+  clearTimeout(el._t);
+  el._t = setTimeout(function(){ el.classList.remove('show'); }, 3200);
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+// ══ SESIÓN (comparte localStorage con index.html) ═════════════════════════
+function initSesion(){
+  try {
+    var saved = localStorage.getItem('psico_session');
+    if (saved) {
+      SESSION = JSON.parse(saved);
+      if (SESSION && SESSION.access_token) { irAPacientes(); return; }
+    }
+  } catch(e){}
+  showScreen('screen-login');
+}
+
+function doLogin(){
+  var email = document.getElementById('login-email').value.trim();
+  var pass  = document.getElementById('login-pass').value;
+  var errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!email || !pass) { errEl.textContent = 'Completá email y contraseña.'; errEl.style.display = 'block'; return; }
+  supaAuth('token?grant_type=password', { email: email, password: pass }).then(function(data){
+    if (data.error || !data.access_token) {
+      errEl.textContent = data.error_description || data.msg || data.message || 'Email o contraseña incorrectos.';
+      errEl.style.display = 'block';
+      return;
+    }
+    SESSION = data;
+    try { localStorage.setItem('psico_session', JSON.stringify(data)); } catch(e){}
+    irAPacientes();
+  });
+}
+function doLogout(){
+  SESSION = null; PACIENTES = []; PACIENTE_ACTIVO = null;
+  try { localStorage.removeItem('psico_session'); } catch(e){}
+  document.getElementById('login-pass').value = '';
+  showScreen('screen-login');
+}
+
+// ══ PACIENTES ═══════════════════════════════════════════════════════════
+function irAPacientes(){
+  showScreen('screen-pacientes');
+  cargarPacientes();
+}
+function cargarPacientes(){
+  supaFetch('/rest/v1/psico_pacientes?select=*&order=nombre.asc', 'GET', null, SESSION.access_token)
+    .then(function(r){
+      if (r.status === 401) { doLogout(); return null; }
+      return r.json();
+    })
+    .then(function(data){
+      if (!data) return;
+      PACIENTES = Array.isArray(data) ? data : [];
+      renderPacientes(PACIENTES);
+    })
+    .catch(function(){ toast('No se pudo conectar con el servidor', 'error'); });
+}
+function renderPacientes(lista){
+  var el = document.getElementById('pac-lista');
+  if (!lista.length) { el.innerHTML = '<div class="empty-txt">No hay pacientes cargados todavía.<br>Cargalo primero desde la PC.</div>'; return; }
+  el.innerHTML = lista.map(function(p){
+    return '<div class="paciente-item" data-id="' + p.id + '"><div class="nombre">' + escHtml(p.nombre) + '</div><div class="flecha">›</div></div>';
+  }).join('');
+  el.querySelectorAll('.paciente-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var id = item.getAttribute('data-id');
+      var pac = PACIENTES.find(function(p){ return String(p.id) === String(id); });
+      if (pac) abrirGrid(pac);
+    });
+  });
+}
+document.getElementById('pac-search').addEventListener('input', function(){
+  var q = this.value.trim().toLowerCase();
+  var filtrados = !q ? PACIENTES : PACIENTES.filter(function(p){ return (p.nombre||'').toLowerCase().indexOf(q) !== -1; });
+  renderPacientes(filtrados);
+});
+function escHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+// ══ CONFIGURACIÓN DE TESTS (claves propias, todos los campos opcionales) ══
+// Las claves (k) coinciden con el sufijo del id real del input en index.html
+// (prefijo del test + k = id de escritorio) para que el autocompletado futuro
+// sea directo. Los campos marcados "extra" no tienen todavía un input
+// equivalente en la calculadora de escritorio — quedan igual guardados en
+// Supabase para registro clínico, pero no se autocompletan.
+var TESTS_CONFIG = [
+  { dominio: 'Memoria', tests: [
+    { test: 'TAVEC', label: 'TAVEC', meta: '13 variables', fields: [
+      {k:'v1', l:'RI-A1'}, {k:'v2', l:'RI-A5'}, {k:'v3', l:'RI-AT'},
+      {k:'v4', l:'RI-B'}, {k:'v8', l:'RL-CP'}, {k:'v9', l:'RCL-CP'},
+      {k:'v10', l:'RL-LP'}, {k:'v11', l:'RCL-LP'}, {k:'v20', l:'Persev.'},
+      {k:'v21', l:'I-RL'}, {k:'v22', l:'I-RCL'}, {k:'v23', l:'Recon. Ac.'},
+      {k:'v24', l:'FP'}
+    ]},
+    { test: 'Figura Rey', label: 'Figura de Rey', meta: 'Copia y recuerdo inmediato', fields: [
+      {k:'copia', l:'Copia (0-36)'},
+      {k:'ri', l:'Rec. inmediato (0-36)'},
+      {k:'tipo', l:'Tipo de copia (extra)', type:'select', options:['I','II','III','IV','V','VI','VII']},
+      {k:'recuerdo_diferido_30', l:'Rec. diferido 30\' (extra)'}
+    ]}
+  ]},
+  { dominio: 'Atención', tests: [
+    { test: 'TMT A-B', label: 'TMT A y B', meta: 'Segundos (+ errores extra)', fields: [
+      {k:'a', l:'TMT-A (seg)'}, {k:'b', l:'TMT-B (seg)'},
+      {k:'a_err', l:'TMT-A errores (extra)'}, {k:'b_err', l:'TMT-B errores (extra)'}
+    ]}
+  ]},
+  { dominio: 'Funciones ejecutivas', tests: [
+    { test: 'Stroop', label: 'Stroop', meta: 'P · C · PC', fields: [
+      {k:'p', l:'Palabra (P)'}, {k:'c', l:'Color (C)'}, {k:'pc', l:'Palabra-Color (PC)'}
+    ]},
+    { test: 'IFS', label: 'IFS — INECO Frontal Screening', meta: '8 subtests', fields: [
+      {k:'motor', l:'Series motoras /3'}, {k:'conflicto', l:'Instr. conflictivas /3'},
+      {k:'gonogo', l:'Go-No Go /3'}, {k:'digitos', l:'Dígitos atrás /6'},
+      {k:'meses', l:'Meses atrás /2'}, {k:'corsi', l:'Corsi inverso /4'},
+      {k:'refranes', l:'Refranes /3'}, {k:'hayling', l:'Hayling /6'}
+    ]},
+    { test: 'BADS-Llaves', label: 'BADS · Búsqueda de Llaves', meta: '8 indicadores + tiempo', fields: [
+      {k:'ind-ent', l:'Entrada /3'}, {k:'ind-fin', l:'Finalización /3'},
+      {k:'ind-con', l:'Continuidad /1'}, {k:'ind-par', l:'Paralelas /1'},
+      {k:'ind-vh', l:'Vertical/Horiz. /1'}, {k:'ind-pat', l:'Patrones /5'},
+      {k:'ind-tod', l:'Todo el campo /1'}, {k:'ind-enc', l:'Encontró llaves /1'},
+      {k:'tiempo', l:'Tiempo total (seg)'}
+    ]},
+    { test: 'BADS-Juicio', label: 'BADS · Juicio Temporal', meta: '4 preguntas', fields: [
+      {k:'resp-perros', l:'Vida de un perro (años)'}, {k:'resp-globo', l:'Inflar un globo (seg)'},
+      {k:'resp-dientes', l:'Lavarse los dientes (min)'}, {k:'resp-platos', l:'Lavar platos x4 (min)'}
+    ]},
+    { test: 'BADS-Zoo', label: 'BADS · Mapa del Zoo', meta: 'Versión 1 y 2', fields: [
+      {k:'v1-sec', l:'V1 Secuencia /8'}, {k:'v1-err', l:'V1 Errores'},
+      {k:'v1-tplan', l:'V1 T. planif. (seg)'}, {k:'v1-ttot', l:'V1 T. total (seg)'},
+      {k:'v2-sec', l:'V2 Secuencia /8'}, {k:'v2-err', l:'V2 Errores'},
+      {k:'v2-tplan', l:'V2 T. planif. (seg)'}, {k:'v2-ttot', l:'V2 T. total (seg)'}
+    ]}
+  ]},
+  { dominio: 'Memoria de trabajo', tests: [
+    { test: 'WAIS-IV', label: 'WAIS-IV — Dígitos, SLN y Claves', meta: 'Retención de dígitos, Letras y Números, Dígitos-Símbolo', fields: [
+      {k:'digitos_directos', l:'Dígitos directos (extra)'}, {k:'digitos_inversos', l:'Dígitos inversos (extra)'},
+      {k:'sln', l:'Letras y Números (SLN)'}, {k:'cla', l:'Dígitos y Símbolos (Claves)'}
+    ]},
+    { test: 'LoEs WMS-III', label: 'LoEs (WMS-III)', meta: 'Sin calculadora en escritorio todavía — queda como registro', fields: [
+      {k:'directa', l:'Directa /16'}, {k:'inversa', l:'Inversa /16'}
+    ]}
+  ]},
+  { dominio: 'Lenguaje', tests: [
+    { test: 'BNT-12', label: 'Boston BNT-12', meta: '/12', fields: [
+      {k:'pb', l:'Puntaje /12'}
+    ]},
+    { test: 'BNT-60', label: 'Boston BNT-60', meta: '/60', fields: [
+      {k:'pb', l:'Puntaje /60'}
+    ]},
+    { test: 'Fluencia Verbal', label: 'Fluencia Verbal', meta: 'Semántica + fonológica', fields: [
+      {k:'animales', l:'Semántica (animales)'}, {k:'p', l:'Fonológica (letra P)'}
+    ]}
+  ]},
+  { dominio: 'Screening cognitivo', tests: [
+    { test: 'ACE-R', label: 'ACE-R', meta: '6 subdominios', fields: [
+      {k:'orient', l:'Orientación /10'}, {k:'aten', l:'Atención /8'},
+      {k:'memo', l:'Memoria /26'}, {k:'fluencia', l:'Fluencia /14'},
+      {k:'lenguaje', l:'Lenguaje /26'}, {k:'visuo', l:'Visuoespacial /16'}
+    ]}
+  ]}
+];
+
+// ══ RENDER GRID ═════════════════════════════════════════════════════════
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'_'); }
+
+function abrirGrid(pac){
+  PACIENTE_ACTIVO = pac;
+  document.getElementById('grid-paciente-nombre').textContent = pac.nombre;
+  renderGrid();
+  showScreen('screen-grid');
+}
+
+function renderGrid(){
+  var cont = document.getElementById('dominios-container');
+  cont.innerHTML = TESTS_CONFIG.map(function(dom){
+    var body = dom.tests.map(function(t){
+      var fieldsHtml = t.fields.map(function(f){
+        var fid = 'cr__' + slug(t.test) + '__' + f.k;
+        if (f.type === 'select') {
+          var opts = '<option value=""></option>' + f.options.map(function(o){ return '<option value="'+o+'">'+o+'</option>'; }).join('');
+          return '<div class="f-item"><label>'+f.l+'</label><select id="'+fid+'" data-key="'+f.k+'" data-test="'+t.test+'">'+opts+'</select></div>';
+        }
+        return '<div class="f-item"><label>'+f.l+'</label><input type="number" inputmode="decimal" step="any" id="'+fid+'" data-key="'+f.k+'" data-test="'+t.test+'" placeholder="—"></div>';
+      }).join('');
+      return '<div class="test-card"><div class="test-name">'+t.label+'</div>' +
+        (t.meta ? '<div class="test-meta">'+t.meta+'</div>' : '') +
+        '<div class="test-fields">'+fieldsHtml+'</div></div>';
+    }).join('');
+    return '<div class="domain"><div class="domain-head">'+dom.dominio+'</div><div class="domain-body">'+body+'</div></div>';
+  }).join('');
+}
+
+// ══ GUARDADO ════════════════════════════════════════════════════════════
+function hoyISO(){
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function recolectarTests(){
+  var porTest = {}; // test -> {k:v,...}
+  document.querySelectorAll('#dominios-container input, #dominios-container select').forEach(function(el){
+    var val = el.value;
+    if (val === '' || val === null || val === undefined) return;
+    var test = el.getAttribute('data-test');
+    var key = el.getAttribute('data-key');
+    if (!porTest[test]) porTest[test] = {};
+    porTest[test][key] = el.tagName === 'SELECT' ? val : parseFloat(val);
+  });
+  return porTest;
+}
+
+function guardarTodo(){
+  if (!SESSION || !PACIENTE_ACTIVO) return;
+  var porTest = recolectarTests();
+  var testNames = Object.keys(porTest);
+  if (!testNames.length) { toast('No completaste ningún campo todavía', 'error'); return; }
+
+  var btn = document.getElementById('btn-guardar');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+
+  var fecha = hoyISO();
+  var promesas = testNames.map(function(test){
+    var body = {
+      user_id: SESSION.user.id,
+      paciente_id: PACIENTE_ACTIVO.id,
+      test: test,
+      fecha: fecha,
+      datos: { pendiente_calculo: true, brutos: porTest[test] }
+    };
+    return supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token).then(function(r){ return r.ok; });
+  });
+
+  Promise.all(promesas).then(function(resultados){
+    btn.disabled = false;
+    btn.textContent = 'Guardar puntajes brutos';
+    var ok = resultados.filter(Boolean).length;
+    var fail = resultados.length - ok;
+    if (fail === 0) {
+      toast('✓ Guardado: ' + ok + ' test' + (ok===1?'':'s') + '. Pendiente de cálculo en la PC.', 'success');
+      document.querySelectorAll('#dominios-container input').forEach(function(el){ el.value = ''; });
+      document.querySelectorAll('#dominios-container select').forEach(function(el){ el.value = ''; });
+    } else {
+      toast('Guardado ' + ok + ' / ' + resultados.length + ' — revisá tu conexión', 'error');
+    }
+  }).catch(function(){
+    btn.disabled = false;
+    btn.textContent = 'Guardar puntajes brutos';
+    toast('Error de conexión al guardar', 'error');
+  });
+}
+
+// ══ EVENTOS ═════════════════════════════════════════════════════════════
+document.getElementById('btn-login').addEventListener('click', doLogin);
+document.getElementById('login-pass').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
+document.getElementById('btn-logout-pac').addEventListener('click', doLogout);
+document.getElementById('btn-cambiar-paciente').addEventListener('click', function(){ showScreen('screen-pacientes'); });
+document.getElementById('btn-guardar').addEventListener('click', guardarTodo);
+
+// ══ INIT ════════════════════════════════════════════════════════════════
+initSesion();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw-carga-rapida.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>

@@ -1180,6 +1180,16 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         </button>
       </div>
 
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Herramientas</div>
+        <button class="sidebar-nav-item" id="snav-carga-rapida" onclick="window.open('carga-rapida.html','_blank')">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm0 2h8v10H6V4zm4 12a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+          Grilla de carga rápida
+        </button>
+        <div style="font-size:0.68rem;color:var(--muted);padding:2px 14px 4px;line-height:1.3;">Instalable en tu celular como app</div>
+      </div>
+
       <div class="sidebar-footer">
         <div class="sidebar-user-email" id="sidebar-email"></div>
         <button class="sidebar-salir" onclick="doLogout()">
@@ -7065,26 +7075,33 @@ function renderHistorial() {
     datos.map(function(r) {
       var nomPac = r.psico_pacientes ? r.psico_pacientes.nombre : '—';
       var zColor = r.puntaje_z===null ? 'var(--muted)' : escalaReferenciaColor(r.puntaje_z);
+      var pendiente = !!(r.datos && r.datos.pendiente_calculo);
+      var testCell = pendiente
+        ? r.test + ' <span style="display:inline-block;font-size:0.68rem;font-weight:700;color:var(--yellow);background:#fef3c7;border-radius:5px;padding:1px 6px;margin-left:4px;">⏳ celular</span>'
+        : r.test;
+      var accionesCell = pendiente && TEST_TO_ID[r.test]
+        ? '<button class="btn-xs btn-xs-primary" data-completar-id="' + r.id + '" title="Completar cálculo" style="margin-right:4px;">Completar</button><button class="btn-xs btn-xs-danger" data-borrar-id="' + r.id + '" title="Borrar">✕</button>'
+        : '<button class="btn-xs btn-xs-primary" data-editar-id="' + r.id + '" title="Editar fecha" style="margin-right:4px;">✏</button><button class="btn-xs btn-xs-danger" data-borrar-id="' + r.id + '" title="Borrar">✕</button>';
       return '<tr style="border-bottom:1px solid var(--border);">' +
         '<td style="padding:10px 12px;font-size:0.84rem;">' + nomPac + '</td>' +
-        '<td style="padding:10px 12px;font-size:0.84rem;font-weight:600;color:var(--accentdk);">' + r.test + '</td>' +
+        '<td style="padding:10px 12px;font-size:0.84rem;font-weight:600;color:var(--accentdk);">' + testCell + '</td>' +
         '<td style="padding:10px 12px;font-size:0.84rem;text-align:center;font-family:\'DM Mono\',monospace;">' + (r.puntaje_total !== null ? r.puntaje_total : '—') + '</td>' +
         '<td style="padding:10px 12px;font-size:0.84rem;text-align:center;font-family:\'DM Mono\',monospace;font-weight:700;color:'+zColor+';">' + (r.puntaje_z !== null ? r.puntaje_z : '—') + '</td>' +
         '<td style="padding:10px 12px;font-size:0.84rem;text-align:center;font-family:\'DM Mono\',monospace;">' + (r.puntaje_t !== null ? r.puntaje_t : '—') + '</td>' +
         '<td style="padding:10px 12px;font-size:0.84rem;">' + (r.categoria || '—') + '</td>' +
         '<td style="padding:10px 12px;font-size:0.82rem;color:var(--muted);">' + (r.fecha || '') + '</td>' +
-        '<td style="padding:6px 12px;text-align:center;white-space:nowrap;">' +
-        '<button class="btn-xs btn-xs-primary" data-editar-id="' + r.id + '" title="Editar fecha" style="margin-right:4px;">✏</button>' +
-        '<button class="btn-xs btn-xs-danger" data-borrar-id="' + r.id + '" title="Borrar">✕</button>' +
-        '</td></tr>';
+        '<td style="padding:6px 12px;text-align:center;white-space:nowrap;">' + accionesCell + '</td></tr>';
     }).join('') + '</tbody></table>';
   el.innerHTML = html;
-  // Delegación para botones borrar
+  // Delegación para botones borrar / editar / completar
   el.querySelectorAll('[data-borrar-id]').forEach(function(btn) {
     btn.addEventListener('click', function() { borrarResultado(this.getAttribute('data-borrar-id')); });
   });
   el.querySelectorAll('[data-editar-id]').forEach(function(btn) {
     btn.addEventListener('click', function() { editarResultado(this.getAttribute('data-editar-id')); });
+  });
+  el.querySelectorAll('[data-completar-id]').forEach(function(btn) {
+    btn.addEventListener('click', function() { completarPendiente(this.getAttribute('data-completar-id')); });
   });
 }
 
@@ -8726,6 +8743,71 @@ var NP_TESTS = [
   {id:'familiar', n:'Cuest. Familiares', d:'NPI-Q · AD8-ARG · AVD Básicas · Instrumentales · Expansivas', t:'Familiar/Acompañante', dom:'familiar'},
 ];
 
+// ══ PENDIENTES DE CÁLCULO (cargados desde la PWA "Carga rápida") ═══════════
+// Mapea el nombre exacto guardado en psico_resultados.test al id usado por irTest()
+var TEST_TO_ID = {
+  'TAVEC': 'tavec', 'Figura Rey': 'fcr', 'TMT A-B': 'tmt', 'Stroop': 'stroop',
+  'IFS': 'ifs', 'BADS-Llaves': 'llaves', 'BADS-Juicio': 'juicio', 'BADS-Zoo': 'zoo',
+  'WAIS-IV': 'waisiv', 'BNT-12': 'bnt', 'BNT-60': 'bnt', 'Fluencia Verbal': 'flv', 'ACE-R': 'acer'
+};
+// Prefijo de los ids de escritorio para cada testId (id de escritorio = prefijo + clave del bruto)
+var PENDIENTE_PREFIX_MAP = {
+  tavec:'tavec-', fcr:'fcr-', tmt:'tmt-', stroop:'stroop-', ifs:'ifs-',
+  llaves:'llaves-', juicio:'juicio-', zoo:'zoo-', waisiv:'waisiv-', flv:'flv-', acer:'acer-'
+};
+var PENDIENTE_ACTUAL = null; // {testId, resultadoId} — pendiente que se está completando en la vista abierta
+
+function aplicarPendienteAlAbrir(testId) {
+  PENDIENTE_ACTUAL = null;
+  if (!testId || !RESULTADOS.length) return;
+  var testNames = Object.keys(TEST_TO_ID).filter(function(k){ return TEST_TO_ID[k] === testId; });
+  var pacId = getPacienteActivoId();
+  if (!testNames.length || !pacId) return;
+  var candidatos = RESULTADOS.filter(function(r){
+    return String(r.paciente_id) === String(pacId) && testNames.indexOf(r.test) !== -1 &&
+      r.datos && r.datos.pendiente_calculo;
+  });
+  if (!candidatos.length) return;
+  candidatos.sort(function(a,b){ return new Date(b.created_at||b.fecha||0) - new Date(a.created_at||a.fecha||0); });
+  var r = candidatos[0];
+  var brutos = (r.datos && r.datos.brutos) || {};
+  var prefix = PENDIENTE_PREFIX_MAP[testId];
+
+  if (testId === 'bnt') {
+    prefix = r.test === 'BNT-60' ? 'bnt60-' : 'bnt12-';
+    var verSel = document.getElementById('bnt-version');
+    if (verSel) { verSel.value = (r.test === 'BNT-60' ? '60' : '12'); if (typeof bntActualizar === 'function') bntActualizar(); }
+  }
+  if (testId === 'waisiv') {
+    var directos = parseFloat(brutos.digitos_directos), inversos = parseFloat(brutos.digitos_inversos);
+    if (!isNaN(directos) || !isNaN(inversos)) pacSetVal('waisiv-rd', (isNaN(directos)?0:directos) + (isNaN(inversos)?0:inversos));
+  }
+  Object.keys(brutos).forEach(function(k){
+    if (testId === 'waisiv' && (k === 'digitos_directos' || k === 'digitos_inversos')) return;
+    pacSetVal(prefix + k, brutos[k]);
+  });
+  PENDIENTE_ACTUAL = { testId: testId, resultadoId: r.id };
+  toast('Valores cargados desde la app móvil — revisá y calculá', 'success');
+}
+
+function limpiarPendienteActual(testId) {
+  if (PENDIENTE_ACTUAL && PENDIENTE_ACTUAL.testId === testId && SESSION) {
+    var idBorrar = PENDIENTE_ACTUAL.resultadoId;
+    PENDIENTE_ACTUAL = null;
+    supaFetch('/rest/v1/psico_resultados?id=eq.' + idBorrar, 'DELETE', null, SESSION.access_token);
+  }
+}
+
+function completarPendiente(id) {
+  var r = RESULTADOS.find(function(x){ return String(x.id) === String(id); });
+  if (!r) { toast('Resultado no encontrado','error'); return; }
+  var testId = TEST_TO_ID[r.test];
+  if (!testId) { toast('Este test todavía no tiene calculadora en el escritorio.', 'error'); return; }
+  setPacienteActivo(r.paciente_id, true);
+  irSector('neuro');
+  irTest(testId);
+}
+
 // Íconos SVG por dominio
 var NP_ICONS = {
   global:     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#3d7a5f" stroke-width="1.3"/><path d="M8 2v6l3 3" stroke="#3d7a5f" stroke-width="1.3" stroke-linecap="round"/></svg>',
@@ -9009,6 +9091,7 @@ function irTest(t) {
   if (t === 'zoo') iniciarZoo();
   if (t === 'sdmt') iniciarSDMT();
   aplicarPacienteActivoATest(t);
+  aplicarPendienteAlAbrir(t);
 }
 
 function volverSector() {
@@ -10056,6 +10139,7 @@ function guardarResultadoTMT() {
   };
   supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token)
     .then(function(){
+    limpiarPendienteActual('tmt');
     cargarResultados();
     toast('✓ Resultado guardado', 'success');
     // Animar el botón que estaba activo
@@ -10245,6 +10329,7 @@ function guardarResultadoFLV() {
     datos: datosObj };
   supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token)
     .then(function(){
+    limpiarPendienteActual('flv');
     cargarResultados();
     toast('✓ Resultado guardado', 'success');
     // Animar el botón que estaba activo
@@ -11199,7 +11284,7 @@ function guardarResultadoIFS(){
     puntaje_total:total,categoria:cat,
     puntaje_z:z, puntaje_t:parseFloat((50+10*z).toFixed(1)), percentil:Math.max(1,Math.min(99,Math.round(50+28.57*z))),
     datos:datosObj
-  },SESSION.access_token).then(function(){cargarResultados();
+  },SESSION.access_token).then(function(){limpiarPendienteActual('ifs');cargarResultados();
     toast('✓ Resultado guardado', 'success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
@@ -11392,7 +11477,7 @@ function guardarWaisiv() {
     puntaje_total:dat.rd_pb!=null?dat.rd_pb:null,categoria:'Ver detalle',
     puntaje_z:zPpal,datos:dat
   },SESSION.access_token).then(function(){
-    cargarResultados();toast('✓ Resultado guardado','success');
+    limpiarPendienteActual('waisiv');cargarResultados();toast('✓ Resultado guardado','success');
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
@@ -11708,7 +11793,7 @@ function guardarLlaves() {
     puntaje_total:d.conv, puntaje_z:d.z, categoria:badsZLabel(d.z),
     datos:d
   }, SESSION.access_token).then(function(){
-    window._llavesData=null; cargarResultados(); toast('✓ Resultado guardado','success');
+    window._llavesData=null; limpiarPendienteActual('llaves'); cargarResultados(); toast('✓ Resultado guardado','success');
   }).catch(function(){ toast('Error al guardar','error'); });
 }
 
@@ -11848,7 +11933,7 @@ function guardarJuicio() {
     user_id:SESSION.user.id, paciente_id:pacId, test:'BADS-Juicio', fecha:fecha,
     puntaje_total:d.conv, puntaje_z:d.z, categoria:badsZLabel(d.z), datos:d
   }, SESSION.access_token).then(function(){
-    window._juicioData=null; cargarResultados(); toast('✓ Resultado guardado','success');
+    window._juicioData=null; limpiarPendienteActual('juicio'); cargarResultados(); toast('✓ Resultado guardado','success');
   }).catch(function(){ toast('Error al guardar','error'); });
 }
 
@@ -12104,7 +12189,7 @@ function guardarZoo() {
     user_id:SESSION.user.id, paciente_id:pacId, test:'BADS-Zoo', fecha:fecha,
     puntaje_total:pjeGuardar, puntaje_z:d.z, categoria:badsZLabel(d.z), datos:d
   }, SESSION.access_token).then(function(){
-    window._zooData=null; cargarResultados(); toast('✓ Resultado guardado','success');
+    window._zooData=null; limpiarPendienteActual('zoo'); cargarResultados(); toast('✓ Resultado guardado','success');
   }).catch(function(){ toast('Error al guardar','error'); });
 }
 
@@ -13561,7 +13646,7 @@ function guardarResultadoACER(){
   supaFetch('/rest/v1/psico_resultados','POST',{
     user_id:SESSION.user.id,paciente_id:pacId,test:'ACE-R',fecha:fecha,
     puntaje_total:pts,categoria:cat,datos:{total:pts}
-  },SESSION.access_token).then(function(){cargarResultados();
+  },SESSION.access_token).then(function(){limpiarPendienteActual('acer');cargarResultados();
     toast('✓ Resultado guardado','success');
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
@@ -14061,7 +14146,7 @@ function guardarBNT() {
     puntaje_total:pb, categoria:cat,
     puntaje_z:z, datos:dat
   },SESSION.access_token).then(function(){
-    cargarResultados();toast('✓ Resultado guardado','success');
+    limpiarPendienteActual('bnt');cargarResultados();toast('✓ Resultado guardado','success');
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
@@ -14971,7 +15056,7 @@ function guardarStroop() {
       baremo:'Golden-manual-tablaI'
     }
   }, SESSION.access_token).then(function(){
-    cargarResultados(); toast('✓ Resultado guardado','success');
+    limpiarPendienteActual('stroop'); cargarResultados(); toast('✓ Resultado guardado','success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
@@ -15378,7 +15463,7 @@ function guardarFCR() {
     categoria: d.pcCopia!=null?'Copia Pc'+d.pcCopia+(d.pcRI!=null?' · RI Pc'+d.pcRI:''):'—',
     datos: { copia:d.copia, ri:d.ri, ir:d.ir, pcCopia:d.pcCopia, pcRI:d.pcRI, zCopia:d.zCopia, zRI:d.zRI, gi:d.gi, ei:d.ei }
   }, SESSION.access_token).then(function(){
-    cargarResultados(); toast('✓ Resultado guardado','success');
+    limpiarPendienteActual('fcr'); cargarResultados(); toast('✓ Resultado guardado','success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
@@ -16905,7 +16990,7 @@ function guardarTavec() {
       zP:d.zP, zIRL:d.zIRL, zIRCL:d.zIRCL, zRecon:d.zRecon, zFP:d.zFP, zDiscrim:d.zDiscrim
     }
   }, SESSION.access_token).then(function(){
-    cargarResultados(); toast('✓ Resultado TAVEC guardado','success');
+    limpiarPendienteActual('tavec'); cargarResultados(); toast('✓ Resultado TAVEC guardado','success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
