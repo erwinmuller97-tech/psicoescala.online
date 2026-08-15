@@ -139,7 +139,29 @@ function supaFetch(path, method, body, token, extraHeaders){
   if (token) headers['Authorization'] = 'Bearer ' + token;
   if (method !== 'GET' && method !== 'DELETE') headers['Prefer'] = 'return=representation';
   if (extraHeaders) Object.keys(extraHeaders).forEach(function(k){ headers[k]=extraHeaders[k]; });
-  return fetch(SUPA_URL + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined });
+  return fetch(SUPA_URL + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined })
+    .then(function(res){
+      // fetch() solo rechaza por fallas de red — un 400/401/403/500 de Supabase
+      // resuelve igual, así que sin este chequeo se podía "guardar" sin que el
+      // insert haya pasado nunca.
+      if (res.status === 401) {
+        manejarSesionExpirada();
+        var sesErr = new Error('SESION_EXPIRADA');
+        sesErr.userNotified = true;
+        throw sesErr;
+      }
+      if (!res.ok) {
+        return res.text().then(function(t){
+          var msg = t || ('Error HTTP ' + res.status);
+          try { var j = JSON.parse(t); msg = j.message || j.error_description || j.error || j.hint || msg; } catch(e){}
+          toast('✗ ' + msg.substring(0,160), 'error');
+          var httpErr = new Error(msg);
+          httpErr.userNotified = true;
+          throw httpErr;
+        });
+      }
+      return res;
+    });
 }
 function supaAuth(action, body){
   return fetch(SUPA_URL + '/auth/v1/' + action, {
@@ -191,15 +213,23 @@ function doLogin(){
       return;
     }
     SESSION = data;
+    _sesionExpiradaAvisada = false;
     try { localStorage.setItem('psico_session', JSON.stringify(data)); } catch(e){}
     irAPacientes();
   });
 }
-function doLogout(){
+function doLogout(mensaje){
   SESSION = null; PACIENTES = []; PACIENTE_ACTIVO = null;
   try { localStorage.removeItem('psico_session'); } catch(e){}
   document.getElementById('login-pass').value = '';
   showScreen('screen-login');
+  if (mensaje) toast(mensaje, 'error');
+}
+var _sesionExpiradaAvisada = false;
+function manejarSesionExpirada(){
+  if (!SESSION || _sesionExpiradaAvisada) return;
+  _sesionExpiradaAvisada = true;
+  doLogout('Tu sesión expiró. Iniciá sesión nuevamente.');
 }
 
 // ══ PACIENTES ═══════════════════════════════════════════════════════════
@@ -209,16 +239,12 @@ function irAPacientes(){
 }
 function cargarPacientes(){
   supaFetch('/rest/v1/psico_pacientes?select=*&order=nombre.asc', 'GET', null, SESSION.access_token)
-    .then(function(r){
-      if (r.status === 401) { doLogout(); return null; }
-      return r.json();
-    })
+    .then(function(r){ return r.json(); })
     .then(function(data){
-      if (!data) return;
       PACIENTES = Array.isArray(data) ? data : [];
       renderPacientes(PACIENTES);
     })
-    .catch(function(){ toast('No se pudo conectar con el servidor', 'error'); });
+    .catch(function(err){ if(!err||!err.userNotified) toast('No se pudo conectar con el servidor', 'error'); });
 }
 function renderPacientes(lista){
   var el = document.getElementById('pac-lista');
@@ -398,7 +424,9 @@ function guardarTodo(){
       fecha: fecha,
       datos: { pendiente_calculo: true, brutos: porTest[test] }
     };
-    return supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token).then(function(r){ return r.ok; });
+    return supaFetch('/rest/v1/psico_resultados', 'POST', body, SESSION.access_token)
+      .then(function(){ return true; })
+      .catch(function(){ return false; });
   });
 
   Promise.all(promesas).then(function(resultados){

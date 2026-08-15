@@ -324,5 +324,5 @@ function guardarDIVA5() {
     toast('✓ DIVA-5 guardado', 'success');
     var btns = document.querySelectorAll('.vista.active .btn-primary');
     if (btns.length) { btns[btns.length - 1].classList.add('btn-saved'); setTimeout(function() { btns[btns.length - 1].classList.remove('btn-saved'); }, 1500); }
-  }).catch(function() { toast('Error al guardar', 'error'); });
+  }).catch(function(err) { if(!err||!err.userNotified) toast('Error al guardar', 'error'); });
 }
