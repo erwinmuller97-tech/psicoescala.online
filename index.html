@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.95</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.96</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -2375,7 +2375,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <div class="field"><label>Fecha</label><input type="date" id="spaib-fecha"></div>
         </div>
 <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-spaib" onclick="setModo('spaib','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-spaib" onclick="setModo('spaib','manual')">✏ Carga manual</button></div>
-                <div id="man-area-spaib" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–90)</label><input type="number" id="man-spaib-total" min="0" max="90" placeholder="0–90"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('spaib')">Calcular resultado →</button></div></div>
+                <div id="man-area-spaib" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (16–80)</label><input type="number" id="man-spaib-total" min="16" max="80" placeholder="16–80"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('spaib')">Calcular resultado →</button></div></div>
         <div id="auto-area-spaib">
                 <div class="card">
           <div class="card-title">Ítems del inventario</div>
@@ -2900,7 +2900,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       </div>
     </div>
 <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-csi" onclick="setModo('csi','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-csi" onclick="setModo('csi','manual')">✏ Carga manual</button></div>
-            <div id="man-area-csi" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Resolución de Problemas</label><input type="number" id="man-csi-rep" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Autocrítica</label><input type="number" id="man-csi-auc" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Expresión Emocional</label><input type="number" id="man-csi-eem" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Pensamiento Desiderativo</label><input type="number" id="man-csi-psd" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Apoyo Social</label><input type="number" id="man-csi-aps" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Reestructuración Cognitiva</label><input type="number" id="man-csi-rec" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Evitación de Problemas</label><input type="number" id="man-csi-evp" min="0" max="16" placeholder="0–16"></div><div class="field"><label>Retirada Social</label><input type="number" id="man-csi-res" min="0" max="16" placeholder="0–16"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('csi')">Calcular resultado →</button></div></div>
+            <div id="man-area-csi" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Resolución de Problemas</label><input type="number" id="man-csi-rep" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Autocrítica</label><input type="number" id="man-csi-auc" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Expresión Emocional</label><input type="number" id="man-csi-eem" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Pensamiento Desiderativo</label><input type="number" id="man-csi-psd" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Apoyo Social</label><input type="number" id="man-csi-aps" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Reestructuración Cognitiva</label><input type="number" id="man-csi-rec" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Evitación de Problemas</label><input type="number" id="man-csi-evp" min="0" max="20" placeholder="0–20"></div><div class="field"><label>Retirada Social</label><input type="number" id="man-csi-res" min="0" max="20" placeholder="0–20"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('csi')">Calcular resultado →</button></div></div>
     <div id="auto-area-csi">
         <div class="card">
       <div class="card-title">Ítems</div>
@@ -5147,7 +5147,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           </div>
         </div>
         <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-asrs" onclick="setModo('asrs','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-asrs" onclick="setModo('asrs','manual')">✏ Carga manual</button></div>
-        <div id="man-area-asrs" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Sección A positivos (0–6)</label><input type="number" id="man-asrs-a" min="0" max="6" placeholder="0–6"></div><div class="field"><label>ASRS-I Inatención (0–48)</label><input type="number" id="man-asrs-i" min="0" max="48" placeholder="0–48"></div><div class="field"><label>ASRS-H Hiperactividad (0–36)</label><input type="number" id="man-asrs-h" min="0" max="36" placeholder="0–36"></div><div class="field"><label>ASRS-T Total (0–72)</label><input type="number" id="man-asrs-t" min="0" max="72" placeholder="0–72"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('asrs')">Calcular resultado →</button></div></div>
+        <div id="man-area-asrs" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Sección A positivos (0–6)</label><input type="number" id="man-asrs-a" min="0" max="6" placeholder="0–6"></div><div class="field"><label>ASRS-I Inatención (0–40)</label><input type="number" id="man-asrs-i" min="0" max="40" placeholder="0–40"></div><div class="field"><label>ASRS-H Hiperactividad (0–32)</label><input type="number" id="man-asrs-h" min="0" max="32" placeholder="0–32"></div><div class="field"><label>ASRS-T Total (0–72)</label><input type="number" id="man-asrs-t" min="0" max="72" placeholder="0–72"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('asrs')">Calcular resultado →</button></div></div>
         <div id="auto-area-asrs">
         <div class="card">
           <div style="background:#fff8f0;border:1.5px solid #2d4a3e;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem;">
@@ -6248,7 +6248,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.95';
+var APP_VERSION = 'v1.10.96';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -9146,12 +9146,12 @@ var MANUAL_CAMPOS = {
     { id:'man-aaa-total', label:'Puntaje total (0–82)', min:0, max:82 }
   ],
   'spaib': [
-    { id:'man-spaib-total', label:'Puntaje total (0–90)', min:0, max:90 }
+    { id:'man-spaib-total', label:'Puntaje total (16–80)', min:16, max:80 }
   ],
   'asrs': [
     { id:'man-asrs-a',  label:'Sección A — ítems positivos (0–6)', min:0, max:6 },
-    { id:'man-asrs-i',  label:'ASRS-I Inatención (0–48)',          min:0, max:48 },
-    { id:'man-asrs-h',  label:'ASRS-H Hiperactividad (0–36)',      min:0, max:36 },
+    { id:'man-asrs-i',  label:'ASRS-I Inatención (0–40)',          min:0, max:40 },
+    { id:'man-asrs-h',  label:'ASRS-H Hiperactividad (0–32)',      min:0, max:32 },
     { id:'man-asrs-t',  label:'ASRS-T Total (0–72)',               min:0, max:72 }
   ],
   'wurs': [
@@ -9163,14 +9163,14 @@ var MANUAL_CAMPOS = {
     { id:'man-mbi-rp',  label:'Realización personal (0–48)', min:0, max:48 }
   ],
   'csi': [
-    { id:'man-csi-rep', label:'Resolución de Problemas (0–16)',     min:0, max:16 },
-    { id:'man-csi-auc', label:'Autocrítica (0–16)',                  min:0, max:16 },
-    { id:'man-csi-eem', label:'Expresión Emocional (0–16)',          min:0, max:16 },
-    { id:'man-csi-psd', label:'Pensamiento Desiderativo (0–16)',     min:0, max:16 },
-    { id:'man-csi-aps', label:'Apoyo Social (0–16)',                 min:0, max:16 },
-    { id:'man-csi-rec', label:'Reestructuración Cognitiva (0–16)',   min:0, max:16 },
-    { id:'man-csi-evp', label:'Evitación de Problemas (0–16)',       min:0, max:16 },
-    { id:'man-csi-res', label:'Retirada Social (0–16)',              min:0, max:16 }
+    { id:'man-csi-rep', label:'Resolución de Problemas (0–20)',     min:0, max:20 },
+    { id:'man-csi-auc', label:'Autocrítica (0–20)',                  min:0, max:20 },
+    { id:'man-csi-eem', label:'Expresión Emocional (0–20)',          min:0, max:20 },
+    { id:'man-csi-psd', label:'Pensamiento Desiderativo (0–20)',     min:0, max:20 },
+    { id:'man-csi-aps', label:'Apoyo Social (0–20)',                 min:0, max:20 },
+    { id:'man-csi-rec', label:'Reestructuración Cognitiva (0–20)',   min:0, max:20 },
+    { id:'man-csi-evp', label:'Evitación de Problemas (0–20)',       min:0, max:20 },
+    { id:'man-csi-res', label:'Retirada Social (0–20)',              min:0, max:20 }
   ]
 };
 
@@ -9429,27 +9429,22 @@ function _calcularMBIManual(ce, dp, rp) {
 }
 
 function _calcularCSIManual(vals) {
-  // Usar la misma lógica que calcularCSI pero con valores directos
-  var CSI_BAREMOS_MAN = {
-    REP:{M:13.6,DS:5.2},AUC:{M:7.9,DS:5.3},EEM:{M:11.9,DS:5.6},
-    PSD:{M:10.5,DS:5.4},APS:{M:11.4,DS:5.7},REC:{M:12.3,DS:5.0},
-    EVP:{M:10.8,DS:4.9},RES:{M:7.2,DS:4.8}
-  };
-  var LABELS = {REP:'Resolución de Problemas',AUC:'Autocrítica',EEM:'Expresión Emocional',
-    PSD:'Pensamiento Desiderativo',APS:'Apoyo Social',REC:'Reestructuración Cognitiva',
-    EVP:'Evitación de Problemas',RES:'Retirada Social'};
+  // Misma fuente que calcularCSI() (CSI_STATS + CSI_PCT_TABLE) para no dar
+  // un Z/Pc distinto según se cargue ítem por ítem o por subtotales.
   var detalleHtml = '', interpHtml = '<ul>';
-  Object.keys(vals).forEach(function(k){
-    var v=vals[k], b=CSI_BAREMOS_MAN[k];
-    var z=b?parseFloat(((v-b.M)/b.DS).toFixed(2)):null;
-    var pc=z!==null?Math.max(1,Math.min(99,Math.round(50+28.57*z))):null;
-    detalleHtml += '<div class="detalle-item"><div class="detalle-num">'+(pc!==null?'Pc '+pc:'—')+'</div><div class="detalle-lbl">'+LABELS[k]+' ('+v+')</div></div>';
-    interpHtml += '<li>'+LABELS[k]+': '+v+'/16'+(z!==null?' · Z='+(z>=0?'+':'')+z:'')+' (Pc'+(pc||'—')+')</li>';
+  var res = {};
+  CSI_SUB_ORDER.forEach(function(k, si){
+    var v = vals[k], b = CSI_STATS[k];
+    var z = b ? parseFloat(((v - b.M) / b.DT).toFixed(2)) : null;
+    var pc = csiBuscarPc(v, si);
+    res[k] = { score: v, z: z, pc: pc };
+    detalleHtml += '<div class="detalle-item"><div class="detalle-num">Pc '+pc+'</div><div class="detalle-lbl">'+CSI_LABELS[k]+'<br><small>'+v+'/20</small></div></div>';
+    interpHtml += '<li>'+CSI_LABELS[k]+': '+v+'/20'+(z!==null?' · Z='+(z>=0?'+':'')+z:'')+' (Pc'+pc+')</li>';
   });
-  interpHtml += '</ul><p><em>Carga manual.</em></p>';
+  interpHtml += '</ul><p><em>Carga manual · Baremo: Cano, Rodríguez & García (2006).</em></p>';
   document.getElementById('csi-detalle').innerHTML = detalleHtml;
   document.getElementById('csi-interp').innerHTML = interpHtml;
-  window._csiVals = vals;
+  window._csiData = res;
   document.getElementById('csi-form').style.display = 'none';
   document.getElementById('csi-resultado').style.display = 'block';
 }
@@ -13673,8 +13668,56 @@ var SCL_NORMS = {
   adol_M:{SOM:{M:0.42,DS:0.47},OBS:{M:0.79,DS:0.65},SI:{M:0.58,DS:0.61},DEP:{M:0.54,DS:0.56},ANS:{M:0.41,DS:0.48},HOS:{M:0.47,DS:0.54},FOB:{M:0.21,DS:0.39},PAR:{M:0.60,DS:0.60},PSI:{M:0.32,DS:0.43},IGS:{M:0.49,DS:0.46},TSP:{M:28.9,DS:19.2},IMSP:{M:1.40,DS:0.66}},
   adol_F:{SOM:{M:0.60,DS:0.59},OBS:{M:0.86,DS:0.68},SI:{M:0.77,DS:0.69},DEP:{M:0.73,DS:0.66},ANS:{M:0.53,DS:0.55},HOS:{M:0.37,DS:0.46},FOB:{M:0.38,DS:0.55},PAR:{M:0.59,DS:0.59},PSI:{M:0.34,DS:0.44},IGS:{M:0.61,DS:0.53},TSP:{M:35.6,DS:21.6},IMSP:{M:1.41,DS:0.58}}
 };
+// Tabla real de percentiles-por-T para adultos (Casullo & Pérez, 2008) — se usa en vez
+// del fallback lineal M/DS porque una transformación Z sobreestima la severidad en la
+// cola alta. Adolescentes no tienen tabla de percentiles verificada: usan el fallback.
+var SCL_T_POINTS = [30,35,40,45,50,55,60,63,65,70,75,80];
+var SCL_TABLE = {
+  adulto_M: {
+    SOM:[0,0,0.08,0.25,0.42,0.75,1.08,1.25,1.42,1.75,2.31,2.5],
+    OBS:[0,0.2,0.3,0.5,0.8,1.3,1.7,1.9,2.2,2.6,3.4,3.6],
+    SI:[0,0,0.11,0.33,0.56,0.89,1.33,1.56,1.67,2.38,3,3.22],
+    DEP:[0,0.08,0.23,0.38,0.69,1.02,1.38,1.62,1.77,2.42,2.88,3.15],
+    ANS:[0,0.1,0.2,0.4,0.6,0.9,1.3,1.6,1.7,2.28,2.67,2.7],
+    HOS:[0,0,0.17,0.33,0.67,1,1.33,1.67,1.83,2.57,3.17,3.83],
+    FOB:[0,0,0,0,0.14,0.29,0.57,0.86,1,1.43,1.88,2.71],
+    PAR:[0,0,0.17,0.33,0.67,1.17,1.5,1.83,2.07,2.67,2.95,3.17],
+    PSI:[0,0,0,0.2,0.3,0.5,0.9,1.2,1.4,1.74,2.17,2.3],
+    IGS:[0.11,0.17,0.29,0.41,0.61,0.88,1.1,1.32,1.49,1.84,2.17,2.22],
+    TSP:[5.6,10,16,23.8,32,41.2,52,57,61,75,79.72,85],
+    IMSP:[1.05,1.22,1.36,1.56,1.75,2,2.25,2.4,2.53,2.91,3.3,3.65]
+  },
+  adulto_F: {
+    SOM:[0,0.17,0.25,0.42,0.75,1,1.49,1.83,2,2.36,2.87,3],
+    OBS:[0,0.2,0.4,0.7,1,1.4,1.8,2.1,2.2,2.9,3.41,3.5],
+    SI:[0,0.11,0.22,0.44,0.67,1.11,1.44,1.67,1.89,2.6,3,3],
+    DEP:[0.05,0.23,0.38,0.62,0.85,1.23,1.77,2,2.23,2.8,3.31,3.69],
+    ANS:[0,0.2,0.3,0.6,0.8,1.2,1.6,1.8,2.13,2.5,3.04,3.1],
+    HOS:[0,0,0.17,0.33,0.67,1,1.5,1.67,1.83,2.56,3.17,3.33],
+    FOB:[0,0,0,0,0.29,0.57,0.86,1.14,1.29,2,2.63,3.14],
+    PAR:[0,0,0.17,0.33,0.67,1.17,1.67,2,2.17,3,3.78,4],
+    PSI:[0,0,0.1,0.2,0.4,0.7,1,1.1,1.3,1.97,2.57,2.7],
+    IGS:[0.15,0.28,0.37,0.52,0.73,1.04,1.36,1.62,1.74,2.18,2.46,2.54],
+    TSP:[9,15,21.12,29,37,47,57,62,66,74,77.71,82],
+    IMSP:[1.12,1.25,1.43,1.59,1.85,2.12,2.41,2.53,2.67,2.99,3.15,3.27]
+  }
+};
 function brutoAT_SCL(avg, grupo, sexo, dim) {
-  var key = grupo+'_'+(sexo==='F'?'F':'M');
+  // El <select> usa value="adolescente"; SCL_NORMS/SCL_TABLE usan el prefijo 'adol'.
+  var g = grupo === 'adolescente' ? 'adol' : grupo;
+  var key = g+'_'+(sexo==='F'?'F':'M');
+  // Adultos: tabla real de percentiles-por-T (se toma el T cuyo valor de tabla
+  // está más cerca del bruto del paciente, en vez de asumir distribución normal)
+  var tabla = g==='adulto' ? (SCL_TABLE[key] && SCL_TABLE[key][dim]) : null;
+  if (tabla) {
+    var best = SCL_T_POINTS[0], bestDist = Infinity;
+    for (var i = 0; i < tabla.length; i++) {
+      var d = Math.abs(tabla[i] - avg);
+      if (d < bestDist) { bestDist = d; best = SCL_T_POINTS[i]; }
+    }
+    return best;
+  }
+  // Adolescentes (o dimensión sin datos en la tabla): fallback lineal M/DS
   var norms = SCL_NORMS[key];
   if(!norms||!norms[dim]) return 50;
   var z = (avg - norms[dim].M) / norms[dim].DS;
