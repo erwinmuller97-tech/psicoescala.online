@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.98</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.99</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6248,7 +6248,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.98';
+var APP_VERSION = 'v1.10.99';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -15456,6 +15456,27 @@ function fcrPcToZ(pc) {
 
 function fcrZLabel(z) { return escalaReferenciaZ(z); }
 
+// M/DS clásicos por banda etaria amplia (<45, 46-59, 60-69, 70-89), usados solo para
+// mostrar una referencia en el informe — el Z real se calcula con la tabla de percentiles
+// fina (13 grupos) de arriba, más precisa. RI no tiene M/DS clásico para <45 años (por
+// eso ese grupo usa la Tabla A12 de percentiles en vez de M/DS).
+var FCR_MDS_CLASICO = {
+  copia: [{m:32.00,ds:1.80},{m:34.18,ds:1.80},{m:33.76,ds:2.80},{m:31.25,ds:4.70}],
+  ri:    [null,             {m:18.88,ds:6.1}, {m:17.33,ds:5.2}, {m:13.77,ds:5.0}]
+};
+function fcrGrupoClasico(gi) {
+  // gi fino (0=18-22 … 12=>77) → banda clásica, por año-mayoritario dentro del bin fino
+  if (gi <= 4) return 0;   // 18-42 → <45
+  if (gi <= 7) return 1;   // 43-57 → 46-59
+  if (gi <= 9) return 2;   // 58-67 → 60-69
+  return 3;                // 68+   → 70-89
+}
+function fcrMDSClasico(gi, variable) {
+  if (gi === null || gi === undefined) return {m:null,ds:null};
+  var banda = FCR_MDS_CLASICO[variable][fcrGrupoClasico(gi)];
+  return banda ? {m:banda.m,ds:banda.ds} : {m:null,ds:null};
+}
+
 function fcrActualizar() {
   var copia = parseFloat(document.getElementById('fcr-copia').value);
   var ri    = parseFloat(document.getElementById('fcr-ri').value);
@@ -15952,31 +15973,41 @@ function _xe(s) {
 }
 
 // ── Colores PsicoEscala (alineados con PDF) ─────────────────────────────
-var WC = { VERDE_OSC:'2d4a3e', VERDE_MED:'3d7a5f', VERDE_CLR:'D4EAE0', GRIS_CLR:'F0F7F4', BLANCO:'FFFFFF' };
+var WC = {
+  VERDE_OSC:'2d4a3e', VERDE_MED:'3d7a5f', VERDE_CLR:'D4EAE0', GRIS_CLR:'F0F7F4', BLANCO:'FFFFFF',
+  // Tokens del rediseño: barra de posición Z + separadores de dominio en vez de
+  // grilla de 13 casilleros y banners de color sólido.
+  TINTA:'16241d', TINTA_SUAVE:'3c463f', MUTED:'6b7a71', LINEA:'d8ddd8', SAGE_LINEA:'c8d8d0',
+  ZONA_NORMAL:'dcebe2', AMBAR:'a8672a', TERRACOTA:'9c3b2a'
+};
+// Fuentes: seguras en Word (no dependen de que el lector tenga instaladas las
+// tipografías web de la app). Georgia da el numeral de sección un aire editorial;
+// Calibri lleva el texto corrido; Consolas alinea PB/M/DS/Z como columnas de datos.
+var WF = { DISPLAY:'Georgia', BODY:'Calibri', MONO:'Consolas' };
 var _WORD_PAGE_W = 9360; // A4 vertical, márgenes 720 DXA c/u
 
 // ── Header Word desde config profesional ──────────────────────────────
 function _wProfHeaderLeft() {
   var cfg = getConfigProfesional();
   var parts = [];
-  if (cfg.nombre)    parts.push(_wPar(_wRun(cfg.nombre, {bold:true, sz:22, color:WC.VERDE_OSC, font:'Arial'}), {before:0, after:20}));
-  if (cfg.matricula) parts.push(_wPar(_wRun(cfg.matricula, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
-  if (cfg.direccion) parts.push(_wPar(_wRun(cfg.direccion, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
-  if (cfg.tel)       parts.push(_wPar(_wRun('Tel. '+cfg.tel, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
-  if (cfg.extra)     parts.push(_wPar(_wRun(cfg.extra, {sz:18, color:'4a5e55', font:'Arial'}), {before:0, after:10}));
-  if (!parts.length) parts.push(_wPar(_wRun('Completá tu configuración en ⚙ Configuración', {sz:18, ital:true, color:'8a9e94', font:'Arial'}), {before:0, after:10}));
+  if (cfg.nombre)    parts.push(_wPar(_wRun(cfg.nombre, {bold:true, sz:22, color:WC.VERDE_OSC, font:WF.BODY}), {before:0, after:20}));
+  if (cfg.matricula) parts.push(_wPar(_wRun(cfg.matricula, {sz:18, color:WC.MUTED, font:WF.BODY}), {before:0, after:10}));
+  if (cfg.direccion) parts.push(_wPar(_wRun(cfg.direccion, {sz:18, color:WC.MUTED, font:WF.BODY}), {before:0, after:10}));
+  if (cfg.tel)       parts.push(_wPar(_wRun('Tel. '+cfg.tel, {sz:18, color:WC.MUTED, font:WF.BODY}), {before:0, after:10}));
+  if (cfg.extra)     parts.push(_wPar(_wRun(cfg.extra, {sz:18, color:WC.MUTED, font:WF.BODY}), {before:0, after:10}));
+  if (!parts.length) parts.push(_wPar(_wRun('Completá tu configuración en ⚙ Configuración', {sz:18, ital:true, color:'8a9e94', font:WF.BODY}), {before:0, after:10}));
   return parts.join('');
 }
 function _wProfHeaderRight() {
   var dateStr = new Date().toLocaleDateString('es-AR');
   return '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-    '<w:r><w:rPr><w:b/><w:sz w:val="28"/><w:color w:val="'+WC.VERDE_OSC+'"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:r><w:rPr><w:b/><w:i/><w:sz w:val="26"/><w:color w:val="'+WC.VERDE_OSC+'"/><w:rFonts w:ascii="'+WF.DISPLAY+'" w:hAnsi="'+WF.DISPLAY+'"/></w:rPr>'+
     '<w:t>PsicoEscala</w:t></w:r></w:p>'+
     '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-    '<w:r><w:rPr><w:sz w:val="16"/><w:color w:val="5a6b63"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:r><w:rPr><w:sz w:val="16"/><w:color w:val="5a6b63"/><w:rFonts w:ascii="'+WF.BODY+'" w:hAnsi="'+WF.BODY+'"/></w:rPr>'+
     '<w:t>Informe Neuropsicológico</w:t></w:r></w:p>'+
     '<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-    '<w:r><w:rPr><w:sz w:val="16"/><w:color w:val="8a9e94"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+    '<w:r><w:rPr><w:sz w:val="16"/><w:color w:val="8a9e94"/><w:rFonts w:ascii="'+WF.BODY+'" w:hAnsi="'+WF.BODY+'"/></w:rPr>'+
     '<w:t>'+_xe(dateStr)+'</w:t></w:r></w:p>';
 }
 function _buildWordHeaderXml() {
@@ -15997,13 +16028,13 @@ function _buildWordFooterXml() {
   var body = '';
   if (!lines.length) {
     body += '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>'+
-      '<w:r><w:rPr><w:sz w:val="13"/><w:i/><w:color w:val="8a9e94"/><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+      '<w:r><w:rPr><w:sz w:val="13"/><w:i/><w:color w:val="8a9e94"/><w:rFonts w:ascii="'+WF.BODY+'" w:hAnsi="'+WF.BODY+'"/></w:rPr>'+
       '<w:t>Completá tu configuración en ⚙ Configuración</w:t></w:r></w:p>';
   } else {
     lines.forEach(function(line, i) {
       body += '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="'+(i===lines.length-1?'0':'20')+'"/></w:pPr>'+
-        '<w:r><w:rPr>'+(i===0?'<w:b/>':'')+'<w:sz w:val="'+(i===0?'14':'13')+'"/><w:color w:val="'+(i===0?WC.VERDE_OSC:'4a5e55')+'"/>'+
-        '<w:rFonts w:ascii="Arial" w:hAnsi="Arial"/></w:rPr>'+
+        '<w:r><w:rPr>'+(i===0?'<w:b/>':'')+'<w:sz w:val="'+(i===0?'14':'13')+'"/><w:color w:val="'+(i===0?WC.VERDE_OSC:WC.MUTED)+'"/>'+
+        '<w:rFonts w:ascii="'+WF.BODY+'" w:hAnsi="'+WF.BODY+'"/></w:rPr>'+
         '<w:t>'+_xe(line)+'</w:t></w:r></w:p>';
     });
   }
@@ -16048,14 +16079,20 @@ function _wCell(content, opts) {
   if (opts.w)    tcp += '<w:tcW w:w="'+opts.w+'" w:type="dxa"/>';
   if (opts.fill) tcp += '<w:shd w:val="clear" w:color="auto" w:fill="'+opts.fill+'"/>';
   if (opts.span) tcp += '<w:gridSpan w:val="'+opts.span+'"/>';
-  var bColor = opts.hdrBorder ? '595959' : 'BFBFBF';
-  var bSz    = opts.hdrBorder ? '10' : '6';
-  tcp += '<w:tcBorders>';
-  tcp += '<w:top    w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '<w:bottom w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '<w:left   w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '<w:right  w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
-  tcp += '</w:tcBorders>';
+  if (opts.noBorder) {
+    tcp += '<w:tcBorders><w:top w:val="none"/><w:bottom w:val="none"/><w:left w:val="none"/><w:right w:val="none"/></w:tcBorders>';
+  } else if (opts.borderB) {
+    tcp += '<w:tcBorders><w:top w:val="none"/><w:bottom w:val="single" w:sz="'+(opts.borderBSz||6)+'" w:color="'+opts.borderB+'"/><w:left w:val="none"/><w:right w:val="none"/></w:tcBorders>';
+  } else {
+    var bColor = opts.hdrBorder ? '595959' : 'BFBFBF';
+    var bSz    = opts.hdrBorder ? '10' : '6';
+    tcp += '<w:tcBorders>';
+    tcp += '<w:top    w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
+    tcp += '<w:bottom w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
+    tcp += '<w:left   w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
+    tcp += '<w:right  w:val="single" w:sz="'+bSz+'" w:color="'+bColor+'"/>';
+    tcp += '</w:tcBorders>';
+  }
   if (opts.noWrap) tcp += '<w:noWrap/>';
   tcp += '<w:tcMar><w:top w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:left w:w="30" w:type="dxa"/><w:right w:w="30" w:type="dxa"/></w:tcMar>';
   tcp += '</w:tcPr>';
@@ -16076,10 +16113,10 @@ function _wTable(rows, colWidths) {
     '<w:tblW w:w="'+_WORD_PAGE_W+'" w:type="dxa"/>'+
     '<w:tblLayout w:type="fixed"/>'+
     '<w:tblBorders>'+
-      '<w:top    w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
-      '<w:bottom w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
-      '<w:left   w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
-      '<w:right  w:val="single" w:sz="8" w:color="'+WC.VERDE_MED+'"/>'+
+      '<w:top    w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
+      '<w:bottom w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
+      '<w:left   w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
+      '<w:right  w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
       '<w:insideH w:val="single" w:sz="4" w:color="c8d8d0"/>'+
       '<w:insideV w:val="single" w:sz="4" w:color="c8d8d0"/>'+
     '</w:tblBorders>'+
@@ -16104,13 +16141,17 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   var bg = isEven ? WC.GRIS_CLR : WC.BLANCO;
 
   if (isSubhdr) {
-    var totalCols = COL_WIDTHS_HDR.length;
-    var totalW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0);
+    // Separador de dominio: etiqueta discreta + regla fina, no un banner de color sólido.
+    var restoW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0) - COL_WIDTHS_HDR[0];
+    var restoCols = COL_WIDTHS_HDR.length - 1;
     return _wRow([
       _wCell(
-        _wPar(_wRun(label,{bold:true,sz:18,color:WC.BLANCO,font:'Arial'}),
-              {align:'center',before:30,after:30,shading:WC.VERDE_MED}),
-        {w:totalW, fill:WC.VERDE_MED, span:totalCols}
+        _wPar(_wRun(label,{bold:true,sz:16,color:WC.VERDE_OSC,font:WF.BODY}),{before:60,after:20}),
+        {w:COL_WIDTHS_HDR[0], fill:WC.BLANCO, borderB:WC.VERDE_OSC, borderBSz:10}
+      ),
+      _wCell(
+        _wPar('',{before:60,after:20}),
+        {w:restoW, fill:WC.BLANCO, span:restoCols, borderB:WC.SAGE_LINEA, borderBSz:10}
       )
     ]);
   }
@@ -16119,9 +16160,9 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   var pbStr = pb!==null&&pb!==undefined ? String(pb) : '—';
   var mStr  = m!==null&&m!==undefined   ? parseFloat(m).toFixed(1) : '—';
   var dsStr = ds!==null&&ds!==undefined ? parseFloat(ds).toFixed(1) : '—';
-  var zStr  = z!==null&&z!==undefined   ? parseFloat(z).toFixed(1) : '—';
+  var zStr  = z!==null&&z!==undefined   ? (parseFloat(z)>=0?'+':'')+parseFloat(z).toFixed(1) : '—';
 
-  // Calcular qué columna de la grilla marcar
+  // Calcular qué columna de la barra marcar
   var markedCol = null;
   if (z!==null&&z!==undefined) {
     var zClamp = Math.max(-3, Math.min(3, parseFloat(z)));
@@ -16132,9 +16173,7 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   // Zona normativa: índices donde ZCOLS[i] >= -1 && ZCOLS[i] <= 1
   var normZone = ZCOLS.map(function(v){return v>=-1&&v<=1;});
-
-  // Color Z
-  var zColor = (z !== null && z !== undefined && parseFloat(z) < 0) ? 'C0392B' : '1a3f7a';
+  var markerColor = z!==null&&z!==undefined ? escalaReferenciaColor(parseFloat(z)).replace('#','') : WC.MUTED;
 
   // Interpretación
   function zInterp(z) {
@@ -16145,54 +16184,51 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   var cells = [];
   // Variable
-  cells.push(_wCell(_wPar(_wRun(label,{sz:20,bold:false,color:'000000',font:'Arial'}),{before:20,after:20}),{w:COL_WIDTHS_HDR[0],fill:bg}));
+  cells.push(_wCell(_wPar(_wRun(label,{sz:19,bold:false,color:WC.TINTA,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[0],fill:bg,noBorder:true}));
   // PB
-  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[1],fill:bg}));
+  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:19,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[1],fill:bg,noBorder:true}));
   // M
-  cells.push(_wCell(_wPar(_wRun(mStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[2],fill:bg}));
+  cells.push(_wCell(_wPar(_wRun(mStr,{sz:19,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[2],fill:bg,noBorder:true}));
   // DS
-  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:20,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[3],fill:bg}));
+  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:19,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[3],fill:bg,noBorder:true}));
   // Z
-  cells.push(_wCell(_wPar(_wRun(zStr,{sz:20,bold:true,color:'000000',font:'Arial'}),{align:'center',before:20,after:20}),{w:COL_WIDTHS_HDR[4],fill:bg}));
-  // Grilla Z: 13 celdas
+  cells.push(_wCell(_wPar(_wRun(zStr,{sz:19,bold:true,color:WC.TINTA,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[4],fill:bg,noBorder:true}));
+  // Barra de posición Z: misma grilla de 13 celdas, pero sin bordes internos (se leen
+  // como una barra continua) y con un único punto de color marcando la posición,
+  // en vez de una "X" en un casillero — la zona normativa se ve como un tramo
+  // sombreado, no como celdas alternadas.
   ZCOLS.forEach(function(v,i){
     var isMarked = (markedCol === i);
-    var cellFill = normZone[i] ? WC.VERDE_CLR : WC.BLANCO;
+    var cellFill = normZone[i] ? WC.ZONA_NORMAL : bg;
     var content = isMarked
-      ? _wPar(_wRun('X',{sz:16,bold:true,font:'Arial',color:WC.VERDE_OSC}),{align:'center',before:30,after:30})
-      : _wPar('',{before:30,after:30});
-    cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true}));
+      ? _wPar(_wRun('●',{sz:14,bold:true,font:WF.BODY,color:markerColor}),{align:'center',before:20,after:20})
+      : _wPar('',{before:20,after:20});
+    cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true, noBorder:true}));
   });
   // Interpretación
   var interpTxt = zInterp(z);
-  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:20,bold:false,color:'000000',font:'Arial'}),{before:20,after:20}),{w:COL_WIDTHS_HDR[18],fill:bg}));
+  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:19,bold:false,color:WC.TINTA_SUAVE,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[18],fill:bg,noBorder:true}));
 
   return _wRow(cells);
 }
 
 function _zHdrRow() {
   var cells = [];
-  var hdrFill = WC.VERDE_MED;
-  function hc(txt, w) {
-    return _wCell(_wPar(_wRun(txt,{sz:16,bold:true,color:WC.BLANCO,font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:hdrFill,hdrBorder:true,noWrap:true});
+  function hc(txt, w, align) {
+    return _wCell(_wPar(_wRun(txt,{sz:14,bold:true,color:WC.VERDE_OSC,font:WF.BODY}),{align:align||'center',before:30,after:20}),{w:w,fill:WC.BLANCO,borderB:WC.VERDE_OSC,borderBSz:10,noWrap:true});
   }
-  cells.push(hc('Variable', COL_WIDTHS_HDR[0]));
+  cells.push(hc('VARIABLE', COL_WIDTHS_HDR[0], 'left'));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
   cells.push(hc('M',        COL_WIDTHS_HDR[2]));
   cells.push(hc('DS',       COL_WIDTHS_HDR[3]));
   cells.push(hc('Z',        COL_WIDTHS_HDR[4]));
+  // La barra de posición solo marca -3 / 0 / +3 (los extremos y el centro),
+  // no los 13 valores — el punto de color ya da la posición exacta.
   ZCOLS.forEach(function(v,i){
-    var lbl;
-    if (v % 1 === 0) {
-      lbl = v > 0 ? '+'+v : String(v);
-    } else {
-      // Usar ½ para evitar wrap en PDF
-      var base = Math.trunc(v);
-      lbl = (base > 0 ? '+' : '') + base + '½';
-    }
+    var lbl = (v===-3||v===0||v===3) ? (v>0?'+'+v:String(v)) : '';
     cells.push(hc(lbl, COL_WIDTHS_HDR[5+i]));
   });
-  cells.push(hc('Interpretación', COL_WIDTHS_HDR[18]));
+  cells.push(hc('INTERPRETACIÓN', COL_WIDTHS_HDR[18], 'left'));
   return _wRow(cells, {hdr:true});
 }
 
@@ -16387,8 +16423,8 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
           if(d.zPC!=null)add('Stroop — Palabra/Color',d.pc!=null?d.pc:d.pcCorr,50,10,d.zPC,null);
           if(d.zInt!=null)add('Stroop — Interferencia',d.interf!=null?parseFloat(d.interf).toFixed(2):null,50,10,d.zInt,null);
         } else if(tn==='Figura Rey'){
-          if(d.zCopia!=null)add('Fig. Rey — Copia',d.pbCopia,null,null,d.zCopia,null);
-          if(d.zRI!=null)add('Fig. Rey — Rec. Inmediato',d.pbRI,null,null,d.zRI,null);
+          if(d.zCopia!=null){var fcrMC=fcrMDSClasico(d.gi,'copia');add('Fig. Rey — Copia',d.copia!=null?d.copia:d.pbCopia,fcrMC.m,fcrMC.ds,d.zCopia,d.pcCopia!=null?'Pc '+d.pcCopia:null);}
+          if(d.zRI!=null){var fcrMR=fcrMDSClasico(d.gi,'ri');add('Fig. Rey — Rec. Inmediato',d.ri!=null?d.ri:d.pbRI,fcrMR.m,fcrMR.ds,d.zRI,d.pcRI!=null?'Pc '+d.pcRI:null);}
         } else if(tn==='BADS-Llaves'){add('BADS — Búsqueda de Llaves',d.pb,d.m,d.ds,d.z,'Pje conv. '+(d.conv!=null?d.conv:'—'));}
         else if(tn==='BADS-Juicio'){add('BADS — Juicio Temporal',d.conv,d.m,d.ds,d.z,null);}
         else if(tn==='BADS-Zoo'){if(d.z_bruto!=null)add('BADS — Mapa del Zoo',d.bruto,null,null,d.z_bruto,null);}
@@ -16402,11 +16438,11 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         } else if(tn==='DEX'){
           var dv2=d.version==='hetero'?'Heteroadm.':'Autoadm.';
           add('DEX Total ('+dv2+')',d.total,d.version==='hetero'?20.68:22.25,d.version==='hetero'?14.77:10.10,d.zTotal,'Pje /80');
-        } else if(tn==='BNT-60'||tn==='BNT-12'){var bM=tn==='BNT-12'?11:(d.m!=null?d.m:null);var bDS=tn==='BNT-12'?1.16:(d.ds!=null?d.ds:null);add(tn+(d.educ_label?' ('+d.educ_label+')':''),d.pb||r.puntaje_total,bM,bDS,r.puntaje_z,null);}
-        else if(tn==='Token Test'){add('Token Test',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='IFS'){add('IFS — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='FAB'){add('FAB — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
-        else if(tn==='MoCA'){add('MoCA',r.puntaje_total,null,null,r.puntaje_z,null);}
+        } else if(tn==='BNT-60'||tn==='BNT-12'){var bM=tn==='BNT-12'?11:(d.yhat!=null?d.yhat:null);var bDS=tn==='BNT-12'?1.16:(d.yhat!=null?5.184:null);add(tn+(d.educ_label?' ('+d.educ_label+')':''),d.pb||r.puntaje_total,bM,bDS,r.puntaje_z,null);}
+        else if(tn==='Token Test'){add('Token Test',r.puntaje_total,r.puntaje_z!=null?10:null,r.puntaje_z!=null?3:null,r.puntaje_z,null);}
+        else if(tn==='IFS'){add('IFS — Total',r.puntaje_total,d.m,d.ds,r.puntaje_z,null);}
+        else if(tn==='FAB'){add('FAB — Total',r.puntaje_total,d.M,d.DS,r.puntaje_z,null);}
+        else if(tn==='MoCA'){add('MoCA',r.puntaje_total,d.m,d.ds,r.puntaje_z,null);}
         else if(tn==='ACE-R'){add('ACE-R — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='Test del Reloj (Cacho)'){add('Test del Reloj (Cacho)',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='BTA'){add('BTA',d.puntaje,d.m,d.ds,d.z,d.pc?'Pc '+d.pc:null);}
@@ -16423,9 +16459,9 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
 
   // ── Tabla simple para CL/TD/DO (Instrumento | Puntaje | Resultado) ──
   var COL_CL=[2800,1100,5460];
-  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
-  function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:WC.VERDE_OSC}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
-  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:WC.BLANCO,font:'Arial'}),{before:25,after:25,shading:WC.VERDE_MED}),{w:_WORD_PAGE_W,fill:WC.VERDE_MED,span:3})]);}
+  function clHdr(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:WF.BODY}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
+  function clCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
+  function clDomHdr(txt){return _wRow([_wCell(_wPar(_wRun(txt,{bold:true,sz:20,color:WC.BLANCO,font:WF.BODY}),{before:25,after:25,shading:WC.VERDE_MED}),{w:_WORD_PAGE_W,fill:WC.VERDE_MED,span:3})]);}
   function buildSimpleRows(list){
     if(!list.length)return[];
     var rows=[],rc=0;
@@ -16515,33 +16551,33 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       var regex=/(\*\*([^*]+)\*\*)/g;
       var last=0, m;
       while((m=regex.exec(l))!==null){
-        if(m.index>last) runs+=_wRun(l.slice(last,m.index),{sz:20,font:'Arial',color:'000000'});
-        runs+=_wRun(m[2],{sz:20,font:'Arial',color:'000000',bold:true});
+        if(m.index>last) runs+=_wRun(l.slice(last,m.index),{sz:20,font:WF.BODY,color:'000000'});
+        runs+=_wRun(m[2],{sz:20,font:WF.BODY,color:'000000',bold:true});
         last=m.index+m[0].length;
       }
-      if(last<l.length) runs+=_wRun(l.slice(last),{sz:20,font:'Arial',color:'000000'});
+      if(last<l.length) runs+=_wRun(l.slice(last),{sz:20,font:WF.BODY,color:'000000'});
       return '<w:p><w:pPr><w:jc w:val="both"/><w:spacing w:before="0" w:after="80"/></w:pPr>'+runs+'</w:p>';
     });
   }
 
-  // ── Tabla datos personales ──
+  // ── Tabla datos personales: etiqueta muda + regla fina, sin bloques de color ──
   function dpRow(lbl,val){
     return _wRow([
-      _wCell(_wPar(_wRun(lbl,{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:40,after:40}),{w:2600,fill:WC.GRIS_CLR}),
-      _wCell(_wPar(_wRun(val||'—',{sz:20,font:'Arial',color:'1a1a1a'}),{before:40,after:40}),{w:6760,fill:WC.BLANCO}),
+      _wCell(_wPar(_wRun(lbl.toUpperCase(),{bold:true,sz:14,font:WF.BODY,color:WC.MUTED}),{before:50,after:50}),{w:2600,fill:WC.BLANCO,borderB:WC.LINEA}),
+      _wCell(_wPar(_wRun(val||'—',{sz:20,font:WF.BODY,color:WC.TINTA}),{before:50,after:50}),{w:6760,fill:WC.BLANCO,borderB:WC.LINEA}),
     ]);
   }
 
-  // ── Sección título (línea verde bajo, estilo PDF) ──
+  // ── Sección título (regla fina en vez de línea gruesa de color) ──
   function secTit(txt){
-    return _wPar(_wRun(txt,{bold:true,sz:22,color:WC.VERDE_OSC,font:'Arial'}),{before:240,after:60,border_b:WC.VERDE_MED});
+    return _wPar(_wRun(txt,{bold:true,sz:22,color:WC.VERDE_OSC,font:WF.BODY}),{before:280,after:80,border_b:WC.SAGE_LINEA});
   }
 
   // ── Construir cuerpo ──
   var body='';
 
   // 1. TÍTULO
-  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,sz:28,color:'000000',font:'Arial'}),{align:'center',before:0,after:120});
+  body+=_wPar(_wRun('Informe de Evaluación Neuropsicológica',{bold:true,ital:true,sz:30,color:WC.VERDE_OSC,font:WF.DISPLAY}),{align:'center',before:0,after:140});
 
   // 2. DATOS DEL PACIENTE
   body+=secTit('1. Datos del Paciente');
@@ -16587,10 +16623,10 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       var presentes=dom.tests.filter(function(t){return testsTomados.indexOf(t)!==-1;});
       if(!presentes.length)return;
       // Subdominio en negrita
-      body+=_wPar(_wRun(dom.label,{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:20});
+      body+=_wPar(_wRun(dom.label,{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{before:80,after:20});
       // Lista de tests
       var listaTexto=presentes.map(function(t){return NOMBRES_TEST[t]||t;}).join(' · ');
-      body+=_wPar(_wRun(listaTexto,{sz:19,font:'Arial',color:'333333'}),{align:'both',before:0,after:60});
+      body+=_wPar(_wRun(listaTexto,{sz:19,font:WF.BODY,color:'333333'}),{align:'both',before:0,after:60});
     });
   }
 
@@ -16623,7 +16659,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // Tabla NP con grilla Z
   var npRows=buildNPRows(testsNP);
   if(npRows.length){
-    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
+    body+=_wPar(_wRun('Evaluación Neuropsicológica',{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([_zHdrRow()].concat(npRows),COL_WIDTHS_HDR);
     body+=_wPar('',{before:0,after:80});
   }
@@ -16631,7 +16667,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // TABLA TDAH
   var tdRows=buildSimpleRows(testsTD);
   if(tdRows.length){
-    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
+    body+=_wPar(_wRun('TDAH',{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(tdRows),COL_CL);
@@ -16641,7 +16677,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // TABLA DOLOR
   var doRows=buildSimpleRows(testsDO);
   if(doRows.length){
-    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
+    body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(doRows),COL_CL);
@@ -16651,7 +16687,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // TABLA PSICOLOGÍA CLÍNICA
   var clRows=buildSimpleRows(testsCL);
   if(clRows.length){
-    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:'Arial',color:WC.VERDE_OSC}),{before:80,after:40});
+    body+=_wPar(_wRun('Psicología Clínica',{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{before:80,after:40});
     body+=_wTable([
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(clRows),COL_CL);
@@ -16664,8 +16700,8 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     var fam=famResults[famResults.length-1].datos||{};
     // Tabla: Tests | Significativo/No significativo | Síntomas
     var COL_FAM=[2800,1600,4960];
-    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:'Arial'}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
-    function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:'Arial',color:WC.VERDE_OSC}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
+    function famHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:WF.BODY}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
+    function famCell(txt,w,bg,center){return _wCell(_wPar(_wRun(txt||'—',{sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
     
     var famRows=[];
     famRows.push(_wRow([famHdrCell('Tests',COL_FAM[0]),famHdrCell('Significativo / No significativo',COL_FAM[1]),famHdrCell('Síntomas',COL_FAM[2])],{hdr:true}));
@@ -16745,9 +16781,9 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
 
   // 14. FIRMA
   body+=_wPar('',{before:400,after:0});
-  body+=_wPar(_wRun('___________________________',{sz:20,color:'888888',font:'Arial'}),{before:0,after:40});
-  body+=_wPar(_wRun(inf.evaluado_por||'',{sz:18,font:'Arial',color:'333333'}),{before:0,after:40});
-  body+=_wPar(_wRun(new Date().toLocaleDateString('es-AR'),{sz:17,color:'888888',font:'Arial'}),{before:0,after:80});
+  body+=_wPar(_wRun('___________________________',{sz:20,color:'888888',font:WF.BODY}),{before:0,after:40});
+  body+=_wPar(_wRun(inf.evaluado_por||'',{sz:18,font:WF.BODY,color:'333333'}),{before:0,after:40});
+  body+=_wPar(_wRun(new Date().toLocaleDateString('es-AR'),{sz:17,color:'888888',font:WF.BODY}),{before:0,after:80});
 
   // ── Armar XML docx ──
   var enc=new TextEncoder();
@@ -16792,7 +16828,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   var stylesXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
     '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'+
     '<w:docDefaults><w:rPrDefault><w:rPr>'+
-    '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>'+
+    '<w:rFonts w:ascii="'+WF.BODY+'" w:hAnsi="'+WF.BODY+'" w:cs="'+WF.BODY+'"/>'+
     '<w:sz w:val="20"/><w:szCs w:val="20"/>'+
     '</w:rPr></w:rPrDefault></w:docDefaults></w:styles>';
 
