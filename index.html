@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.99</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.0</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6248,7 +6248,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.99';
+var APP_VERSION = 'v1.11.0';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -15978,7 +15978,11 @@ var WC = {
   // Tokens del rediseño: barra de posición Z + separadores de dominio en vez de
   // grilla de 13 casilleros y banners de color sólido.
   TINTA:'16241d', TINTA_SUAVE:'3c463f', MUTED:'6b7a71', LINEA:'d8ddd8', SAGE_LINEA:'c8d8d0',
-  ZONA_NORMAL:'dcebe2', AMBAR:'a8672a', TERRACOTA:'9c3b2a'
+  ZONA_NORMAL:'dcebe2', AMBAR:'a8672a', TERRACOTA:'9c3b2a',
+  // Línea más oscura que SAGE_LINEA — para bordes de tabla que tienen que seguir
+  // viéndose al fotocopiar/imprimir en blanco y negro (SAGE_LINEA sola queda
+  // demasiado clara en papel).
+  LINEA_FUERTE:'8fa89b'
 };
 // Fuentes: seguras en Word (no dependen de que el lector tenga instaladas las
 // tipografías web de la app). Georgia da el numeral de sección un aire editorial;
@@ -16113,12 +16117,12 @@ function _wTable(rows, colWidths) {
     '<w:tblW w:w="'+_WORD_PAGE_W+'" w:type="dxa"/>'+
     '<w:tblLayout w:type="fixed"/>'+
     '<w:tblBorders>'+
-      '<w:top    w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
-      '<w:bottom w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
-      '<w:left   w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
-      '<w:right  w:val="single" w:sz="4" w:color="'+WC.SAGE_LINEA+'"/>'+
-      '<w:insideH w:val="single" w:sz="4" w:color="c8d8d0"/>'+
-      '<w:insideV w:val="single" w:sz="4" w:color="c8d8d0"/>'+
+      '<w:top    w:val="single" w:sz="8" w:color="'+WC.LINEA_FUERTE+'"/>'+
+      '<w:bottom w:val="single" w:sz="8" w:color="'+WC.LINEA_FUERTE+'"/>'+
+      '<w:left   w:val="single" w:sz="8" w:color="'+WC.LINEA_FUERTE+'"/>'+
+      '<w:right  w:val="single" w:sz="8" w:color="'+WC.LINEA_FUERTE+'"/>'+
+      '<w:insideH w:val="single" w:sz="6" w:color="'+WC.LINEA_FUERTE+'"/>'+
+      '<w:insideV w:val="single" w:sz="6" w:color="'+WC.LINEA_FUERTE+'"/>'+
     '</w:tblBorders>'+
   '</w:tblPr>';
   return '<w:tbl>'+tblPr+tblGrid+rows.join('')+'</w:tbl>';
@@ -16142,16 +16146,18 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   if (isSubhdr) {
     // Separador de dominio: etiqueta discreta + regla fina, no un banner de color sólido.
+    // Es el texto más grande de la tabla — tiene que leerse claramente como un
+    // cambio de sección, no como una fila de datos más.
     var restoW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0) - COL_WIDTHS_HDR[0];
     var restoCols = COL_WIDTHS_HDR.length - 1;
     return _wRow([
       _wCell(
-        _wPar(_wRun(label,{bold:true,sz:16,color:WC.VERDE_OSC,font:WF.BODY}),{before:60,after:20}),
-        {w:COL_WIDTHS_HDR[0], fill:WC.BLANCO, borderB:WC.VERDE_OSC, borderBSz:10}
+        _wPar(_wRun(label,{bold:true,sz:20,color:WC.VERDE_OSC,font:WF.BODY}),{before:70,after:30}),
+        {w:COL_WIDTHS_HDR[0], fill:WC.BLANCO, borderB:WC.VERDE_OSC, borderBSz:12}
       ),
       _wCell(
-        _wPar('',{before:60,after:20}),
-        {w:restoW, fill:WC.BLANCO, span:restoCols, borderB:WC.SAGE_LINEA, borderBSz:10}
+        _wPar('',{before:70,after:30}),
+        {w:restoW, fill:WC.BLANCO, span:restoCols, borderB:WC.LINEA_FUERTE, borderBSz:10}
       )
     ]);
   }
@@ -16173,7 +16179,10 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   // Zona normativa: índices donde ZCOLS[i] >= -1 && ZCOLS[i] <= 1
   var normZone = ZCOLS.map(function(v){return v>=-1&&v<=1;});
-  var markerColor = z!==null&&z!==undefined ? escalaReferenciaColor(parseFloat(z)).replace('#','') : WC.MUTED;
+  // Un solo color oscuro y en negrita para el punto, sin variar por severidad: la
+  // interpretación ya dice la severidad en texto, y un color por fila desaparece
+  // al fotocopiar/imprimir en blanco y negro — así se sigue viendo siempre.
+  var markerColor = WC.VERDE_OSC;
 
   // Interpretación
   function zInterp(z) {
@@ -16184,49 +16193,57 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   var cells = [];
   // Variable
-  cells.push(_wCell(_wPar(_wRun(label,{sz:19,bold:false,color:WC.TINTA,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[0],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(label,{sz:18,bold:false,color:WC.TINTA,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[0],fill:bg,noBorder:true}));
   // PB
-  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:19,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[1],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:18,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[1],fill:bg,noBorder:true}));
   // M
-  cells.push(_wCell(_wPar(_wRun(mStr,{sz:19,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[2],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(mStr,{sz:18,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[2],fill:bg,noBorder:true}));
   // DS
-  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:19,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[3],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:18,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[3],fill:bg,noBorder:true}));
   // Z
-  cells.push(_wCell(_wPar(_wRun(zStr,{sz:19,bold:true,color:WC.TINTA,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[4],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(zStr,{sz:18,bold:true,color:WC.TINTA,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[4],fill:bg,noBorder:true}));
   // Barra de posición Z: misma grilla de 13 celdas, pero sin bordes internos (se leen
-  // como una barra continua) y con un único punto de color marcando la posición,
-  // en vez de una "X" en un casillero — la zona normativa se ve como un tramo
-  // sombreado, no como celdas alternadas.
+  // como una barra continua) y con un único punto oscuro en negrita marcando la
+  // posición, en vez de una "X" en un casillero — la zona normativa se ve como un
+  // tramo sombreado, no como celdas alternadas.
   ZCOLS.forEach(function(v,i){
     var isMarked = (markedCol === i);
     var cellFill = normZone[i] ? WC.ZONA_NORMAL : bg;
     var content = isMarked
-      ? _wPar(_wRun('●',{sz:14,bold:true,font:WF.BODY,color:markerColor}),{align:'center',before:20,after:20})
+      ? _wPar(_wRun('●',{sz:20,bold:true,font:WF.BODY,color:markerColor}),{align:'center',before:15,after:15})
       : _wPar('',{before:20,after:20});
     cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true, noBorder:true}));
   });
   // Interpretación
   var interpTxt = zInterp(z);
-  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:19,bold:false,color:WC.TINTA_SUAVE,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[18],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:18,bold:false,color:WC.TINTA_SUAVE,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[18],fill:bg,noBorder:true}));
 
   return _wRow(cells);
+}
+
+// Etiqueta compacta para el eje (-3…+3, en pasos de 0.5): sin "+" en los positivos
+// (un eje no lo necesita, solo el signo negativo aporta información), y "½" en vez
+// de ".5" para que entre sin cortarse en una columna angosta.
+function _zAxisLabel(v) {
+  if (v % 1 === 0) return String(v);
+  var neg = v < 0;
+  var base = Math.floor(Math.abs(v));
+  return (neg?'-':'') + (base>0?String(base):'') + '½';
 }
 
 function _zHdrRow() {
   var cells = [];
   function hc(txt, w, align) {
-    return _wCell(_wPar(_wRun(txt,{sz:14,bold:true,color:WC.VERDE_OSC,font:WF.BODY}),{align:align||'center',before:30,after:20}),{w:w,fill:WC.BLANCO,borderB:WC.VERDE_OSC,borderBSz:10,noWrap:true});
+    return _wCell(_wPar(_wRun(txt,{sz:17,bold:true,color:WC.VERDE_OSC,font:WF.BODY}),{align:align||'center',before:30,after:20}),{w:w,fill:WC.BLANCO,borderB:WC.VERDE_OSC,borderBSz:10,noWrap:true});
   }
   cells.push(hc('VARIABLE', COL_WIDTHS_HDR[0], 'left'));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
   cells.push(hc('M',        COL_WIDTHS_HDR[2]));
   cells.push(hc('DS',       COL_WIDTHS_HDR[3]));
   cells.push(hc('Z',        COL_WIDTHS_HDR[4]));
-  // La barra de posición solo marca -3 / 0 / +3 (los extremos y el centro),
-  // no los 13 valores — el punto de color ya da la posición exacta.
+  // Progresión completa -3…+3 (13 valores), no solo los extremos.
   ZCOLS.forEach(function(v,i){
-    var lbl = (v===-3||v===0||v===3) ? (v>0?'+'+v:String(v)) : '';
-    cells.push(hc(lbl, COL_WIDTHS_HDR[5+i]));
+    cells.push(hc(_zAxisLabel(v), COL_WIDTHS_HDR[5+i]));
   });
   cells.push(hc('INTERPRETACIÓN', COL_WIDTHS_HDR[18], 'left'));
   return _wRow(cells, {hdr:true});
@@ -16563,8 +16580,8 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   // ── Tabla datos personales: etiqueta muda + regla fina, sin bloques de color ──
   function dpRow(lbl,val){
     return _wRow([
-      _wCell(_wPar(_wRun(lbl.toUpperCase(),{bold:true,sz:14,font:WF.BODY,color:WC.MUTED}),{before:50,after:50}),{w:2600,fill:WC.BLANCO,borderB:WC.LINEA}),
-      _wCell(_wPar(_wRun(val||'—',{sz:20,font:WF.BODY,color:WC.TINTA}),{before:50,after:50}),{w:6760,fill:WC.BLANCO,borderB:WC.LINEA}),
+      _wCell(_wPar(_wRun(lbl.toUpperCase(),{bold:true,sz:16,font:WF.BODY,color:WC.VERDE_OSC}),{before:50,after:50}),{w:2600,fill:WC.GRIS_CLR,borderB:WC.LINEA_FUERTE}),
+      _wCell(_wPar(_wRun(val||'—',{sz:19,font:WF.BODY,color:WC.TINTA}),{before:50,after:50}),{w:6760,fill:WC.BLANCO,borderB:WC.LINEA_FUERTE}),
     ]);
   }
 
