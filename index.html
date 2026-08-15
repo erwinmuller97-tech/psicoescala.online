@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.96</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.10.97</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6248,7 +6248,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.10.96';
+var APP_VERSION = 'v1.10.97';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -6680,7 +6680,29 @@ function supaFetch(path, method, body, token, extraHeaders) {
   if (token) headers['Authorization'] = 'Bearer ' + token;
   if (method !== 'GET' && method !== 'DELETE') headers['Prefer'] = 'return=representation';
   if (extraHeaders) Object.keys(extraHeaders).forEach(function(k){ headers[k]=extraHeaders[k]; });
-  return fetch(SUPA_URL + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined });
+  return fetch(SUPA_URL + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined })
+    .then(function(res) {
+      // fetch() solo rechaza por fallas de red — un 400/401/403/500 de Supabase
+      // resuelve igual, así que sin este chequeo cada guardarX()/cargarX() de
+      // más abajo asumía éxito aunque el insert/update nunca haya pasado.
+      if (res.status === 401) {
+        manejarSesionExpirada();
+        var sesErr = new Error('SESION_EXPIRADA');
+        sesErr.userNotified = true;
+        throw sesErr;
+      }
+      if (!res.ok) {
+        return res.text().then(function(t) {
+          var msg = t || ('Error HTTP ' + res.status);
+          try { var j = JSON.parse(t); msg = j.message || j.error_description || j.error || j.hint || msg; } catch (e) {}
+          toast('✗ ' + msg.substring(0, 160), 'error');
+          var httpErr = new Error(msg);
+          httpErr.userNotified = true;
+          throw httpErr;
+        });
+      }
+      return res;
+    });
 }
 function supaAuth(action, body) {
   return fetch(SUPA_URL + '/auth/v1/' + action, {
@@ -6721,6 +6743,7 @@ function doLogin() {
       return;
     }
     SESSION = data;
+    _sesionExpiradaAvisada = false;
     try { localStorage.setItem('psico_session', JSON.stringify(data)); } catch(e) {}
     setUserEmail((data.user && data.user.email) || email);
     // Ocultar todas las pantallas y mostrar solo app
@@ -6739,7 +6762,7 @@ function doLogin() {
     cargarResultados();
   });
 }
-function doLogout() {
+function doLogout(mensaje) {
   SESSION = null; PACIENTES = []; RESULTADOS = [];
   try { localStorage.removeItem('psico_session'); } catch(e) {}
   var app = document.getElementById('screen-app');
@@ -6751,6 +6774,16 @@ function doLogout() {
   document.getElementById('login-pass').value = '';
   initPhiLogos();
   initScrollReveal();
+  if (mensaje) toast(mensaje, 'error');
+}
+// Se dispara cuando Supabase devuelve 401 (token vencido/inválido) en cualquier
+// llamada autenticada: corta la sesión en vez de dejar la pantalla mostrando
+// listas vacías o botones de guardar que no hacen nada, sin avisar por qué.
+var _sesionExpiradaAvisada = false;
+function manejarSesionExpirada() {
+  if (!SESSION || _sesionExpiradaAvisada) return;
+  _sesionExpiradaAvisada = true;
+  doLogout('Tu sesión expiró. Iniciá sesión nuevamente.');
 }
 function doForgot() {
   var email = document.getElementById('login-email').value.trim();
@@ -6952,7 +6985,7 @@ function editarPaciente(id) {
       renderPacientesInicio();
       llenarSelectPacientes();
       toast('✓ Paciente actualizado','success');
-    }).catch(function(){ toast('Error al guardar','error'); });
+    }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
   };
 }
 
@@ -6971,7 +7004,8 @@ function borrarPaciente(id, nombre) {
       cargarPacientes();
       cargarResultados();
       toast('Paciente eliminado', 'success');
-    });
+    })
+    .catch(function(err){ if(!err||!err.userNotified) toast('Error al eliminar paciente','error'); });
 }
 
 function llenarSelectPacientes() {
@@ -7029,7 +7063,7 @@ function guardarPaciente() {
       if (nuevoId) setPacienteActivo(nuevoId, false);
       toast('Paciente guardado', 'success');
     })
-    .catch(function(e){ toast('Error de conexión al guardar', 'error'); });
+    .catch(function(e){ if(!e||!e.userNotified) toast('Error de conexión al guardar', 'error'); });
 }
 
 function abrirModalPac(id) {
@@ -8663,14 +8697,15 @@ function editarResultado(id) {
       document.body.removeChild(modal);
       renderHistorial();
       toast('✓ Fecha actualizada','success');
-    }).catch(function(){ toast('Error al guardar','error'); });
+    }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
   };
 }
 
 function borrarResultado(id) {
   if (!confirm('¿Borrar esta evaluación? No se puede deshacer.')) return;
   supaFetch('/rest/v1/psico_resultados?id=eq.' + id, 'DELETE', null, SESSION.access_token)
-    .then(function(){ cargarResultados(); toast('Evaluación borrada'); });
+    .then(function(){ cargarResultados(); toast('Evaluación borrada'); })
+    .catch(function(err){ if(!err||!err.userNotified) toast('Error al borrar','error'); });
 }
 
 function renderUltimas() {
@@ -8794,7 +8829,7 @@ function limpiarPendienteActual(testId) {
   if (PENDIENTE_ACTUAL && PENDIENTE_ACTUAL.testId === testId && SESSION) {
     var idBorrar = PENDIENTE_ACTUAL.resultadoId;
     PENDIENTE_ACTUAL = null;
-    supaFetch('/rest/v1/psico_resultados?id=eq.' + idBorrar, 'DELETE', null, SESSION.access_token);
+    supaFetch('/rest/v1/psico_resultados?id=eq.' + idBorrar, 'DELETE', null, SESSION.access_token).catch(function(){});
   }
 }
 
@@ -9533,7 +9568,7 @@ function guardarResultadoBDI() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ STAI ═════════════════════════════════════════════════════════════════════
@@ -9701,7 +9736,7 @@ function guardarResultadoSTAI() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ REY VERBAL — BAREMOS ════════════════════════════════════════════════════
@@ -9889,7 +9924,7 @@ function guardarResultadoRey() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ TMT — BAREMOS ════════════════════════════════════════════════════════════
@@ -10141,7 +10176,7 @@ function guardarResultadoTMT() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ FLUENCIA VERBAL — BAREMOS ════════════════════════════════════════════════
@@ -10331,7 +10366,7 @@ function guardarResultadoFLV() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ PHQ-9 ════════════════════════════════════════════════════════════════════
@@ -10406,7 +10441,7 @@ function guardarResultadoPHQ() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ GAD-7 ════════════════════════════════════════════════════════════════════
@@ -10471,7 +10506,7 @@ function guardarResultadoGAD(){
     toast('✓ Resultado guardado', 'success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
-    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };});
+    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };}).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 
@@ -10568,7 +10603,7 @@ function guardarResultadoBirleson() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ AAA ════════════════════════════════════════════════════════════════════════
@@ -10684,7 +10719,7 @@ function guardarResultadoAAA() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
-  });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ SPAI-B ═══════════════════════════════════════════════════════════════════
@@ -10773,7 +10808,7 @@ function guardarResultadoSPAIB(){
     toast('✓ Resultado guardado', 'success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
-    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };});
+    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };}).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ MoCA ═════════════════════════════════════════════════════════════════════
@@ -10858,7 +10893,7 @@ function guardarResultadoMoCA(){
     toast('✓ Resultado guardado', 'success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
-    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };});
+    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };}).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ Mini Mental Parkinson (MMP) ══════════════════════════════════════════════
@@ -10939,7 +10974,7 @@ function guardarResultadoMMP() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length - 1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function() { btn.classList.remove('btn-saved'); }, 1500); }
-  });
+  }).catch(function(err) { if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 function limpiarMMP() {
@@ -11059,7 +11094,7 @@ function guardarResultadoWCST() {
   }, SESSION.access_token).then(function(){
     cargarResultados();
     toast('✓ Resultado guardado','success');
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 var IFS_BAR = [
@@ -11206,7 +11241,7 @@ function guardarFAB() {
     cargarResultados(); toast('✓ Resultado guardado','success');
     var btns = document.querySelectorAll('.vista.active .btn-primary');
     if (btns.length) { btns[btns.length-1].classList.add('btn-saved'); setTimeout(function(){ btns[btns.length-1].classList.remove('btn-saved'); },1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 // ══ fin FAB ══════════════════════════════════════════════════════════════════
 
@@ -11283,7 +11318,7 @@ function guardarResultadoIFS(){
     toast('✓ Resultado guardado', 'success');
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
-    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };});
+    if(btn){ btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); };}).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 // ══ DÍGITOS WAIS ═════════════════════════════════════════════════════════════
 // Baremos Fay, Leiva & Margulis (2018) — CABA. Por edad y NE.
@@ -11476,7 +11511,7 @@ function guardarWaisiv() {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 // ══ ASRS-V1.1 ════════════════════════════════════════════════════════════════
 // Baremos Scandar MG (2021) — Rev Neurol 72(3):77-84 — Tabla V — n=1.173, Argentina
@@ -11619,7 +11654,7 @@ function guardarAsrs() {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // ══ BADS · Farías Sarquís et al. (2021) — Cuadernos de Neuropsicología 15(1):25-48 ═══
@@ -11789,7 +11824,7 @@ function guardarLlaves() {
     datos:d
   }, SESSION.access_token).then(function(){
     window._llavesData=null; limpiarPendienteActual('llaves'); cargarResultados(); toast('✓ Resultado guardado','success');
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ── Juicio Temporal ──────────────────────────────────────────────────────────
@@ -11929,7 +11964,7 @@ function guardarJuicio() {
     puntaje_total:d.conv, puntaje_z:d.z, categoria:badsZLabel(d.z), datos:d
   }, SESSION.access_token).then(function(){
     window._juicioData=null; limpiarPendienteActual('juicio'); cargarResultados(); toast('✓ Resultado guardado','success');
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ── Mapa del Zoo ─────────────────────────────────────────────────────────────
@@ -12185,7 +12220,7 @@ function guardarZoo() {
     puntaje_total:pjeGuardar, puntaje_z:d.z, categoria:badsZLabel(d.z), datos:d
   }, SESSION.access_token).then(function(){
     window._zooData=null; limpiarPendienteActual('zoo'); cargarResultados(); toast('✓ Resultado guardado','success');
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ TEST DEL HOTEL ═══════════════════════════════════════════════════════════
@@ -12448,7 +12483,7 @@ function guardarHotel() {
   }, SESSION.access_token).then(function(){
     window._hotelData = null;
     cargarResultados(); toast('✓ Resultado guardado','success');
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ BTA — Brief Test of Attention ══════════════════════════════════════════
@@ -12683,7 +12718,7 @@ function guardarD2() {
     cargarResultados(); toast('✓ Resultado guardado','success');
     var btns = document.querySelectorAll('.vista.active .btn-primary');
     if (btns.length) { btns[btns.length-1].classList.add('btn-saved'); setTimeout(function(){ btns[btns.length-1].classList.remove('btn-saved'); },1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 // ══ fin D2 ═══════════════════════════════════════════════════════════════════
 
@@ -12745,7 +12780,7 @@ function guardarBTA() {
     cargarResultados(); toast('✓ Resultado guardado','success');
     var btn = document.querySelectorAll('.vista.active .btn-primary');
     if (btn.length) { btn[btn.length-1].classList.add('btn-saved'); setTimeout(function(){ btn[btn.length-1].classList.remove('btn-saved'); },1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 // ══ fin BTA ══════════════════════════════════════════════════════════════════
 
@@ -12884,7 +12919,7 @@ function guardarDEX() {
     cargarResultados(); toast('✓ Resultado guardado','success');
     var btns = document.querySelectorAll('.vista.active .btn-primary');
     if (btns.length) { btns[btns.length-1].classList.add('btn-saved'); setTimeout(function(){ btns[btns.length-1].classList.remove('btn-saved'); },1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 // ══ fin DEX ══════════════════════════════════════════════════════════════════
 
@@ -12969,7 +13004,7 @@ function ndGuardar(testName, pacSelId, fechaId, total, cat, datos) {
     puntaje_total: total, categoria: cat, datos: datos
   }, SESSION.access_token).then(function() {
     cargarResultados(); toast('✓ ' + testName + ' guardado', 'success');
-  }).catch(function() { toast('Error al guardar', 'error'); });
+  }).catch(function(err) { if(!err||!err.userNotified) toast('Error al guardar', 'error'); });
 }
 
 // ── AQ 50 ítems ──
@@ -13446,7 +13481,7 @@ function guardarWurs() {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // ══ MBI-HSS ════════════════════════════════════════════════════════════════
@@ -13507,7 +13542,7 @@ function guardarResultadoMBI() {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // ══ TEST DEL RELOJ (Cacho) ════════════════════════════════════════════════
@@ -13565,7 +13600,7 @@ function guardarResultadoReloj() {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 
@@ -13646,7 +13681,7 @@ function guardarResultadoACER(){
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // ══ SCL-90-R ═════════════════════════════════════════════════════════════════
@@ -13833,7 +13868,7 @@ function guardarResultadoScl90(){
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // irTest SCL90 y ACER
@@ -14076,7 +14111,7 @@ function guardarToken() {
   },SESSION.access_token).then(function(){
     window._tokenData=null;
     cargarResultados();toast('✓ Resultado guardado','success');
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 // ══ fin Token Test ════════════════════════════════════════════════════════════
 
@@ -14193,7 +14228,7 @@ function guardarBNT() {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // ══ INFORME NEUROPSICOLÓGICO ══════════════════════════════════════════════════
@@ -14360,17 +14395,13 @@ function guardarInforme() {
       return supaFetch(url, method, body, SESSION.access_token, {'Prefer': 'return=representation'});
     })
     .then(function(r) {
-      return r.json().then(function(data) {
-        if (!r.ok) {
-          var msg = (data && data.message) ? data.message : 'Error al guardar';
-          toast(msg, 'error');
-          return;
-        }
+      // supaFetch ya rechaza (y avisa) si la respuesta no fue ok; llegar acá es éxito.
+      return r.json().then(function() {
         try { localStorage.setItem(informeCacheKey(INFORME_PAC_ID), JSON.stringify(body)); } catch (e) {}
         toast('✓ Informe guardado', 'success');
       });
     })
-    .catch(function() { toast('Error al guardar informe', 'error'); });
+    .catch(function(err) { if(!err||!err.userNotified) toast('Error al guardar informe', 'error'); });
 }
 
 
@@ -14940,7 +14971,7 @@ function guardarDolor(tipo) {
     var btnAll=document.querySelectorAll('.vista.active .btn-primary');
     var btn=btnAll.length?btnAll[btnAll.length-1]:null;
     if(btn){btn.classList.add('btn-saved');setTimeout(function(){btn.classList.remove('btn-saved');},1500);}
-  }).catch(function(){toast('Error al guardar','error');});
+  }).catch(function(err){if(!err||!err.userNotified)toast('Error al guardar','error');});
 }
 
 // ── Auto-iniciar si hay sesión ─────────────────
@@ -15103,7 +15134,7 @@ function guardarStroop() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ CSI · Inventario de Estrategias de Afrontamiento ═════════════════════════
@@ -15316,7 +15347,7 @@ function guardarCSI() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ FIGURA COMPLEJA DE REY · ROCF ════════════════════════════════════════════
@@ -15510,7 +15541,7 @@ function guardarFCR() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ BTA · Brief Test of Attention ════════════════════════════════════════════
@@ -15638,7 +15669,7 @@ function guardarBTA() {
   }, SESSION.access_token).then(function(){
     window._btaData = null;
     cargarResultados(); toast('✓ Resultado guardado','success');
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ SDMT · Symbol Digit Modalities Test ══════════════════════════════════════
@@ -15830,7 +15861,7 @@ function guardarSDMT() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══════════════════════════════════════════════════════════════════════
@@ -16192,7 +16223,7 @@ function generarWordHistorial() {
   infPromise.then(function(inf){
     try { _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf||{}); }
     catch(e){ console.error(e); toast('Error al generar Word: '+e.message,'error'); }
-  }).catch(function(e){ console.error(e); toast('Error al obtener informe','error'); });
+  }).catch(function(e){ console.error(e); if(!e||!e.userNotified) toast('Error al obtener informe','error'); });
 }
 
 function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf) {
@@ -17037,7 +17068,7 @@ function guardarTavec() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 // ══ PANEL PERFIL Z — guía de redacción para residentes ══════════════════════
@@ -17466,7 +17497,7 @@ function guardarFamiliar() {
     var btnAll = document.querySelectorAll('.vista.active .btn-primary');
     var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
     if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); },1500); }
-  }).catch(function(){ toast('Error al guardar','error'); });
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
 }
 
 </script>
