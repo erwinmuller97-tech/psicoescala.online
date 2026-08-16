@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.0</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.1</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6248,7 +6248,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.0';
+var APP_VERSION = 'v1.11.1';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7157,7 +7157,7 @@ function renderFiltroHistorial() {
   });
 }
 
-/** Escala de referencia neuropsicológica (Z / T / Percentil) — González Palau */
+/** Escala de referencia neuropsicológica (Z / T / Percentil) */
 function escalaReferenciaZ(z) {
   if (z === null || z === undefined || isNaN(z)) return '—';
   if (z >= 1.5)   return 'Superior';
@@ -16056,6 +16056,7 @@ function _wRun(txt, opts) {
   var rpr = '<w:rPr>';
   if (opts.bold)    rpr += '<w:b/>';
   if (opts.ital)    rpr += '<w:i/>';
+  if (opts.underline) rpr += '<w:u w:val="single"/>';
   if (opts.color)   rpr += '<w:color w:val="'+opts.color+'"/>';
   if (opts.sz)      rpr += '<w:sz w:val="'+opts.sz+'"/><w:szCs w:val="'+opts.sz+'"/>';
   if (opts.font)    rpr += '<w:rFonts w:ascii="'+opts.font+'" w:hAnsi="'+opts.font+'" w:cs="'+opts.font+'"/>';
@@ -16145,19 +16146,14 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   var bg = isEven ? WC.GRIS_CLR : WC.BLANCO;
 
   if (isSubhdr) {
-    // Separador de dominio: etiqueta discreta + regla fina, no un banner de color sólido.
-    // Es el texto más grande de la tabla — tiene que leerse claramente como un
-    // cambio de sección, no como una fila de datos más.
-    var restoW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0) - COL_WIDTHS_HDR[0];
-    var restoCols = COL_WIDTHS_HDR.length - 1;
+    // Separador de dominio: banner simple en verde claro, texto negro — el texto
+    // en color queda para títulos de sección fuera de la tabla, no para adentro.
+    var totalCols = COL_WIDTHS_HDR.length;
+    var totalW = COL_WIDTHS_HDR.reduce(function(a,b){return a+b;},0);
     return _wRow([
       _wCell(
-        _wPar(_wRun(label,{bold:true,sz:20,color:WC.VERDE_OSC,font:WF.BODY}),{before:70,after:30}),
-        {w:COL_WIDTHS_HDR[0], fill:WC.BLANCO, borderB:WC.VERDE_OSC, borderBSz:12}
-      ),
-      _wCell(
-        _wPar('',{before:70,after:30}),
-        {w:restoW, fill:WC.BLANCO, span:restoCols, borderB:WC.LINEA_FUERTE, borderBSz:10}
+        _wPar(_wRun(label,{bold:true,sz:20,color:'000000',font:WF.BODY}),{align:'center',before:40,after:40}),
+        {w:totalW, fill:WC.VERDE_CLR, span:totalCols}
       )
     ]);
   }
@@ -16168,7 +16164,7 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
   var dsStr = ds!==null&&ds!==undefined ? parseFloat(ds).toFixed(1) : '—';
   var zStr  = z!==null&&z!==undefined   ? (parseFloat(z)>=0?'+':'')+parseFloat(z).toFixed(1) : '—';
 
-  // Calcular qué columna de la barra marcar
+  // Calcular qué columna de la grilla marcar
   var markedCol = null;
   if (z!==null&&z!==undefined) {
     var zClamp = Math.max(-3, Math.min(3, parseFloat(z)));
@@ -16179,10 +16175,6 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   // Zona normativa: índices donde ZCOLS[i] >= -1 && ZCOLS[i] <= 1
   var normZone = ZCOLS.map(function(v){return v>=-1&&v<=1;});
-  // Un solo color oscuro y en negrita para el punto, sin variar por severidad: la
-  // interpretación ya dice la severidad en texto, y un color por fila desaparece
-  // al fotocopiar/imprimir en blanco y negro — así se sigue viendo siempre.
-  var markerColor = WC.VERDE_OSC;
 
   // Interpretación
   function zInterp(z) {
@@ -16193,30 +16185,29 @@ function _zGrillaRows(label, pb, m, ds, z, nota, isEven, isSubhdr) {
 
   var cells = [];
   // Variable
-  cells.push(_wCell(_wPar(_wRun(label,{sz:18,bold:false,color:WC.TINTA,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[0],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(label,{sz:18,bold:false,color:'000000',font:WF.BODY}),{before:25,after:25}),{w:COL_WIDTHS_HDR[0],fill:bg}));
   // PB
-  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:18,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[1],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(pbStr,{sz:18,color:'000000',font:WF.BODY}),{align:'center',before:25,after:25}),{w:COL_WIDTHS_HDR[1],fill:bg}));
   // M
-  cells.push(_wCell(_wPar(_wRun(mStr,{sz:18,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[2],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(mStr,{sz:18,color:'000000',font:WF.BODY}),{align:'center',before:25,after:25}),{w:COL_WIDTHS_HDR[2],fill:bg}));
   // DS
-  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:18,color:WC.TINTA_SUAVE,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[3],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(dsStr,{sz:18,color:'000000',font:WF.BODY}),{align:'center',before:25,after:25}),{w:COL_WIDTHS_HDR[3],fill:bg}));
   // Z
-  cells.push(_wCell(_wPar(_wRun(zStr,{sz:18,bold:true,color:WC.TINTA,font:WF.MONO}),{align:'center',before:30,after:30}),{w:COL_WIDTHS_HDR[4],fill:bg,noBorder:true}));
-  // Barra de posición Z: misma grilla de 13 celdas, pero sin bordes internos (se leen
-  // como una barra continua) y con un único punto oscuro en negrita marcando la
-  // posición, en vez de una "X" en un casillero — la zona normativa se ve como un
-  // tramo sombreado, no como celdas alternadas.
+  cells.push(_wCell(_wPar(_wRun(zStr,{sz:18,bold:true,color:'000000',font:WF.BODY}),{align:'center',before:25,after:25}),{w:COL_WIDTHS_HDR[4],fill:bg}));
+  // Grilla Z: 13 celdas. Zona normativa sombreada en verde claro; la posición del
+  // paciente se marca con una "X" negra en negrita — un solo color fijo, para que
+  // se distinga siempre igual sin depender de que se imprima o fotocopie a color.
   ZCOLS.forEach(function(v,i){
     var isMarked = (markedCol === i);
     var cellFill = normZone[i] ? WC.ZONA_NORMAL : bg;
     var content = isMarked
-      ? _wPar(_wRun('●',{sz:20,bold:true,font:WF.BODY,color:markerColor}),{align:'center',before:15,after:15})
-      : _wPar('',{before:20,after:20});
-    cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true, noBorder:true}));
+      ? _wPar(_wRun('X',{sz:18,bold:true,font:WF.BODY,color:'000000'}),{align:'center',before:25,after:25})
+      : _wPar('',{before:25,after:25});
+    cells.push(_wCell(content, {w:COL_WIDTHS_HDR[5+i], fill:cellFill, noWrap:true}));
   });
   // Interpretación
   var interpTxt = zInterp(z);
-  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:18,bold:false,color:WC.TINTA_SUAVE,font:WF.BODY}),{before:30,after:30}),{w:COL_WIDTHS_HDR[18],fill:bg,noBorder:true}));
+  cells.push(_wCell(_wPar(_wRun(interpTxt,{sz:18,bold:false,color:'000000',font:WF.BODY}),{before:25,after:25}),{w:COL_WIDTHS_HDR[18],fill:bg}));
 
   return _wRow(cells);
 }
@@ -16234,7 +16225,7 @@ function _zAxisLabel(v) {
 function _zHdrRow() {
   var cells = [];
   function hc(txt, w, align) {
-    return _wCell(_wPar(_wRun(txt,{sz:17,bold:true,color:WC.VERDE_OSC,font:WF.BODY}),{align:align||'center',before:30,after:20}),{w:w,fill:WC.BLANCO,borderB:WC.VERDE_OSC,borderBSz:10,noWrap:true});
+    return _wCell(_wPar(_wRun(txt,{sz:17,bold:true,color:'000000',font:WF.BODY}),{align:align||'center',before:30,after:20}),{w:w,fill:WC.VERDE_CLR,hdrBorder:true,noWrap:true});
   }
   cells.push(hc('VARIABLE', COL_WIDTHS_HDR[0], 'left'));
   cells.push(hc('PB',       COL_WIDTHS_HDR[1]));
@@ -16577,57 +16568,55 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     });
   }
 
-  // ── Tabla datos personales: etiqueta muda + regla fina, sin bloques de color ──
-  function dpRow(lbl,val){
-    return _wRow([
-      _wCell(_wPar(_wRun(lbl.toUpperCase(),{bold:true,sz:16,font:WF.BODY,color:WC.VERDE_OSC}),{before:50,after:50}),{w:2600,fill:WC.GRIS_CLR,borderB:WC.LINEA_FUERTE}),
-      _wCell(_wPar(_wRun(val||'—',{sz:19,font:WF.BODY,color:WC.TINTA}),{before:50,after:50}),{w:6760,fill:WC.BLANCO,borderB:WC.LINEA_FUERTE}),
-    ]);
+  // ── Línea simple de dato: "Etiqueta: valor." en un solo párrafo, sin tabla ──
+  function dpLine(lbl,val){
+    return _wPar([
+      _wRun(lbl+': ',{bold:true,sz:20,font:WF.BODY,color:'000000'}),
+      _wRun((val||'—')+'.',{sz:20,font:WF.BODY,color:'000000'})
+    ],{before:0,after:90});
   }
 
-  // ── Sección título (regla fina en vez de línea gruesa de color) ──
+  // ── Sección título: negrita + subrayado en verde, sin línea ni bloque de color ──
   function secTit(txt){
-    return _wPar(_wRun(txt,{bold:true,sz:22,color:WC.VERDE_OSC,font:WF.BODY}),{before:280,after:80,border_b:WC.SAGE_LINEA});
+    return _wPar(_wRun(txt,{bold:true,underline:true,sz:22,color:WC.VERDE_OSC,font:WF.BODY}),{before:280,after:110});
   }
 
   // ── Construir cuerpo ──
   var body='';
 
   // 1. TÍTULO
-  body+=_wPar(_wRun('Informe de Evaluación Neuropsicológica',{bold:true,ital:true,sz:30,color:WC.VERDE_OSC,font:WF.DISPLAY}),{align:'center',before:0,after:140});
+  body+=_wPar(_wRun('INFORME DE EVALUACIÓN NEUROPSICOLÓGICA',{bold:true,underline:true,sz:26,color:WC.VERDE_OSC,font:WF.BODY}),{align:'center',before:0,after:40});
+  body+=_wPar(_wRun('Fecha de evaluación: '+(inf.fecha_evaluacion||fechaEval||'—'),{sz:18,font:WF.BODY,color:WC.MUTED}),{align:'right',before:0,after:160});
 
-  // 2. DATOS DEL PACIENTE
-  body+=secTit('1. Datos del Paciente');
-  body+=_wTable([
-    dpRow('Apellido y Nombre', pacNombre),
-    dpRow('Edad',              pacEdad),
-    dpRow('Fecha de Nacimiento', pacFnac),
-    dpRow('Fecha de Evaluación', inf.fecha_evaluacion||fechaEval),
-    dpRow('DNI',               inf.dni||pacDNI||'—'),
-    dpRow('Educación',         pacEscol),
-    dpRow('Ocupación',         inf.ocupacion||pacOcup),
-    dpRow('Procedencia',       inf.procedencia||'—'),
-    dpRow('Sexo',              pacSexo),
-    dpRow('Dominancia Manual', inf.dominancia||'—'),
-    dpRow('Datos de Contacto', inf.contacto||'—'),
-    dpRow('Derivado por',      inf.derivado_por||'—'),
-    dpRow('Evaluado por',      inf.evaluado_por||'—'),
-    dpRow('Ant. Clínicos',     inf.ant_clinicos||'—'),
-    dpRow('Ant. Psiq./Psicol.',inf.ant_psiquiatricos||'—'),
-    dpRow('Ant. Familiares',   inf.ant_familiares||'—'),
-    dpRow('Hábitos Tóxicos',   inf.habitos_toxicos||'—'),
-  ],[2600,6760]);
-  body+=_wPar('',{before:0,after:80});
+  // 2. DATOS DEL PACIENTE — líneas simples, no tabla (más fácil de leer y de imprimir)
+  body+=secTit('Datos del Paciente');
+  body+=dpLine('Apellido y Nombre', pacNombre);
+  body+=dpLine('Edad',              pacEdad);
+  body+=dpLine('Fecha de Nacimiento', pacFnac);
+  body+=dpLine('DNI',               inf.dni||pacDNI);
+  body+=dpLine('Educación',         pacEscol);
+  body+=dpLine('Ocupación',         inf.ocupacion||pacOcup);
+  body+=dpLine('Procedencia',       inf.procedencia);
+  body+=dpLine('Sexo',              pacSexo);
+  body+=dpLine('Dominancia Manual', inf.dominancia);
+  body+=dpLine('Datos de Contacto', inf.contacto);
+  body+=dpLine('Derivado por',      inf.derivado_por);
+  body+=dpLine('Evaluado por',      inf.evaluado_por);
+  body+=dpLine('Ant. Clínicos',     inf.ant_clinicos);
+  body+=dpLine('Ant. Psiq./Psicol.',inf.ant_psiquiatricos);
+  body+=dpLine('Ant. Familiares',   inf.ant_familiares);
+  body+=dpLine('Hábitos Tóxicos',   inf.habitos_toxicos);
+  body+=_wPar('',{before:0,after:60});
 
   // 3. MOTIVO DE CONSULTA
   if((inf.motivo_consulta||'').trim()){
-    body+=secTit('2. Motivo de Consulta');
+    body+=secTit('Motivo de Consulta');
     parrafos(inf.motivo_consulta).forEach(function(p){body+=p;});
   }
 
   // 4. DESCRIPCIÓN DE LA CONDUCTA
   if((inf.descripcion_conducta||'').trim()){
-    body+=secTit('3. Descripción de la Conducta Durante la Evaluación');
+    body+=secTit('Descripción de la Conducta Durante la Evaluación');
     parrafos(inf.descripcion_conducta).forEach(function(p){body+=p;});
   }
 
@@ -16635,7 +16624,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   var testsTomados=datos.map(function(r){return r.test;});
   var tieneTests=DOMINIOS_PRUEBAS.some(function(dom){return dom.tests.some(function(t){return testsTomados.indexOf(t)!==-1;});});
   if(tieneTests){
-    body+=secTit('4. Pruebas Administradas');
+    body+=secTit('Pruebas Administradas');
     DOMINIOS_PRUEBAS.forEach(function(dom){
       var presentes=dom.tests.filter(function(t){return testsTomados.indexOf(t)!==-1;});
       if(!presentes.length)return;
@@ -16649,21 +16638,21 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
 
   // 6. PERFIL COGNITIVO
   if((inf.perfil_cognitivo||'').trim()){
-    body+=secTit('6. Perfil Cognitivo y Diagnóstico Neuropsicológico Presuntivo');
+    body+=secTit('Perfil Cognitivo y Diagnóstico Neuropsicológico Presuntivo');
     parrafos(inf.perfil_cognitivo).forEach(function(p){body+=p;});
     body+=_wPar('',{before:0,after:80});
   }
 
   // 7. CONCLUSIONES
   if((inf.conclusiones||'').trim()){
-    body+=secTit('7. Conclusiones');
+    body+=secTit('Conclusiones');
     parrafos(inf.conclusiones).forEach(function(p){body+=p;});
     body+=_wPar('',{before:0,after:80});
   }
 
   // 8. RECOMENDACIONES (desde informe, como PDF)
   if((inf.recomendaciones||'').trim()){
-    body+=secTit('8. Recomendaciones');
+    body+=secTit('Recomendaciones');
     parrafos(inf.recomendaciones).forEach(function(p){body+=p;});
     body+=_wPar('',{before:0,after:80});
   }
