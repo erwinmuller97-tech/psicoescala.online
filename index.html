@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.1</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.2</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -2159,9 +2159,6 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-phq" onclick="setModo('phq','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-phq" onclick="setModo('phq','manual')">✏ Carga manual</button></div>
         <div id="man-area-phq" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–27)</label><input type="number" id="man-phq-total" min="0" max="27" placeholder="0–27"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('phq')">Calcular resultado →</button></div></div>
         <div id="auto-area-phq">
-        <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-gad" onclick="setModo('gad','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-gad" onclick="setModo('gad','manual')">✏ Carga manual</button></div>
-        <div id="man-area-gad" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–21)</label><input type="number" id="man-gad-total" min="0" max="21" placeholder="0–21"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('gad')">Calcular resultado →</button></div></div>
-        <div id="auto-area-gad">
         <div class="card">
           <div class="card-title">Ítems del cuestionario</div>
           <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Durante las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas?</p>
@@ -2210,6 +2207,9 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
             <div class="field"><label>Fecha</label><input type="date" id="gad-fecha"></div>
           </div>
         </div>
+        <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-gad" onclick="setModo('gad','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-gad" onclick="setModo('gad','manual')">✏ Carga manual</button></div>
+        <div id="man-area-gad" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá los puntajes brutos. El sistema calcula Z, Pc e interpretación automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–21)</label><input type="number" id="man-gad-total" min="0" max="21" placeholder="0–21"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('gad')">Calcular resultado →</button></div></div>
+        <div id="auto-area-gad">
         <div class="card">
           <div class="card-title">Ítems del cuestionario</div>
           <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Durante las últimas 2 semanas, ¿con qué frecuencia le han molestado los siguientes problemas?</p>
@@ -2239,6 +2239,101 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
           <button class="btn-secondary" onclick="generarPDF('gad')">📄 Formulario en blanco</button>
           <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
           <button class="btn-primary" onclick="guardarResultadoGAD()">💾 Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+
+<!-- ── TEST PSS-10 ── -->
+    <div class="vista" id="vista-pss">
+      <div class="back-btn" onclick="volverSector()">← Volver</div>
+      <div class="vista-header"><div class="vista-titulo">PSS-10 · Escala de Estrés Percibido</div></div>
+      <div id="pss-form">
+        <div class="card">
+          <div class="card-title">Datos de la evaluación</div>
+          <div class="form-grid">
+            <div class="field"><label>Paciente *</label><select id="pss-paciente"><option value="">— Seleccionar paciente —</option></select></div>
+            <div class="field"><label>Fecha</label><input type="date" id="pss-fecha"></div>
+          </div>
+        </div>
+        <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-pss" onclick="setModo('pss','auto')">📋 Ítem por ítem</button><button class="modo-btn" id="modo-man-pss" onclick="setModo('pss','manual')">✏ Carga manual</button></div>
+        <div id="man-area-pss" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá el puntaje total ya sumado. El sistema calcula la categoría automáticamente.</p><div class="form-grid-3"><div class="field"><label>Puntaje total (0–40)</label><input type="number" id="man-pss-total" min="0" max="40" placeholder="0–40"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('pss')">Calcular resultado →</button></div></div>
+        <div id="auto-area-pss">
+        <div class="card">
+          <div class="card-title">Ítems del cuestionario</div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;">Durante el último mes, indique con qué frecuencia se sintió o pensó de la siguiente manera.</p>
+          <div id="pss-items-container"></div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn-secondary" onclick="limpiarPSS()">🗑 Limpiar</button>
+            <button class="btn-primary" onclick="calcularPSS()">Calcular resultado →</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div id="pss-resultado" style="display:none;">
+        <div class="resultado-box">
+          <div class="resultado-puntaje">
+            <div class="puntaje-grande" id="pss-pts">0</div>
+            <div class="puntaje-info">
+              <div class="puntaje-label">Puntaje total PSS-10</div>
+              <div class="puntaje-categoria" id="pss-cat">—</div>
+              <div class="puntaje-rango" id="pss-rango">—</div>
+              <span class="badge-grande" id="pss-badge">—</span>
+            </div>
+          </div>
+          <div class="interp-box"><div class="interp-titulo">📋 Interpretación clínica</div><div class="interp-texto" id="pss-interp"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="document.getElementById('pss-resultado').style.display='none';document.getElementById('pss-form').style.display='block';">← Modificar</button>
+          <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+          <button class="btn-primary" onclick="guardarResultadoPSS()">💾 Guardar resultado</button>
+        </div>
+      </div>
+    </div>
+
+<!-- ── TEST HOLMES & RAHE ── -->
+    <div class="vista" id="vista-holmes">
+      <div class="back-btn" onclick="volverSector()">← Volver</div>
+      <div class="vista-header"><div class="vista-titulo">Holmes & Rahe · Escala de Reajuste Psicosocial</div></div>
+      <div id="holmes-form">
+        <div class="card">
+          <div class="card-title">Datos de la evaluación</div>
+          <div class="form-grid">
+            <div class="field"><label>Paciente *</label><select id="holmes-paciente"><option value="">— Seleccionar paciente —</option></select></div>
+            <div class="field"><label>Fecha</label><input type="date" id="holmes-fecha"></div>
+          </div>
+        </div>
+        <div class="modo-toggle"><button class="modo-btn active" id="modo-auto-holmes" onclick="setModo('holmes','auto')">📋 Marcar eventos</button><button class="modo-btn" id="modo-man-holmes" onclick="setModo('holmes','manual')">✏ Carga manual</button></div>
+        <div id="man-area-holmes" style="display:none;"><div class="card"><div class="card-title">Carga manual de puntajes</div><p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;">Ingresá el total de LCU ya sumado. El sistema calcula la categoría automáticamente.</p><div class="form-grid-3"><div class="field"><label>Total LCU</label><input type="number" id="man-holmes-total" min="0" placeholder="Ej: 210"></div></div></div><div class="btn-row" style="margin-top:8px;"><button class="btn-primary" onclick="calcularManual('holmes')">Calcular resultado →</button></div></div>
+        <div id="auto-area-holmes">
+        <div class="card">
+          <div class="card-title">Eventos vitales del último año</div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">Marcá los eventos que el paciente vivió en los últimos 12 meses. Cada uno suma su valor en LCU (Life Change Units).</p>
+          <div style="font-size:0.85rem;font-weight:700;color:var(--accentdk);margin-bottom:10px;">Total acumulado: <span id="holmes-live">0 LCU</span></div>
+          <div id="holmes-items-container"></div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn-secondary" onclick="limpiarHolmes()">🗑 Limpiar</button>
+            <button class="btn-primary" onclick="calcularHolmes()">Calcular resultado →</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div id="holmes-resultado" style="display:none;">
+        <div class="resultado-box">
+          <div class="resultado-puntaje">
+            <div class="puntaje-grande" id="holmes-pts">0</div>
+            <div class="puntaje-info">
+              <div class="puntaje-label">Puntaje total Holmes & Rahe</div>
+              <div class="puntaje-categoria" id="holmes-cat">—</div>
+              <div class="puntaje-rango" id="holmes-rango">—</div>
+              <span class="badge-grande" id="holmes-badge">—</span>
+            </div>
+          </div>
+          <div class="interp-box"><div class="interp-titulo">📋 Interpretación clínica</div><div class="interp-texto" id="holmes-interp"></div></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="document.getElementById('holmes-resultado').style.display='none';document.getElementById('holmes-form').style.display='block';">← Modificar</button>
+          <button class="btn-secondary" onclick="window.print()">🖨 Imprimir</button>
+          <button class="btn-primary" onclick="guardarResultadoHolmes()">💾 Guardar resultado</button>
         </div>
       </div>
     </div>
@@ -6248,7 +6343,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.1';
+var APP_VERSION = 'v1.11.2';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7254,6 +7349,8 @@ var PDF_BLANK_MAP = {
   'stai':  { vistaId:'vista-stai',  titulo:'STAI · Inventario de Ansiedad Estado-Rasgo' },
   'phq':   { vistaId:'vista-phq',   titulo:'PHQ-9 · Cuestionario de Salud del Paciente' },
   'gad':   { vistaId:'vista-gad',   titulo:'GAD-7 · Escala de Ansiedad Generalizada' },
+  'pss':   { vistaId:'vista-pss',   titulo:'PSS-10 · Escala de Estrés Percibido' },
+  'holmes':{ vistaId:'vista-holmes',titulo:'Holmes & Rahe · Escala de Reajuste Psicosocial' },
   'birleson': { vistaId:'vista-birleson', titulo:'Birleson · Escala de Depresión en Adolescentes (PACES)' },
   'aaa':   { vistaId:'vista-aaa',   titulo:'AAA · Autoreporte de Ansiedad para Adolescentes' },
   'spai':  { vistaId:'vista-spaib', titulo:'SPAI-B · Inventario de Fobia y Ansiedad Social' },
@@ -7390,7 +7487,7 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
 
   // ── Clasificación de tests ──
   var NP = ['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','Mini Mental Parkinson','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
-  var CL = ['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
+  var CL = ['BDI-II','STAI','PHQ-9','GAD-7','PSS-10','Holmes-Rahe','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
   var TD = ['ASRS-V1.1','WURS-25','DEX','DIVA-5','AQ','AQ-10','EQ','EA','SCQ'];
   var DO = ['PCS','PBQ','CSQ','BPI'];
   function tipo(t){ return NP.indexOf(t)!==-1?'np': CL.indexOf(t)!==-1?'cl': TD.indexOf(t)!==-1?'td': DO.indexOf(t)!==-1?'do':'cl'; }
@@ -8583,6 +8680,8 @@ function renderCuestionariosFam(d) {
         'STAI':               'Inventario de Ansiedad Estado-Rasgo (STAI)',
         'PHQ-9':              'Cuestionario de Salud del Paciente (PHQ-9)',
         'GAD-7':              'Escala de Trastorno de Ansiedad Generalizada (GAD-7)',
+        'PSS-10':             'Escala de Estrés Percibido (PSS-10)',
+        'Holmes-Rahe':        'Escala de Reajuste Psicosocial — Holmes & Rahe',
         'SPAI-B':             'Inventario de Fobia Social — Versión Breve (SPAI-B)',
         'CSI':                'Inventario de Estrategias de Afrontamiento (CSI)',
         'SCL-90-R':           'Inventario de Síntomas SCL-90-R',
@@ -8603,7 +8702,7 @@ function renderCuestionariosFam(d) {
         {label:'Memoria',                          tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
         {label:'Funciones ejecutivas',             tests:['WCST-64','IFS','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
         {label:'Evaluación cognitiva global',      tests:['Test del Reloj (Cacho)']},
-        {label:'Psicología clínica',               tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS']},
+        {label:'Psicología clínica',               tests:['BDI-II','STAI','PHQ-9','GAD-7','PSS-10','Holmes-Rahe','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS']},
         {label:'TDAH',                             tests:['ASRS-V1.1','WURS-25','DEX','DIVA-5']},
         {label:'Evaluación del dolor',                tests:['PCS','CSQ','PBQ','BPI']}
       ];
@@ -8922,6 +9021,18 @@ function irSector(s) {
         '<div class="test-desc">Escala de Trastorno de Ansiedad Generalizada</div>' +
         '<span class="test-tag">7 ítems</span>' +
       '</div>' +
+      '<div class="test-card" onclick="irTest(\'pss\')">' +
+        '<div class="test-icon">😤</div>' +
+        '<div class="test-nombre">PSS-10</div>' +
+        '<div class="test-desc">Escala de Estrés Percibido — Cohen, Kamarck & Mermelstein</div>' +
+        '<span class="test-tag">10 ítems</span>' +
+      '</div>' +
+      '<div class="test-card" onclick="irTest(\'holmes\')">' +
+        '<div class="test-icon">📆</div>' +
+        '<div class="test-nombre">Holmes & Rahe</div>' +
+        '<div class="test-desc">Escala de Reajuste Psicosocial — eventos vitales (LCU)</div>' +
+        '<span class="test-tag">43 eventos</span>' +
+      '</div>' +
       '<div class="test-card" onclick="irTest(\'birleson\')">' +
         '<div class="test-icon">📝</div>' +
         '<div class="test-nombre">Birleson (PACES)</div>' +
@@ -9078,6 +9189,8 @@ function irTest(t) {
   if (t === 'flv') iniciarFLV();
   if (t === 'phq') iniciarPHQ();
   if (t === 'gad') iniciarGAD();
+  if (t === 'pss') iniciarPSS();
+  if (t === 'holmes') iniciarHolmes();
   if (t === 'birleson') iniciarBirleson();
   if (t === 'aaa') iniciarAAA();
   if (t === 'spaib') iniciarSPAIB();
@@ -9258,6 +9371,8 @@ function calcularManual(testId) {
   }
   if (testId === 'phq') { _calcularPHQManual(parseInt(document.getElementById('man-phq-total').value)); return; }
   if (testId === 'gad') { _calcularGADManual(parseInt(document.getElementById('man-gad-total').value)); return; }
+  if (testId === 'pss') { _calcularPSSManual(parseInt(document.getElementById('man-pss-total').value)); return; }
+  if (testId === 'holmes') { _calcularHolmesManual(parseInt(document.getElementById('man-holmes-total').value)); return; }
   if (testId === 'birleson') { _calcularBirlesonManual(parseInt(document.getElementById('man-birleson-total').value)); return; }
   if (testId === 'aaa') { _calcularAAAManual(parseInt(document.getElementById('man-aaa-total').value)); return; }
   if (testId === 'spaib') { _calcularSPAIBManual(parseInt(document.getElementById('man-spaib-total').value)); return; }
@@ -10597,6 +10712,198 @@ function guardarResultadoBirleson() {
     user_id: SESSION.user.id, paciente_id: pacId, test: 'Birleson', fecha: fecha,
     puntaje_total: pts, categoria: cat,
     datos: { total: pts, corte: BIRLESON_CORTE, items: window._birlesonItems || [], screening_positivo: pts >= BIRLESON_CORTE }
+  }, SESSION.access_token).then(function(){
+    cargarResultados();
+    toast('✓ Resultado guardado', 'success');
+    var btnAll = document.querySelectorAll('.vista.active .btn-primary');
+    var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
+    if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
+}
+
+// ══ PSS-10 · Escala de Estrés Percibido ═════════════════════════════════════
+// Cohen, Kamarck & Mermelstein (1983). Ítems 4, 5, 6, 7, 9 y 10 invertidos.
+var PSS_ITEMS = [
+  {n:1, text:'¿Con qué frecuencia ha estado afectado/a por algo que ha ocurrido inesperadamente?', inv:false},
+  {n:2, text:'¿Con qué frecuencia se ha sentido incapaz de controlar las cosas importantes de su vida?', inv:false},
+  {n:3, text:'¿Con qué frecuencia se ha sentido nervioso/a o estresado/a?', inv:false},
+  {n:4, text:'¿Con qué frecuencia ha manejado con éxito los pequeños problemas irritantes de la vida?', inv:true},
+  {n:5, text:'¿Con qué frecuencia ha sentido que ha afrontado efectivamente los cambios importantes que han estado ocurriendo en su vida?', inv:true},
+  {n:6, text:'¿Con qué frecuencia ha estado seguro/a sobre su capacidad para manejar sus problemas personales?', inv:true},
+  {n:7, text:'¿Con qué frecuencia ha sentido que las cosas le van bien?', inv:true},
+  {n:8, text:'¿Con qué frecuencia ha sentido que no podía afrontar todas las cosas que tenía que hacer?', inv:false},
+  {n:9, text:'¿Con qué frecuencia ha podido controlar las dificultades de su vida?', inv:true},
+  {n:10,text:'¿Con qué frecuencia ha sentido que tenía todo bajo control?', inv:true}
+];
+var PSS_OPS = ['Nunca (0)','Casi nunca (1)','A veces (2)','Casi a menudo (3)','Muy a menudo (4)'];
+function pssCatFromTotal(total) {
+  if (total<=13) return {cat:'Estrés esperable', rango:'0–13',  badge:'bg-minima'};
+  if (total<=26) return {cat:'Estrés moderado',  rango:'14–26', badge:'bg-moderada'};
+  return               {cat:'Estrés elevado',    rango:'27–40', badge:'bg-grave'};
+}
+function iniciarPSS() {
+  var c = document.getElementById('pss-items-container');
+  c.innerHTML = PSS_ITEMS.map(function(item,i){
+    var opts = PSS_OPS.map(function(op,j){return '<label class="bdi-opcion"><input type="radio" name="pss_'+i+'" value="'+j+'"><span class="bdi-opcion-texto">'+op+'</span></label>';}).join('');
+    return '<div class="bdi-item"><div class="bdi-pregunta">'+item.n+'. '+item.text+(item.inv?' <span style="font-size:0.72rem;color:var(--muted);">[inverso]</span>':'')+'</div><div class="bdi-opciones">'+opts+'</div></div>';
+  }).join('');
+  document.getElementById('pss-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('pss-form').style.display = 'block';
+  document.getElementById('pss-resultado').style.display = 'none';
+  setModo('pss', 'auto');
+}
+function limpiarPSS() {
+  if (!confirm('¿Limpiar?')) return;
+  document.querySelectorAll('[name^="pss_"]').forEach(function(r){ r.checked = false; });
+}
+function _mostrarResultadoPSS(total) {
+  var r = pssCatFromTotal(total);
+  var interp = '<p>Puntaje PSS-10: <strong>'+total+'</strong>/40 — <strong>'+r.cat+'</strong>.</p>';
+  if (total<=13) interp += '<p>El nivel de estrés percibido se encuentra dentro de parámetros esperables.</p>';
+  else if (total<=26) interp += '<p>El nivel de estrés percibido es moderado. Se recomienda explorar fuentes de estrés y estrategias de afrontamiento.</p>';
+  else interp += '<p>El nivel de estrés percibido es elevado, lo que podría estar afectando el funcionamiento cotidiano. Se sugiere intervención.</p>';
+  interp += '<p><em>Cohen, Kamarck & Mermelstein (1983). Ítems 4, 5, 6, 7, 9 y 10 invertidos.</em></p>';
+  document.getElementById('pss-pts').textContent = total;
+  document.getElementById('pss-cat').textContent = r.cat;
+  document.getElementById('pss-rango').textContent = 'Rango: '+r.rango;
+  document.getElementById('pss-badge').textContent = r.cat;
+  document.getElementById('pss-badge').className = 'badge-grande '+r.badge;
+  document.getElementById('pss-interp').innerHTML = interp;
+  window._pssTotal = total;
+  document.getElementById('pss-form').style.display = 'none';
+  document.getElementById('pss-resultado').style.display = 'block';
+}
+function calcularPSS() {
+  var total = 0, sinR = 0;
+  PSS_ITEMS.forEach(function(item,i){
+    var s = document.querySelector('[name="pss_'+i+'"]:checked');
+    if (s) { var v = parseInt(s.value,10); total += item.inv ? (4-v) : v; }
+    else sinR++;
+  });
+  if (sinR>0 && !confirm('Hay '+sinR+' ítem(s) sin respuesta. ¿Continuar?')) return;
+  _mostrarResultadoPSS(total);
+}
+function _calcularPSSManual(total) {
+  if (isNaN(total) || total<0 || total>40) { toast('Ingresá un puntaje entre 0 y 40','error'); return; }
+  _mostrarResultadoPSS(total);
+}
+function guardarResultadoPSS() {
+  if (!SESSION) return;
+  var pacId = document.getElementById('pss-paciente').value;
+  var fecha = document.getElementById('pss-fecha').value;
+  if (!pacId) { toast('Seleccioná un paciente primero'); return; }
+  var total = window._pssTotal != null ? window._pssTotal : parseInt(document.getElementById('pss-pts').textContent,10) || 0;
+  var cat = document.getElementById('pss-cat').textContent;
+  supaFetch('/rest/v1/psico_resultados','POST',{
+    user_id: SESSION.user.id, paciente_id: pacId, test: 'PSS-10', fecha: fecha,
+    puntaje_total: total, categoria: cat,
+    datos: { total: total }
+  }, SESSION.access_token).then(function(){
+    cargarResultados();
+    toast('✓ Resultado guardado', 'success');
+    var btnAll = document.querySelectorAll('.vista.active .btn-primary');
+    var btn = btnAll.length ? btnAll[btnAll.length-1] : null;
+    if (btn) { btn.classList.add('btn-saved'); setTimeout(function(){ btn.classList.remove('btn-saved'); }, 1500); }
+  }).catch(function(err){ if(!err||!err.userNotified) toast('Error al guardar','error'); });
+}
+
+// ══ HOLMES & RAHE · Escala de Reajuste Psicosocial (1967) ═══════════════════
+var HOLMES_ITEMS = [
+  {n:1,label:'Muerte del cónyuge',val:100},{n:2,label:'Divorcio',val:73},
+  {n:3,label:'Separación',val:65},{n:4,label:'Privación de la libertad',val:63},
+  {n:5,label:'Muerte de un familiar próximo',val:63},{n:6,label:'Enfermedad o incapacidad graves',val:53},
+  {n:7,label:'Matrimonio',val:50},{n:8,label:'Perder el empleo',val:47},
+  {n:9,label:'Reconciliación de la pareja',val:45},{n:10,label:'Jubilación',val:45},
+  {n:11,label:'Enfermedad de un pariente cercano',val:44},{n:12,label:'Embarazo',val:40},
+  {n:13,label:'Problemas sexuales',val:39},{n:14,label:'Llegada de un nuevo miembro a la familia',val:39},
+  {n:15,label:'Cambios importantes en el trabajo',val:39},{n:16,label:'Cambios importantes a nivel económico',val:38},
+  {n:17,label:'Muerte de un amigo íntimo',val:37},{n:18,label:'Cambiar de empleo',val:36},
+  {n:19,label:'Discusiones con la pareja (cambio significativo)',val:35},{n:20,label:'Pedir una hipoteca de alto valor',val:31},
+  {n:21,label:'Hacer efectivo un préstamo',val:30},{n:22,label:'Cambio de responsabilidades en el trabajo',val:29},
+  {n:23,label:'Un hijo/a abandona el hogar (matrimonio, universidad)',val:29},{n:24,label:'Problemas con familiares políticos',val:29},
+  {n:25,label:'Logros personales excepcionales',val:28},{n:26,label:'La pareja comienza o deja de trabajar',val:26},
+  {n:27,label:'Se inicia o se termina el ciclo de escolarización',val:26},{n:28,label:'Cambios importantes en las condiciones de vida',val:25},
+  {n:29,label:'Cambio en los hábitos personales',val:24},{n:30,label:'Problemas con el jefe',val:23},
+  {n:31,label:'Cambio en el horario o condiciones de trabajo',val:20},{n:32,label:'Cambio de residencia',val:20},
+  {n:33,label:'Cambio a una escuela nueva',val:20},{n:34,label:'Cambio en la forma o frecuencia de las diversiones',val:19},
+  {n:35,label:'Cambio en la frecuencia de las actividades religiosas',val:19},{n:36,label:'Cambio en las actividades sociales',val:18},
+  {n:37,label:'Pedir una hipoteca o préstamo menor',val:17},{n:38,label:'Cambios en los hábitos del sueño',val:16},
+  {n:39,label:'Cambios en el número de reuniones familiares',val:15},{n:40,label:'Cambio en los hábitos alimentarios',val:15},
+  {n:41,label:'Vacaciones',val:13},{n:42,label:'Navidades',val:12},{n:43,label:'Infracciones menores de la ley',val:11}
+];
+function holmesCatFromTotal(total) {
+  if (total<180)  return {cat:'Riesgo bajo de enfermedades asociadas al estrés',      rango:'<180',    badge:'bg-minima'};
+  if (total<=320) return {cat:'Riesgo intermedio de enfermedades asociadas al estrés', rango:'180–320', badge:'bg-moderada'};
+  return               {cat:'Riesgo alto de enfermedades asociadas al estrés',        rango:'>320',    badge:'bg-grave'};
+}
+function iniciarHolmes() {
+  var c = document.getElementById('holmes-items-container');
+  c.innerHTML = HOLMES_ITEMS.map(function(item){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:0.83rem;border:1px solid var(--border);background:var(--surface);margin-bottom:4px;">' +
+      '<input type="checkbox" name="holmes_ev" value="'+item.val+'" data-label="'+item.label+'" onchange="holmesUpdate()"> ' +
+      '<span style="flex:1;"><strong>'+item.n+'.</strong> '+item.label+'</span>' +
+      '<span style="font-family:\'DM Mono\',monospace;color:var(--accent);font-weight:700;white-space:nowrap;">'+item.val+'</span></label>';
+  }).join('');
+  document.getElementById('holmes-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('holmes-form').style.display = 'block';
+  document.getElementById('holmes-resultado').style.display = 'none';
+  setModo('holmes', 'auto');
+  holmesUpdate();
+}
+function holmesUpdate() {
+  var total = 0;
+  document.querySelectorAll('[name="holmes_ev"]:checked').forEach(function(cb){ total += parseInt(cb.value,10); });
+  var el = document.getElementById('holmes-live');
+  if (el) el.textContent = total + ' LCU';
+}
+function limpiarHolmes() {
+  if (!confirm('¿Limpiar?')) return;
+  document.querySelectorAll('[name="holmes_ev"]').forEach(function(cb){ cb.checked = false; });
+  holmesUpdate();
+}
+function _mostrarResultadoHolmes(total, eventos) {
+  var r = holmesCatFromTotal(total);
+  var interp = '<p>Puntaje total: <strong>'+total+' LCU</strong> — <strong>'+r.cat+'</strong>.</p>';
+  if (total<180) interp += '<p>El nivel de estrés acumulado por eventos vitales recientes es bajo. El riesgo de enfermedades asociadas al estrés es reducido.</p>';
+  else if (total<=320) interp += '<p>El nivel de estrés acumulado es intermedio. Existe riesgo moderado de enfermedades asociadas al estrés.</p>';
+  else interp += '<p>El nivel de estrés acumulado es alto. El riesgo de enfermedades asociadas al estrés está elevado.</p>';
+  if (eventos && eventos.length) interp += '<p>Eventos marcados ('+eventos.length+'): '+eventos.map(function(e){return e.label+' ('+e.val+')';}).join('; ')+'.</p>';
+  interp += '<p><em>Holmes & Rahe (1967). &lt;180 bajo · 180–320 intermedio · &gt;320 alto.</em></p>';
+  document.getElementById('holmes-pts').textContent = total;
+  document.getElementById('holmes-cat').textContent = r.cat;
+  document.getElementById('holmes-rango').textContent = 'Rango: '+r.rango;
+  document.getElementById('holmes-badge').textContent = r.cat;
+  document.getElementById('holmes-badge').className = 'badge-grande '+r.badge;
+  document.getElementById('holmes-interp').innerHTML = interp;
+  window._holmesTotal = total;
+  window._holmesEventos = eventos || [];
+  document.getElementById('holmes-form').style.display = 'none';
+  document.getElementById('holmes-resultado').style.display = 'block';
+}
+function calcularHolmes() {
+  var total = 0, eventos = [];
+  document.querySelectorAll('[name="holmes_ev"]:checked').forEach(function(cb){
+    total += parseInt(cb.value,10);
+    eventos.push({label:cb.getAttribute('data-label'), val:parseInt(cb.value,10)});
+  });
+  if (total===0 && !confirm('No hay eventos marcados. ¿Continuar?')) return;
+  _mostrarResultadoHolmes(total, eventos);
+}
+function _calcularHolmesManual(total) {
+  if (isNaN(total) || total<0) { toast('Ingresá un total válido','error'); return; }
+  _mostrarResultadoHolmes(total, []);
+}
+function guardarResultadoHolmes() {
+  if (!SESSION) return;
+  var pacId = document.getElementById('holmes-paciente').value;
+  var fecha = document.getElementById('holmes-fecha').value;
+  if (!pacId) { toast('Seleccioná un paciente primero'); return; }
+  var total = window._holmesTotal != null ? window._holmesTotal : parseInt(document.getElementById('holmes-pts').textContent,10) || 0;
+  var cat = document.getElementById('holmes-cat').textContent;
+  supaFetch('/rest/v1/psico_resultados','POST',{
+    user_id: SESSION.user.id, paciente_id: pacId, test: 'Holmes-Rahe', fecha: fecha,
+    puntaje_total: total, categoria: cat,
+    datos: { total: total, eventos: window._holmesEventos || [] }
   }, SESSION.access_token).then(function(){
     cargarResultados();
     toast('✓ Resultado guardado', 'success');
@@ -16273,7 +16580,7 @@ function generarWordHistorial() {
 function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pacOcup,pacDNI,fechaEval,inf) {
   // ── Clasificar tests (igual que PDF) ──
   var NP_LIST=['WAIS-IV','Rey Verbal','TAVEC','Token Test','BNT-60','BNT-12','TMT A-B','Fluencia Verbal','MoCA','IFS','ACE-R','WCST-64','BEM 144 Signoret','Test del Reloj (Cacho)','Stroop','Figura Rey','SDMT-escrita','SDMT-oral','BTA','D2','FAB','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo'];
-  var CL_LIST=['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
+  var CL_LIST=['BDI-II','STAI','PHQ-9','GAD-7','PSS-10','Holmes-Rahe','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI'];
   var TD_LIST=['ASRS-V1.1','WURS-25','DEX','DIVA-5','AQ','AQ-10','EQ','EA','SCQ'];
   var DO_LIST=['PCS','PBQ','CSQ','BPI'];
   function tipoTest(t){return NP_LIST.indexOf(t)!==-1?'np':CL_LIST.indexOf(t)!==-1?'cl':TD_LIST.indexOf(t)!==-1?'td':DO_LIST.indexOf(t)!==-1?'do':'cl';}
@@ -16323,6 +16630,8 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     'STAI':'Inventario de Ansiedad Estado-Rasgo (STAI)',
     'PHQ-9':'Cuestionario de Salud del Paciente (PHQ-9)',
     'GAD-7':'Escala de Trastorno de Ansiedad Generalizada (GAD-7)',
+    'PSS-10':'Escala de Estrés Percibido (PSS-10)',
+    'Holmes-Rahe':'Escala de Reajuste Psicosocial — Holmes & Rahe',
     'Birleson':'Escala de Depresión en Adolescentes — Birleson (PACES)',
     'AAA':'Autoreporte de Ansiedad para Adolescentes (AAA)',
     'SPAI-B':'Inventario de Fobia Social — Versión Breve (SPAI-B)',
@@ -16352,7 +16661,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     {label:'Habilidades visoconstructivas',         tests:['Figura Rey','Test del Reloj (Cacho)']},
     {label:'TDAH',                                  tests:['ASRS-V1.1','WURS-25','DEX','DIVA-5']},
     {label:'TEA · Espectro autista',                  tests:['AQ','AQ-10','EQ','EA','SCQ']},
-    {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
+    {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','PSS-10','Holmes-Rahe','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
     {label:'Evaluación del dolor',                  tests:['PCS','CSQ','PBQ','BPI']},
     {label:'Cuestionarios familiares',              tests:['Cuestionarios Familiares']},
   ];
@@ -16502,6 +16811,8 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         if(d.rasgo!=null) addCL('STAI — Rasgo', d.rasgo+'/60', d.cat_rasgo||'—');
       } else if(r.test==='PHQ-9'){addCL('PHQ-9 — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='GAD-7'){addCL('GAD-7 — Total',r.puntaje_total,r.categoria||'—');}
+      else if(r.test==='PSS-10'){addCL('PSS-10 — Total',r.puntaje_total,r.categoria||'—');}
+      else if(r.test==='Holmes-Rahe'){addCL('Holmes & Rahe — Total LCU',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='Birleson'){addCL('Birleson (PACES) — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='AAA'){addCL('AAA — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='SPAI-B'){addCL('SPAI-B — Total',r.puntaje_total,r.categoria||'—');}
