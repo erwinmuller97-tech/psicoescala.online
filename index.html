@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.3</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.4</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6343,7 +6343,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.3';
+var APP_VERSION = 'v1.11.4';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -7649,8 +7649,8 @@ function _generarPDFConInforme(datos, pacInfo, pacNombre, pacEdad, pacFnac, pacS
         { t:'BNT-12',         fn: function(r){ addPunto('BNT-12', r.puntaje_z, 'LENGUAJE'); } },
         { t:'Fluencia Verbal',fn: function(r){ var d=r.datos||{}; if(d.variables&&d.variables.length){d.variables.forEach(function(v){addPunto(v.label.replace('Fluencia ','Fl. '),v.z,'LENGUAJE');});}else{addPunto('Fluencia',r.puntaje_z,'LENGUAJE');} } },
       ]},
-      { dom: 'VISOC.', tests: [
-        { t:'Figura Rey', fn: function(r){ var d=r.datos||{}; addPunto('Fig.Rey Copia',d.zCopia,'VISOC.'); addPunto('Fig.Rey RI',d.zRI,'VISOC.'); } },
+      { dom: 'MEM. VISUAL', tests: [
+        { t:'Figura Rey', fn: function(r){ var d=r.datos||{}; addPunto('Fig.Rey Copia',d.zCopia,'MEM. VISUAL'); addPunto('Fig.Rey RI',d.zRI,'MEM. VISUAL'); } },
       ]},
     ];
 
@@ -8701,6 +8701,7 @@ function renderCuestionariosFam(d) {
         {label:'Lenguaje',                         tests:['Fluencia Verbal','BNT-60','BNT-12']},
         {label:'Memoria',                          tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
         {label:'Funciones ejecutivas',             tests:['WCST-64','IFS','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
+        {label:'Habilidades visoconstructivas y memoria visual', tests:['Figura Rey']},
         {label:'Evaluación cognitiva global',      tests:['Test del Reloj (Cacho)']},
         {label:'Psicología clínica',               tests:['BDI-II','STAI','PHQ-9','GAD-7','PSS-10','Holmes-Rahe','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS']},
         {label:'TDAH',                             tests:['ASRS-V1.1','WURS-25','DEX','DIVA-5']},
@@ -16658,7 +16659,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     {label:'Lenguaje',                              tests:['Fluencia Verbal','BNT-60','BNT-12','Token Test']},
     {label:'Memoria',                               tests:['Rey Verbal','TAVEC','BEM 144 Signoret']},
     {label:'Funciones ejecutivas',                  tests:['WCST-64','IFS','FAB','Stroop','Test del Hotel','BADS-Llaves','BADS-Juicio','BADS-Zoo']},
-    {label:'Habilidades visoconstructivas',         tests:['Figura Rey','Test del Reloj (Cacho)']},
+    {label:'Habilidades visoconstructivas y memoria visual', tests:['Figura Rey','Test del Reloj (Cacho)']},
     {label:'TDAH',                                  tests:['ASRS-V1.1','WURS-25','DEX','DIVA-5']},
     {label:'TEA · Espectro autista',                  tests:['AQ','AQ-10','EQ','EA','SCQ']},
     {label:'Psicología clínica',                    tests:['BDI-II','STAI','PHQ-9','GAD-7','PSS-10','Holmes-Rahe','Birleson','AAA','SPAI-B','SCL-90-R','MBI-HSS','CSI']},
@@ -16677,7 +16678,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       'ATENCIÓN':           ['D2','WAIS-IV','SDMT-escrita','SDMT-oral','BTA'],
       'FUNC. EJECUTIVAS':   ['FAB','IFS','TMT A-B','Stroop','BADS-Zoo','BADS-Llaves','BADS-Juicio','Test del Hotel','WCST-64'],
       'LENGUAJE':           ['Token Test','BNT-60','BNT-12','Fluencia Verbal'],
-      'VISOCONSTRUCTIVO':   ['Figura Rey'],
+      'VISOCONSTRUCTIVO / MEMORIA VISUAL': ['Figura Rey'],
     };
     var rows=[],rowCount=0;
     function add(label,pb,m,ds,z,nota){
