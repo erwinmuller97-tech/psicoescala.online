@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.4</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.5</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6343,7 +6343,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.4';
+var APP_VERSION = 'v1.11.5';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -16843,13 +16843,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         if(d.is!=null)addCL('SCQ · IS Interacción social',d.is,'—');
         if(d.crr!=null)addCL('SCQ · CRR Cond. repetitivas',d.crr,'—');
       }
-      else if(r.test==='DEX'){var dv=d.version==='hetero'?'Heteroadm.':'Autoadm.';addCL('DEX Total ('+dv+')',d.total,r.categoria||'—');}
-      else if(r.test==='DIVA-5'){
-        var t=d.totales||{};
-        if(t.A){addCL('DIVA-5 — Inatención adulto',(t.A.adulto!=null?t.A.adulto:'—')+'/9','—');addCL('DIVA-5 — Inatención infancia',(t.A.infancia!=null?t.A.infancia:'—')+'/9','—');}
-        if(t.HI){addCL('DIVA-5 — H/I adulto',(t.HI.adulto!=null?t.HI.adulto:'—')+'/9','—');addCL('DIVA-5 — H/I infancia',(t.HI.infancia!=null?t.HI.infancia:'—')+'/9','—');}
-        addCL('DIVA-5 — Presentación clínica','—',d.presentacion||r.categoria||'—');
-      }
+      else if(r.test==='DIVA-5'){ /* tiene su propia sección más abajo, no entra en esta tabla genérica */ }
       else if(r.test==='PCS'){addCL('PCS — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='BPI'){
         if(d.intensidad!=null)addCL('BPI — Índice de Intensidad',parseFloat(d.intensidad).toFixed(2),'—');
@@ -16990,6 +16984,108 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
     ].concat(tdRows),COL_CL);
     body+=_wPar('',{before:0,after:80});
+  }
+
+  // ── DIVA-5 (sección propia: resumen de significación + síntomas por dominio,
+  //    no entra en la tabla genérica de arriba porque no es un test de puntaje simple) ──
+  var diva5Results = datos.filter(function(r){ return r.test==='DIVA-5'; });
+  if (diva5Results.length) {
+    var dv   = diva5Results[diva5Results.length-1].datos || {};
+    var dvT  = dv.totales || {A:{},HI:{}};
+    var dvRes = dv.resumen || {};
+    var COL_DV = [2800,1600,4960];
+    function dvHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:WF.BODY}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
+    function dvCell(txt,w,bg,center,color){return _wCell(_wPar(_wRun(txt||'—',{sz:19,font:WF.BODY,color:color||'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
+
+    // Para un dominio (criterios_A / criterios_HI) y una etapa (adulto/infancia),
+    // arma la lista de criterios marcados "sí" junto con los ejemplos concretos
+    // tildados en cada uno — esto es lo que el informe necesita mostrar como
+    // "síntomas implicados", no solo el conteo.
+    function dvSintomas(criterios, etapa) {
+      var partes = [];
+      Object.keys(criterios||{}).forEach(function(id){
+        var c = criterios[id];
+        if (!c || c[etapa] !== 'si') return;
+        var ejemplos = c['ejemplos_'+etapa] || [];
+        var idLbl = id.indexOf('HI')===0 ? ('H/I '+id.replace('HI','')) : id;
+        var txt = idLbl;
+        if (ejemplos.length) txt += ': ' + ejemplos.map(function(e){ return e.texto; }).join('; ');
+        partes.push(txt);
+      });
+      return partes.join(' · ') || 'Ningún criterio marcado';
+    }
+    function dvAreasTxt(etapa) {
+      var areas = dv.disfuncion || {};
+      var out = [];
+      (typeof DIVA5_AREAS!=='undefined'?DIVA5_AREAS:[]).forEach(function(a){
+        var ar = areas[a.id];
+        if (!ar) return;
+        var partes = (ar[etapa]||[]).map(function(e){ return e.texto; });
+        var nota = ar['nota_'+etapa];
+        if (nota) partes.push('Obs.: '+nota);
+        if (partes.length) out.push(a.label+' — '+partes.join('; '));
+      });
+      return out.join(' · ') || 'Ninguna área marcada';
+    }
+
+    body += secTit('DIVA-5 — Entrevista Diagnóstica del TDAH en Adultos');
+    body += _wPar(_wRun('Kooij & Francken (2010) · Criterios DSM-5', {sz:17,ital:true,color:WC.MUTED,font:WF.BODY}), {before:0,after:60});
+
+    var presTxt = dv.presentacion || '—';
+    var presSig = !!(dvRes.adulto_inatencion_significativa || dvRes.adulto_hi_significativa);
+    body += _wPar([
+      _wRun('Presentación clínica: ', {bold:true,sz:20,color:'000000',font:WF.BODY}),
+      _wRun(presTxt, {bold:true,sz:20,color:presSig?WC.TERRACOTA:WC.VERDE_OSC,font:WF.BODY})
+    ], {before:0,after:100});
+
+    var aAd=dvT.A.adulto||0, aInf=dvT.A.infancia||0, hiAd=dvT.HI.adulto||0, hiInf=dvT.HI.infancia||0;
+    var aAdSig=aAd>=5, hiAdSig=hiAd>=5, aInfSig=aInf>=3, hiInfSig=hiInf>=3;
+
+    var dvRows = [];
+    dvRows.push(_wRow([dvHdrCell('Dominio',COL_DV[0]),dvHdrCell('Significativo',COL_DV[1]),dvHdrCell('Síntomas presentes',COL_DV[2])],{hdr:true}));
+    dvRows.push(_wRow([
+      dvCell('Inatención — Adulto ('+aAd+'/9)',COL_DV[0],WC.GRIS_CLR),
+      dvCell(aAdSig?'Sí (≥5)':'No (<5)',COL_DV[1],WC.GRIS_CLR,true,aAdSig?WC.TERRACOTA:WC.VERDE_OSC),
+      dvCell(dvSintomas(dv.criterios_A,'adulto'),COL_DV[2],WC.GRIS_CLR)
+    ]));
+    dvRows.push(_wRow([
+      dvCell('Inatención — Infancia ('+aInf+'/9)',COL_DV[0]),
+      dvCell(aInfSig?'Sí (≥3)':'No (<3)',COL_DV[1],'',true,aInfSig?WC.TERRACOTA:WC.VERDE_OSC),
+      dvCell(dvSintomas(dv.criterios_A,'infancia'),COL_DV[2])
+    ]));
+    dvRows.push(_wRow([
+      dvCell('Hiperactividad/Impulsividad — Adulto ('+hiAd+'/9)',COL_DV[0],WC.GRIS_CLR),
+      dvCell(hiAdSig?'Sí (≥5)':'No (<5)',COL_DV[1],WC.GRIS_CLR,true,hiAdSig?WC.TERRACOTA:WC.VERDE_OSC),
+      dvCell(dvSintomas(dv.criterios_HI,'adulto'),COL_DV[2],WC.GRIS_CLR)
+    ]));
+    dvRows.push(_wRow([
+      dvCell('Hiperactividad/Impulsividad — Infancia ('+hiInf+'/9)',COL_DV[0]),
+      dvCell(hiInfSig?'Sí (≥3)':'No (<3)',COL_DV[1],'',true,hiInfSig?WC.TERRACOTA:WC.VERDE_OSC),
+      dvCell(dvSintomas(dv.criterios_HI,'infancia'),COL_DV[2])
+    ]));
+
+    var cB = dv.criterio_B || {};
+    var cBTxt = cB.antes_12==='si' ? 'Criterio cumplido' : (cB.edad_inicio ? 'Inicio referido a los '+cB.edad_inicio+' años' : 'Inicio posterior a los 12 años');
+    dvRows.push(_wRow([
+      dvCell('Criterio B — Síntomas presentes antes de los 12 años',COL_DV[0],WC.GRIS_CLR),
+      dvCell(cB.antes_12==='si'?'Sí':'No',COL_DV[1],WC.GRIS_CLR,true,cB.antes_12==='si'?WC.VERDE_OSC:WC.TERRACOTA),
+      dvCell(cBTxt,COL_DV[2],WC.GRIS_CLR)
+    ]));
+
+    var dfc = dv.disfuncion_2_campos || {};
+    dvRows.push(_wRow([
+      dvCell('Criterio C — Disfunción en ≥2 áreas (adulto)',COL_DV[0]),
+      dvCell(dfc.adulto==='si'?'Sí':'No',COL_DV[1],'',true,dfc.adulto==='si'?WC.TERRACOTA:WC.VERDE_OSC),
+      dvCell(dvAreasTxt('adulto'),COL_DV[2])
+    ]));
+    dvRows.push(_wRow([
+      dvCell('Criterio C — Disfunción en ≥2 áreas (infancia)',COL_DV[0],WC.GRIS_CLR),
+      dvCell(dfc.infancia==='si'?'Sí':'No',COL_DV[1],WC.GRIS_CLR,true,dfc.infancia==='si'?WC.TERRACOTA:WC.VERDE_OSC),
+      dvCell(dvAreasTxt('infancia'),COL_DV[2],WC.GRIS_CLR)
+    ]));
+
+    body += _wTable(dvRows, COL_DV);
+    body += _wPar('',{before:0,after:80});
   }
 
   // TABLA DOLOR
