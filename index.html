@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.7</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.8</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6336,7 +6336,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.7';
+var APP_VERSION = 'v1.11.8';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -14124,9 +14124,11 @@ function guardarResultadoScl90(){
       }
     });
   }
+  var sclRiesgo=Object.keys(subescalas).filter(function(k){return subescalas[k].t>=63;}).map(function(k){return subescalas[k].nombre;});
+  var sclCat=sclRiesgo.length?'En riesgo: '+sclRiesgo.join(', '):'Sin dimensiones en riesgo';
   supaFetch('/rest/v1/psico_resultados','POST',{
     user_id:SESSION.user.id,paciente_id:pacId,test:'SCL-90-R',fecha:fecha,
-    puntaje_total:igtVal?Math.round(igtVal):null,categoria:'Ver detalle',
+    puntaje_total:igtVal?Math.round(igtVal):null,categoria:sclCat,
     datos:{subescalas:subescalas,igt:igtVal,gsi:igtVal,
            tsp:window._sclTSP||null,imsp:window._sclIMSP||null,
            igs_avg:window._sclIGS||null,tsp_t:window._sclTSP_T||null,imsp_t:window._sclIMSP_T||null}
@@ -16776,7 +16778,19 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       else if(r.test==='Birleson'){addCL('Birleson (PACES) — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='AAA'){addCL('AAA — Total',r.puntaje_total,r.categoria||'—');}
       else if(r.test==='SPAI-B'){addCL('SPAI-B — Total',r.puntaje_total,r.categoria||'—');}
-      else if(r.test==='SCL-90-R'){addCL('SCL-90-R — IGS',d.igs_avg!=null?parseFloat(d.igs_avg).toFixed(2):'—',r.categoria||'—');}
+      else if(r.test==='SCL-90-R'){
+        // Una fila por dimensión (promedio bruto + T) en vez de solo el IGS con "Ver detalle"
+        function sclRes(t){return t==null?'—':(t>=63?'Sintomatología significativa':'Ausencia de sintomatología');}
+        function sclPb(avg,t){return (avg!=null?parseFloat(avg).toFixed(2):'—')+(t!=null?' (T '+t+')':'');}
+        var sclSubs=d.subescalas||{};
+        ['som','obs','sen','dep','ans','hos','fob','par','psi'].forEach(function(k){
+          var s=sclSubs[k];if(!s)return;
+          addCL('SCL-90-R — '+s.nombre,sclPb(s.avg,s.t),sclRes(s.t));
+        });
+        addCL('SCL-90-R — IGS (Índice de Severidad Global)',sclPb(d.igs_avg,d.igt),sclRes(d.igt));
+        if(d.tsp!=null)addCL('SCL-90-R — TSP (Total Síntomas Positivos)',d.tsp+(d.tsp_t!=null?' (T '+d.tsp_t+')':''),sclRes(d.tsp_t));
+        if(d.imsp!=null)addCL('SCL-90-R — IMSP (Índice Malestar Positivo)',sclPb(d.imsp,d.imsp_t),sclRes(d.imsp_t));
+      }
       else if(r.test==='MBI-HSS'){
         if(d.CE!=null)addCL('Cansancio Emocional',d.CE,d.CE_cat||'—');
         if(d.DP!=null)addCL('Despersonalización',d.DP,d.DP_cat||'—');
@@ -16956,22 +16970,26 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     function dvHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:WF.BODY}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
     function dvCell(txt,w,bg,center,color){return _wCell(_wPar(_wRun(txt||'—',{sz:19,font:WF.BODY,color:color||'000000'}),{align:center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
 
-    // Para un dominio (criterios_A / criterios_HI) y una etapa (adulto/infancia),
-    // arma la lista de criterios marcados "sí" junto con los ejemplos concretos
-    // tildados en cada uno — esto es lo que el informe necesita mostrar como
-    // "síntomas implicados", no solo el conteo.
+    // Resumen: solo el nombre corto de cada criterio DSM-5 marcado "sí" (los ejemplos
+    // tildados quedan en el registro, pero en el informe hacían cada celda muy larga).
+    var DV_CRIT_CORTO = {
+      A1:'errores por descuido', A2:'dificultad para sostener la atención', A3:'parece no escuchar',
+      A4:'no finaliza tareas', A5:'dificultad para organizarse', A6:'evita el esfuerzo mental sostenido',
+      A7:'pierde objetos', A8:'distraibilidad', A9:'olvidos en la vida diaria',
+      HI1:'inquietud motora', HI2:'abandona el asiento', HI3:'inquietud subjetiva',
+      HI4:'dificultad para actividades tranquilas', HI5:'"como impulsado por un motor"', HI6:'habla en exceso',
+      HI7:'responde precipitadamente', HI8:'dificultad para esperar turno', HI9:'interrumpe o se entromete'
+    };
     function dvSintomas(criterios, etapa) {
       var partes = [];
       Object.keys(criterios||{}).forEach(function(id){
         var c = criterios[id];
         if (!c || c[etapa] !== 'si') return;
-        var ejemplos = c['ejemplos_'+etapa] || [];
-        var idLbl = id.indexOf('HI')===0 ? ('H/I '+id.replace('HI','')) : id;
-        var txt = idLbl;
-        if (ejemplos.length) txt += ': ' + ejemplos.map(function(e){ return e.texto; }).join('; ');
-        partes.push(txt);
+        partes.push(DV_CRIT_CORTO[id] || id);
       });
-      return partes.join(' · ') || 'Ningún criterio marcado';
+      if (!partes.length) return 'Ningún criterio marcado';
+      var txt = partes.join(', ');
+      return txt.charAt(0).toUpperCase() + txt.slice(1) + '.';
     }
     function dvAreasTxt(etapa) {
       var areas = dv.disfuncion || {};
@@ -16979,12 +16997,9 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       (typeof DIVA5_AREAS!=='undefined'?DIVA5_AREAS:[]).forEach(function(a){
         var ar = areas[a.id];
         if (!ar) return;
-        var partes = (ar[etapa]||[]).map(function(e){ return e.texto; });
-        var nota = ar['nota_'+etapa];
-        if (nota) partes.push('Obs.: '+nota);
-        if (partes.length) out.push(a.label+' — '+partes.join('; '));
+        if ((ar[etapa]||[]).length || ar['nota_'+etapa]) out.push(a.label);
       });
-      return out.join(' · ') || 'Ninguna área marcada';
+      return out.length ? out.join(', ') + '.' : 'Ninguna área marcada';
     }
 
     body += secTit('DIVA-5 — Entrevista Diagnóstica del TDAH en Adultos');
