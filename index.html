@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.10</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.11</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6336,7 +6336,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.10';
+var APP_VERSION = 'v1.11.11';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -16637,7 +16637,7 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
       'COGNITIVO GLOBAL':   ['MoCA','ACE-R','Test del Reloj (Cacho)'],
       'MEMORIA':            ['Rey Verbal','TAVEC','BEM 144 Signoret'],
       'ATENCIÓN':           ['D2','WAIS-IV','SDMT-escrita','SDMT-oral','BTA'],
-      'FUNC. EJECUTIVAS':   ['FAB','IFS','TMT A-B','Stroop','BADS-Zoo','BADS-Llaves','BADS-Juicio','Test del Hotel','WCST-64'],
+      'FUNC. EJECUTIVAS':   ['FAB','TMT A-B','Stroop','BADS-Zoo','BADS-Llaves','BADS-Juicio','Test del Hotel','WCST-64','IFS'],
       'LENGUAJE':           ['Token Test','BNT-60','BNT-12','Fluencia Verbal'],
       'VISOCONSTRUCTIVO / MEMORIA VISUAL': ['Figura Rey'],
     };
@@ -16706,7 +16706,29 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
           if(d.zRI!=null){var fcrMR=fcrMDSClasico(d.gi,'ri');add('Fig. Rey — Rec. Inmediato',d.ri!=null?d.ri:d.pbRI,fcrMR.m,fcrMR.ds,d.zRI,d.pcRI!=null?'Pc '+d.pcRI:null);}
         } else if(tn==='BADS-Llaves'){add('BADS — Búsqueda de Llaves',d.pb,d.m,d.ds,d.z,'Pje conv. '+(d.conv!=null?d.conv:'—'));}
         else if(tn==='BADS-Juicio'){add('BADS — Juicio Temporal',d.conv,d.m,d.ds,d.z,null);}
-        else if(tn==='BADS-Zoo'){if(d.z_bruto!=null)add('BADS — Mapa del Zoo',d.bruto,null,null,d.z_bruto,null);}
+        else if(tn==='BADS-Zoo'){
+          // Igual que el PDF: filas por versión administrada (antes solo salía si había z_bruto,
+          // que existe únicamente cuando se aplicaron ambas versiones)
+          var zVer=d.ver||'ambas', zooN=0;
+          function zooFila(lbl,pb,mds,z,nota){if(pb==null&&z==null)return;add(lbl,pb,mds?mds[0]:null,mds?mds[1]:null,z!=null?z:null,nota);zooN++;}
+          if(zVer==='v1'||zVer==='ambas'){
+            zooFila('Zoo V1 — Secuencia',d.v1s,d.m_v1sec,d.z_v1sec,null);
+            zooFila('Zoo V1 — Errores',d.v1e,d.m_v1err,d.z_v1err,'Z invertido');
+            zooFila('Zoo V1 — T. planif. (seg)',d.v1tp,d.m_v1tp,d.z_v1tp,'Z invertido');
+            zooFila('Zoo V1 — T. total (seg)',d.v1tt,d.m_v1tt,d.z_v1tt,'Z invertido');
+          }
+          if(zVer==='v2'||zVer==='ambas'){
+            zooFila('Zoo V2 — Secuencia',d.v2s,d.m_v2sec,d.z_v2sec,null);
+            zooFila('Zoo V2 — Errores',d.v2e,d.m_v2err,d.z_v2err,'Z invertido');
+            zooFila('Zoo V2 — T. planif. (seg)',d.v2tp,d.m_v2tp,d.z_v2tp,'Z invertido');
+            zooFila('Zoo V2 — T. total (seg)',d.v2tt,d.m_v2tt,d.z_v2tt,'Z invertido');
+          }
+          if(zVer==='ambas'){
+            zooFila('Zoo — Total bruto',d.bruto,null,d.z_bruto,null);
+            zooFila('Zoo — Total convertido',d.conv,null,d.z_conv,d.conv!=null?'Pje conv. '+d.conv:null);
+          }
+          if(!zooN)add('BADS — Mapa del Zoo',r.puntaje_total,null,null,r.puntaje_z,null);
+        }
         else if(tn==='WCST-64'){
           if(d.categorias!=null)add('WCST-64 — Categorías',d.categorias+'/6',d.cat_m,d.cat_ds,d.cat_z,null);
           if(d.perse_pct!=null)add('WCST-64 — Err. persev. (%)',d.perse_pct+'%',d.perse_m,d.perse_ds,d.perse_z,null);
@@ -16719,9 +16741,25 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
           add('DEX Total ('+dv2+')',d.total,d.version==='hetero'?20.68:22.25,d.version==='hetero'?14.77:10.10,d.zTotal,'Pje /80');
         } else if(tn==='BNT-60'||tn==='BNT-12'){var bM=tn==='BNT-12'?11:(d.yhat!=null?d.yhat:null);var bDS=tn==='BNT-12'?1.16:(d.yhat!=null?5.184:null);add(tn+(d.educ_label?' ('+d.educ_label+')':''),d.pb||r.puntaje_total,bM,bDS,r.puntaje_z,null);}
         else if(tn==='Token Test'){add('Token Test',r.puntaje_total,r.puntaje_z!=null?10:null,r.puntaje_z!=null?3:null,r.puntaje_z,null);}
-        else if(tn==='IFS'){add('IFS — Total',r.puntaje_total,d.m,d.ds,r.puntaje_z,null);}
+        else if(tn==='IFS'){
+          add('IFS — Total',r.puntaje_total!=null?r.puntaje_total+'/30':null,d.m,d.ds,r.puntaje_z,null);
+          var ifsSt=d.subtests||{};
+          IFS_SUBTESTS.forEach(function(s){
+            if(ifsSt[s.id]!=null)add('IFS · '+s.label,ifsSt[s.id]+'/'+s.max,null,null,null,null);
+          });
+          if(ifsSt['ifs-digitos']!=null&&ifsSt['ifs-corsi']!=null)
+            add('IFS · Índice de Memoria de Trabajo',(ifsSt['ifs-digitos']+ifsSt['ifs-corsi'])+'/10',null,null,null,'Dígitos + Corsi');
+        }
         else if(tn==='FAB'){add('FAB — Total',r.puntaje_total,d.M,d.DS,r.puntaje_z,null);}
-        else if(tn==='MoCA'){add('MoCA',r.puntaje_total,d.m,d.ds,r.puntaje_z,null);}
+        else if(tn==='MoCA'){
+          add('MoCA — Total',r.puntaje_total!=null?r.puntaje_total+'/30':null,d.m,d.ds,r.puntaje_z,null);
+          var mocaDom=d.dominios||{};
+          [['moca-visuo','Visuoespacial / Ejecutivo',5],['moca-ident','Identificación',3],['moca-aten','Atención',6],
+           ['moca-leng','Lenguaje',3],['moca-abst','Abstracción',2],['moca-recu','Recuerdo diferido',5],['moca-orie','Orientación',6]
+          ].forEach(function(c){
+            if(mocaDom[c[0]]!=null)add('MoCA · '+c[1],mocaDom[c[0]]+'/'+c[2],null,null,null,null);
+          });
+        }
         else if(tn==='ACE-R'){add('ACE-R — Total',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='Test del Reloj (Cacho)'){add('Test del Reloj (Cacho)',r.puntaje_total,null,null,r.puntaje_z,null);}
         else if(tn==='BTA'){add('BTA',d.puntaje,d.m,d.ds,d.z,d.pc?'Pc '+d.pc:null);}
