@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.8</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.9</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6336,7 +6336,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.8';
+var APP_VERSION = 'v1.11.9';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -17062,13 +17062,87 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
     body += _wPar('',{before:0,after:80});
   }
 
-  // TABLA DOLOR
-  var doRows=buildSimpleRows(testsDO);
-  if(doRows.length){
+  // ── EVALUACIÓN DEL DOLOR (una tabla por instrumento, con cada subescala,
+  //    qué evalúa, puntaje e interpretación — antes era una sola fila por test) ──
+  if(testsDO.length){
+    var COL_DO=[2200,3560,1400,2200];
+    function doHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:WF.BODY}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
+    function doCell(txt,w,bg,opts){opts=opts||{};return _wCell(_wPar(_wRun(txt==null||txt===''?'—':String(txt),{sz:opts.sz||19,bold:!!opts.bold,ital:!!opts.ital,font:WF.BODY,color:opts.color||'000000'}),{align:opts.center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
+    // filas: [{l, desc, pb, interp, sig, total}]
+    function doTabla(titulo, ref, fecha, filas){
+      if(!filas.length)return;
+      body+=_wPar([
+        _wRun(titulo,{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),
+        _wRun((ref?'  ·  '+ref:'')+(fecha?'  ·  '+fecha:''),{sz:17,ital:true,font:WF.BODY,color:WC.MUTED})
+      ],{before:80,after:40});
+      var rows=[_wRow([doHdrCell('Subescala',COL_DO[0]),doHdrCell('Qué evalúa',COL_DO[1]),doHdrCell('Puntaje',COL_DO[2]),doHdrCell('Interpretación',COL_DO[3])],{hdr:true})];
+      filas.forEach(function(f,i){
+        var bg=f.total?WC.GRIS_CLR:(i%2===0?WC.BLANCO:WC.GRIS_CLR);
+        var col=f.sig?WC.TERRACOTA:WC.VERDE_OSC;
+        rows.push(_wRow([
+          doCell(f.l,COL_DO[0],bg,{bold:!!f.total}),
+          doCell(f.desc,COL_DO[1],bg,{sz:17,ital:true}),
+          doCell(f.pb,COL_DO[2],bg,{center:true,bold:!!f.total}),
+          doCell(f.interp,COL_DO[3],bg,{color:col,bold:!!f.total})
+        ]));
+      });
+      body+=_wTable(rows,COL_DO);
+      body+=_wPar('',{before:0,after:60});
+    }
+    function doPcFila(nom,desc,sub){
+      sub=sub||{};
+      if(sub.score==null&&sub.pc==null)return null;
+      var niv=sub.pc!=null?dolorColorNiv(sub.pc).txt:'—';
+      return {l:nom,desc:desc,pb:(sub.score!=null?sub.score:'—')+(sub.pc!=null?' (Pc '+sub.pc+')':''),interp:niv,sig:sub.pc!=null&&sub.pc>=75};
+    }
+
     body+=_wPar(_wRun('Evaluación del Dolor',{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),{before:80,after:40});
-    body+=_wTable([
-      _wRow([clHdr('Instrumento',COL_CL[0]),clHdr('Puntaje',COL_CL[1]),clHdr('Resultado',COL_CL[2])],{hdr:true})
-    ].concat(doRows),COL_CL);
+    testsDO.forEach(function(r){
+      var d=r.datos||{}, filas=[];
+      if(r.test==='PCS'){
+        var tot=d.tot!=null?d.tot:r.puntaje_total;
+        [{l:'Rumiación',v:d.rum,max:16,desc:'Pensamientos repetitivos sobre el dolor y dificultad para apartar la atención de él (ítems 1, 8, 9, 10).'},
+         {l:'Magnificación',v:d.mag,max:12,desc:'Exageración del carácter amenazante del dolor y temor a consecuencias graves (ítems 3, 6, 13).'},
+         {l:'Indefensión',v:d.ind,max:24,desc:'Sensación de incapacidad para controlar o afrontar el dolor (ítems 2, 4, 5, 7, 11, 12).'}
+        ].forEach(function(s){
+          if(s.v==null)return;
+          var sig=s.v>=Math.round(s.max*0.7), mod=s.v>=Math.round(s.max*0.5);
+          filas.push({l:s.l,desc:s.desc,pb:s.v+'/'+s.max,interp:sig?'Significativa':mod?'Moderada':'No significativa',sig:sig||mod});
+        });
+        if(tot!=null)filas.push({l:'Total',desc:'Grado global de catastrofización ante el dolor (corte clínico ≥30).',pb:tot+'/52',
+          interp:tot>=30?'Clínicamente significativa':tot>=20?'Moderada':'Baja',sig:tot>=20,total:true});
+        doTabla('PCS · Escala de Catastrofización del Dolor','Sullivan et al. (1995)',r.fecha,filas);
+      } else if(r.test==='CSQ'){
+        var csqDesc={CAT:'Pensamientos negativos extremos sobre el dolor y sus consecuencias (estrategia desadaptativa).',
+          CDI:'Realizar actividades o conductas para distraerse del dolor.',
+          AUT:'Darse ánimo e instrucciones a sí mismo para afrontar el dolor.',
+          IDO:'Negar el dolor o actuar como si no estuviera presente.',
+          RDO:'Reinterpretar las sensaciones dolorosas como algo diferente o menos amenazante.',
+          ESP:'Confianza en que el dolor mejorará o desaparecerá con el tiempo.',
+          FEP:'Recurrir a la fe, la oración o la religión para sobrellevar el dolor.',
+          DIC:'Pensar en otras cosas o situaciones agradables para no atender al dolor.'};
+        ['CAT','CDI','AUT','IDO','RDO','ESP','FEP','DIC'].forEach(function(k){
+          var f=doPcFila(CSQ_NOM[k],csqDesc[k],d[k]); if(f)filas.push(f);
+        });
+        doTabla('CSQ · Cuestionario de Estrategias de Afrontamiento del Dolor','Rosenstiel & Keefe (1983)',r.fecha,filas);
+      } else if(r.test==='PBQ'){
+        var pbqDesc={QNV:'Expresión no verbal del dolor: gestos, quejidos, posturas, frotarse la zona.',
+          EVES:'Evitación de situaciones o estímulos que podrían desencadenar o aumentar el dolor.',
+          QV:'Comunicar verbalmente el dolor o quejarse ante los demás.',
+          EVAC:'Abandono o reducción de actividades cotidianas a causa del dolor (restricción funcional).'};
+        ['QNV','EVES','QV','EVAC'].forEach(function(k){
+          var f=doPcFila(PBQ_NOM[k],pbqDesc[k],d[k]); if(f)filas.push(f);
+        });
+        doTabla('PBQ · Cuestionario de Conductas de Dolor','Appelbaum et al. (1988)',r.fecha,filas);
+      } else if(r.test==='BPI'){
+        var bInt=d.int!=null?d.int:d.intensidad, bInf=d.inf!=null?d.inf:d.interferencia;
+        if(bInt!=null){bInt=parseFloat(bInt);filas.push({l:'Intensidad del dolor',desc:'Promedio del dolor máximo, mínimo, medio y actual (ítems 3–6, escala 0–10).',pb:bInt.toFixed(1)+'/10',interp:dolorColorBPI(bInt,'int').txt,sig:bInt>=4});}
+        if(bInf!=null){bInf=parseFloat(bInf);filas.push({l:'Interferencia',desc:'Impacto del dolor en actividad general, ánimo, marcha, trabajo, relaciones, sueño y disfrute (ítems 9A–9G).',pb:bInf.toFixed(1)+'/10',interp:dolorColorBPI(bInf,'inf').txt,sig:bInf>=4});}
+        if(d.alivio!=null)filas.push({l:'Alivio con tratamiento',desc:'Porcentaje de alivio obtenido con el tratamiento actual'+(d.trat?' ('+d.trat+')':'')+'.',pb:d.alivio+'%',
+          interp:d.alivio>=50?'Alivio adecuado':d.alivio>=25?'Alivio parcial':'Alivio insuficiente',sig:d.alivio<25});
+        doTabla('BPI · Inventario Breve de Dolor','Cleeland & Ryan (1994)',r.fecha,filas);
+      }
+    });
     body+=_wPar('',{before:0,after:80});
   }
 
