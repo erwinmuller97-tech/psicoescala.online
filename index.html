@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.9</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.10</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6336,7 +6336,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.9';
+var APP_VERSION = 'v1.11.10';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -17063,9 +17063,9 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
   }
 
   // ── EVALUACIÓN DEL DOLOR (una tabla por instrumento, con cada subescala,
-  //    qué evalúa, puntaje e interpretación — antes era una sola fila por test) ──
+  //    puntaje e interpretación — antes era una sola fila por test) ──
   if(testsDO.length){
-    var COL_DO=[2200,3560,1400,2200];
+    var COL_DO=[4160,2000,3200];
     function doHdrCell(txt,w){return _wCell(_wPar(_wRun(txt,{sz:18,bold:true,color:WC.BLANCO,font:WF.BODY}),{align:'center',before:20,after:20}),{w:w,fill:WC.VERDE_MED,hdrBorder:true});}
     function doCell(txt,w,bg,opts){opts=opts||{};return _wCell(_wPar(_wRun(txt==null||txt===''?'—':String(txt),{sz:opts.sz||19,bold:!!opts.bold,ital:!!opts.ital,font:WF.BODY,color:opts.color||'000000'}),{align:opts.center?'center':'left',before:20,after:20}),{w:w,fill:bg||WC.BLANCO});}
     // filas: [{l, desc, pb, interp, sig, total}]
@@ -17075,15 +17075,15 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
         _wRun(titulo,{bold:true,sz:20,font:WF.BODY,color:WC.VERDE_OSC}),
         _wRun((ref?'  ·  '+ref:'')+(fecha?'  ·  '+fecha:''),{sz:17,ital:true,font:WF.BODY,color:WC.MUTED})
       ],{before:80,after:40});
-      var rows=[_wRow([doHdrCell('Subescala',COL_DO[0]),doHdrCell('Qué evalúa',COL_DO[1]),doHdrCell('Puntaje',COL_DO[2]),doHdrCell('Interpretación',COL_DO[3])],{hdr:true})];
+      var rows=[_wRow([doHdrCell('Subescala',COL_DO[0]),doHdrCell('Puntaje',COL_DO[1]),doHdrCell('Interpretación',COL_DO[2])],{hdr:true})];
       filas.forEach(function(f,i){
         var bg=f.total?WC.GRIS_CLR:(i%2===0?WC.BLANCO:WC.GRIS_CLR);
-        var col=f.sig?WC.TERRACOTA:WC.VERDE_OSC;
+        // Significativas en negrita (sin color) para que se lean en impresión B/N
+        var neg=!!(f.total||f.sig);
         rows.push(_wRow([
-          doCell(f.l,COL_DO[0],bg,{bold:!!f.total}),
-          doCell(f.desc,COL_DO[1],bg,{sz:17,ital:true}),
-          doCell(f.pb,COL_DO[2],bg,{center:true,bold:!!f.total}),
-          doCell(f.interp,COL_DO[3],bg,{color:col,bold:!!f.total})
+          doCell(f.l,COL_DO[0],bg,{bold:neg}),
+          doCell(f.pb,COL_DO[1],bg,{center:true,bold:neg}),
+          doCell(f.interp,COL_DO[2],bg,{bold:neg})
         ]));
       });
       body+=_wTable(rows,COL_DO);
