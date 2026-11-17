@@ -1092,7 +1092,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <div class="login-logo">
       <div class="login-logo-icon logo-mark" style="width:56px;height:56px;margin:0 auto 16px;border-radius:14px;background:var(--brand-100);border:1px solid var(--brand-200);padding:6px;box-shadow:var(--shadow-md);"></div>
       <div class="login-titulo">PsicoEscala</div>
-      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.11</span></div>
+      <div class="login-sub">Plataforma de evaluación psicológica · <span id="app-version-label">v1.11.12</span></div>
     </div>
     <div class="login-error" id="login-error"></div>
     <div class="login-field"><label>Email</label><input type="email" id="login-email" placeholder="tu@email.com"></div>
@@ -6336,7 +6336,7 @@ function irLogin(){
   login.classList.add('active');
 }
 // ══ CONFIG SUPABASE ══════════════════════════════════════════════════════════
-var APP_VERSION = 'v1.11.11';
+var APP_VERSION = 'v1.11.12';
 var SUPA_URL = 'https://tjvmalyvnjkyypztfuuq.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqdm1hbHl2bmpreXlwenRmdXVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNTQzOTQsImV4cCI6MjA5NDczMDM5NH0.mh-mKeP--lKWaapkaEtyxe2-TtPtLKGy2zyAwtUOfos';
 
@@ -16666,9 +16666,16 @@ function _buildWord(datos,pacInfo,pacNombre,pacEdad,pacFnac,pacSexo,pacEscol,pac
             ['RCL-CP · Claves CP',d.v9,gi2tw!==null?TAVEC_BAR.v9[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v9[gi2tw].d:null,d.zRCLCP,null],
             ['RL-LP · Rec. libre LP',d.v10,gi2tw!==null?TAVEC_BAR.v10[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v10[gi2tw].d:null,d.zRLLP,null],
             ['RCL-LP · Claves LP',d.v11,gi2tw!==null?TAVEC_BAR.v11[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v11[gi2tw].d:null,d.zRCLLP,null],
+            // Variables de error: el Z guardado es positivo = más errores; se invierte para
+            // que en la grilla quede del lado del déficit (igual que el perfil Z)
+            ['P · Perseveraciones',d.v20,gi2tw!==null?TAVEC_BAR.v20[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v20[gi2tw].d:null,d.zP!=null?-d.zP:null,'Z invertido'],
+            ['I-RL · Intrusiones RL',d.v21,gi2tw!==null?TAVEC_BAR.v21[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v21[gi2tw].d:null,d.zIRL!=null?-d.zIRL:null,'Z invertido'],
+            ['I-RCL · Intrusiones claves',d.v22,gi2tw!==null?TAVEC_BAR.v22[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v22[gi2tw].d:null,d.zIRCL!=null?-d.zIRCL:null,'Z invertido'],
+            ['Recon-Ac · Aciertos recon.',d.v23,gi2tw!==null?TAVEC_BAR.v23[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v23[gi2tw].d:null,d.zRecon,null],
+            ['FP · Falsos positivos',d.v24,gi2tw!==null?TAVEC_BAR.v24[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v24[gi2tw].d:null,d.zFP!=null?-d.zFP:null,'Z invertido'],
             ['Discrim',d.v25,gi2tw!==null?TAVEC_BAR.v25[gi2tw].m:null,gi2tw!==null?TAVEC_BAR.v25[gi2tw].d:null,d.zDiscrim,null]
           ];
-          tvars.forEach(function(tv){if(tv[1]!==null&&tv[1]!==undefined) add(tv[0],tv[1],tv[2],tv[3],tv[4],null);});
+          tvars.forEach(function(tv){if(tv[1]!==null&&tv[1]!==undefined) add(tv[0],tv[1],tv[2],tv[3],tv[4],tv[5]);});
 
         } else if(tn==='BEM 144 Signoret'){
           var gi=d.grupo_edad!=null?d.grupo_edad:bemGrupo;
